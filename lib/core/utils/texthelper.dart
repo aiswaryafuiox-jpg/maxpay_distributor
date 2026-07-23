@@ -138,5 +138,22 @@ static TextStyle max12(BuildContext context) {
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+  static TextStyle get lato14 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColors.clrTextblack,
+    );
+  }
+
+  static TextStyle get lato11 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: AppColors.clrTextblack,
+    );
+  }
 
 }
