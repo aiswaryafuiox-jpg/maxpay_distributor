@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
@@ -81,8 +80,8 @@ class ScanWebLoginScreen extends StatelessWidget {
                 /// Scanner + QR
                 Center(
                   child: SizedBox(
-                    width: 350,
-                    height: 400,
+                    width: 400,
+                    height: 430,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [

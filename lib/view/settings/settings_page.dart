@@ -7,17 +7,13 @@ import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
-
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-
     return Obx(() {
       final isDark = themeController.isDarkMode;
-
       return Container(
         decoration: BoxDecoration(
           image: isDark
@@ -92,7 +88,7 @@ class SettingsPage extends StatelessWidget {
                                     vertical: 6.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF00B050),
+                                    color: const Color(0xFF00BC62),
                                     borderRadius: BorderRadius.circular(8.r),
                                   ),
                                   child: Row(
@@ -101,14 +97,18 @@ class SettingsPage extends StatelessWidget {
                                         "Link",
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 13.sp,
+                                          fontSize: 13,
                                         ),
                                       ),
                                       SizedBox(width: 4.w),
-                                      Icon(
-                                        Icons.link,
-                                        color: Colors.white,
-                                        size: 15.sp,
+                                      SvgPicture.asset(
+                                        AssetImages.linkShare,
+                                        width: 15.w,
+                                        height: 15.h,
+                                        colorFilter: const ColorFilter.mode(
+                                          Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -225,28 +225,6 @@ class SettingsPage extends StatelessWidget {
                       },
                       SvgPicture.asset(AssetImages.history, width: 24.w),
                     ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Web Signup',
-                    //   () {
-                    //     Get.toNamed(AppRoutes.weblogin);
-                    //   },
-                    //   SvgPicture.asset(AssetImages.webSignup, width: 24.w),
-                    // ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Web Login',
-                    //   () {},
-                    //   SvgPicture.asset(AssetImages.webLogin, width: 24.w),
-                    // ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Support',
-                    //   () {
-                    //     Get.toNamed(AppRoutes.support);
-                    //   },
-                    //   SvgPicture.asset(AssetImages.support, width: 24.w),
-                    // ),
 
                     /// 🔹 LOGOUT BUTTONS
                     Padding(

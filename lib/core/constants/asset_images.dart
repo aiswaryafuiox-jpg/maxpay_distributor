@@ -76,6 +76,7 @@ class AssetImages {
   static const jio = "assets/images/jio.svg";
   static const scanWeb = "assets/images/scan_web.png";
   static const webLoginBg = "assets/images/web_login_bg.png";
+  static const linkShare = "assets/images/link_share.svg";
 }
 
 SizedBox adjustWidth(double width) {
