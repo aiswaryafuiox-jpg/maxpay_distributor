@@ -104,7 +104,7 @@ class _TransferDetailScreenState
                 title: isReverse
                     ? "Wallet Reverse"
                     : "Wallet Transfer",
-                amount: "₹ 2405.23",
+                amount: "₹ 245005.23",
                 isReverse: isReverse,
               ),
 

@@ -39,7 +39,7 @@ class TransferDetailHeaderCard extends StatelessWidget {
                   ? Colors.red
                   : Colors.white,
               fontWeight: FontWeight.w600,
-              fontSize: 15.sp,
+              fontSize: 18.sp,
             ),
           ),
 
@@ -47,12 +47,12 @@ class TransferDetailHeaderCard extends StatelessWidget {
 
           Text(
             amount,
-            style: TextHelper.max13(context).copyWith(
+            style: TextHelper.lat014(context).copyWith(
               color: isReverse
                   ? Colors.red
                   : Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 22.sp,
+              // fontWeight: FontWeight.w700,
+              // fontSize: 22.sp,
             ),
           ),
         ],

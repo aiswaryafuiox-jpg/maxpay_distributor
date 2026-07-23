@@ -55,7 +55,10 @@ class TransactionCard extends StatelessWidget {
                       fontSize: 11
                     )
 
+
+
                   ),
+                  SizedBox(height: 5),
                   Text(
                     "29-11-2026 07:38:43 PM",
                     style: TextHelper.max1.copyWith(

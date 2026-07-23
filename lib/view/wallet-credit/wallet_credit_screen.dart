@@ -32,20 +32,7 @@ class WalletCreditScreen extends StatelessWidget {
               color:  AppColors.darktextclr.withValues(alpha: 0.5),
             ),
 
-            // const SizedBox(height: 16),
-            //
-            // /// 🔹 List
-            //  Expanded(
-            //   child: ListView(
-            //     children: [
-            //       _WalletCreditCard(isDashed: false),
-            //
-            //       SizedBox(height: 10),
-            //
-            //       _WalletCreditCard(isDashed: true),
-            //     ],
-            //   ),
-            // ),
+
             const SizedBox(height: 16),
 
             /// 🔹 Credit Amount Card
@@ -56,26 +43,17 @@ class WalletCreditScreen extends StatelessWidget {
                 color: AppColors.clrPrimary,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Column(
+              child: Column(
                 children: [
                   Text(
                     "Credit Amount",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextHelper.max16
+
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     "₹ 2405.23",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style:TextHelper.lato12
                   ),
                 ],
               ),
@@ -143,7 +121,7 @@ class _DateField extends StatelessWidget {
                     theme.colorScheme.onSurfaceVariant,
               ) ??
               TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 color:
                     theme.colorScheme.onSurfaceVariant,
               ),
@@ -258,6 +236,7 @@ class _WalletCreditCard extends StatelessWidget {
                     "Credit Type",
 
                     style: TextHelper.max1.copyWith(
+
                       color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
                       : AppColors.darktextclr,

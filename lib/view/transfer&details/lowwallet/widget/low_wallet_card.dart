@@ -84,7 +84,7 @@ class LowWalletCard extends StatelessWidget {
                 "Wallet Amount:",
                 style: TextHelper.max5.copyWith(
                   color: AppColors.clrSecondary,
-                  fontSize: 13,
+                  fontSize: 14,
                 ),
               ),
 
@@ -93,8 +93,9 @@ class LowWalletCard extends StatelessWidget {
               Text(
                 amount,
                 style: TextHelper.max10(context).copyWith(
+
                   color: AppColors.clrSecondary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900
                 ),
               ),
             ],

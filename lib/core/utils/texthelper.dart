@@ -7,7 +7,7 @@ class TextHelper {
     return const TextStyle(
       fontFamily: 'Poppins',
 
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
       color: AppColors.clrTextgrey,
     );
@@ -82,6 +82,15 @@ class TextHelper {
       color: AppColors.clrTextblack,
     );
   }
+  static TextStyle get max16 {
+    return const TextStyle(
+      fontFamily: 'Poppins',
+
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      color: AppColors.white,
+    );
+  }
 
   static TextStyle max9(BuildContext context) {
     return TextStyle(      fontFamily: 'Poppins',
@@ -102,7 +111,7 @@ class TextHelper {
    static TextStyle max11(BuildContext context) {
     return  TextStyle(      fontFamily: 'Poppins',
 
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onTertiaryFixedVariant,
     );
@@ -130,6 +139,15 @@ static TextStyle max12(BuildContext context) {
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+  static TextStyle lat014(BuildContext context) {
+    return TextStyle(      fontFamily: 'Lato',/////////
+
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color: Theme.of(context).colorScheme.onSurface,
+    );
+  }
+
   static TextStyle max14(BuildContext context) {
     return TextStyle(      fontFamily: 'Poppins',
 
@@ -155,5 +173,14 @@ static TextStyle max12(BuildContext context) {
       color: AppColors.clrTextblack,
     );
   }
+  static TextStyle get lato12 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: AppColors.white,
+    );
+  }
+
 
 }

@@ -139,6 +139,8 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
+import '../../../core/utils/texthelper.dart';
+
 class EarningsCard extends StatelessWidget {
   const EarningsCard({super.key});
 
@@ -176,16 +178,13 @@ class EarningsCard extends StatelessWidget {
                   "Transaction No: 9876543212",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                  style: TextHelper.max1.copyWith(
+                    fontSize: 12,
                     color: secondaryTextColor,
                   ),
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -211,16 +210,12 @@ class EarningsCard extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
           Divider(
             color: Colors.grey.withValues(alpha: 0.4),
             thickness: 0.8,
           ),
-
           const SizedBox(height: 10),
-
           /// Bottom Section
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
