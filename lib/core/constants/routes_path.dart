@@ -1,0 +1,69 @@
+class AppRoutes {
+  static const String splash = '/';
+  static const String intro = '/intro';
+  static const String welcome = '/welcome';
+  static const String selectSim = '/selectSim';
+  static const String loginPhoneName = '/loginPhoneName';
+  static const String otpVerification = '/otpVerification';
+  static const String biometricsIntro = '/biometricsIntro';
+  static const String biometricsScanning = '/biometricsScanning';
+  static const String pinCodeCreation = '/pinCodeCreation';
+  static const String successScreen = '/successScreen';
+  static const String home = '/home';
+  static const String main = '/main';
+  static const String myearning = '/myearning';
+  //
+  static const String onlineTransaction = '/online-transaction';
+  static const String payoutDetails = '/payout-details';
+  static const payoutRequest ='/payout-request';
+  static const paymentRequest = '/payment-request';
+
+  static const String withdrawrequest1 = '/withdrawrequest1';
+  static const String withdrawrequest2 = '/withdrawrequest2';
+  static const String retailer = '/retailer';
+  static const createRetailerScreen = "/createRetailerScreen";
+  static const retaddWalletScreen = "/retaddWalletScreen";
+  static const retviewDetailsScreen = "/retviewDetailsScreen";
+  static const executive ='/executive';
+  static const createExecutive="/createExecutive";
+  static const exviewDetails ="/exviewDetails";
+  static const autoTransferScreen = "/autoTransferScreen";
+  static const transferDetail = "/transfer-detail";
+
+  static const String refund = '/refund';
+  static const String cashback = '/cashback';
+  static const String profile = '/profile_set';
+  static const String support = '/support';
+  static const String kyc = '/kyc';
+  static const String loginhistory = '/loginhistory';
+  static const String weblogin = '/weblogin';
+  static const String webotp = '/webotp';
+  static const String websuccess = '/websuccess';
+  static const String setting = '/setting';
+  static const String commission ='/commission';
+  static const String grade = '/grade';
+  static const String prepaid = '/prepaid';
+  static const String menu = '/menu';
+  static const String dth = '/dth';
+  static const String addwallet = '/addwallet';
+  static const String transaction = '/transaction';
+  static const String veirfypin = '/veirfypin';
+  static const String statement = '/statement';
+  static const String statementReadMore = '/statement/read-more';
+  static const String view = '/view';
+  static const String favorite = '/favorite';
+  static const String walletBalance = '/wallet-balance';
+  static const String update = '/update';
+  static const String lowWallet = "/lowWallet";
+  static const String outstanding = '/outstanding';
+  static const String dayBook = "/dayBook";
+  static const String regChargeCredit = '/reg-charge-credit';
+  static const String  payOutDetails = '/payout-detail';
+  static const String  payOutStatus = '/payout-status';
+  static const String bulkPackageCharge = '/bulk-package-charge';
+  static const String bulkPackageChange = '/bulk-package-change';
+  static const scanWebLogin = "/scanWebLogin";
+
+
+
+}
