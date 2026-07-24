@@ -178,14 +178,8 @@ class RetailerCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xffF7F7F7),
-                      Color(0xffD8DEE6),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
+                gradient: AppColors.silverGradient,
+    borderRadius: BorderRadius.circular(5),),
                 child: Text(
                   "Silver",
                   style: TextHelper.max1.copyWith(

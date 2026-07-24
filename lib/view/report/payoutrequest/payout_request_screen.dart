@@ -51,6 +51,18 @@ class PayoutRequestScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: const PayoutRequestTopWidget(),
             ),
+          const SizedBox(height: 5),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Divider(
+              thickness: 1,
+              height: 1,
+              color: Color(0x4D000000),
+            ),
+          ),
+
+          const SizedBox(height: 15),
 
 
           /// Transaction List

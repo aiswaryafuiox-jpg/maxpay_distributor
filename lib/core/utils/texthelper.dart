@@ -86,7 +86,7 @@ class TextHelper {
     return const TextStyle(
       fontFamily: 'Poppins',
 
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: FontWeight.w600,
       color: AppColors.white,
     );
@@ -176,7 +176,7 @@ static TextStyle max12(BuildContext context) {
   static TextStyle get lato12 {
     return const TextStyle(
       fontFamily: 'Lato',
-      fontSize: 20,
+      fontSize: 22,
       fontWeight: FontWeight.w600,
       color: AppColors.white,
     );

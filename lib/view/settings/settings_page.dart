@@ -237,9 +237,9 @@ class SettingsPage extends StatelessWidget {
                           Expanded(
                             child: _buildLogoutButton(
                               context,
-                              ' App Logout',
-                              Icons.logout_rounded,
-                              () {},
+                              'App Logout',
+                              AssetImages.applogout,
+                                  () {},
                             ),
                           ),
                           SizedBox(width: 15.w),
@@ -247,8 +247,8 @@ class SettingsPage extends StatelessWidget {
                             child: _buildLogoutButton(
                               context,
                               'Web Logout',
-                              Icons.logout_rounded,
-                              () {},
+                              AssetImages.weblogout,
+                                  () {},
                               true,
                             ),
                           ),
@@ -327,8 +327,10 @@ class SettingsPage extends StatelessWidget {
   Widget _buildLogoutButton(
     BuildContext context,
     String label,
-    IconData icon,
-    VoidCallback onTap, [
+    //IconData icon,
+      String iconPath,
+
+      VoidCallback onTap, [
     bool isRight = false,
   ]) {
     return ElevatedButton.icon(
@@ -342,7 +344,13 @@ class SettingsPage extends StatelessWidget {
         elevation: 0,
       ),
       iconAlignment: isRight ? IconAlignment.end : IconAlignment.start,
-      icon: Icon(icon, color: Colors.white, size: 20.sp),
+
+      icon: SvgPicture.asset(
+        iconPath,
+        width: 20.w,
+        height: 20.h,
+      ),
+
       label: Text(
         label,
         style: TextStyle(

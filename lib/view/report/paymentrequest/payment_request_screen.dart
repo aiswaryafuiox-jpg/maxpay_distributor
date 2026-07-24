@@ -44,10 +44,12 @@ class PaymentRequestScreen extends StatelessWidget {
           ),
 
           /// Divider
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Divider(
               thickness: 1,
+              height: 1,
+              color: Color(0x4D000000),
             ),
           ),
 

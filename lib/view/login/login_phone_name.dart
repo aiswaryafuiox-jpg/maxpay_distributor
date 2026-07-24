@@ -419,6 +419,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                   Center(
                     child: CommonButton(
                       title: "Submit",
+
                       onTap: () {
                         Get.toNamed(AppRoutes.otpVerification);
                       },

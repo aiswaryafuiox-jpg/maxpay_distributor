@@ -34,7 +34,7 @@ class CommonButton extends StatelessWidget {
           title,
           style: TextStyle(
             color: Colors.white,
-            fontSize: isTablet ? 16.sp : 14.sp,
+            fontSize: isTablet ? 16.sp : 16.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

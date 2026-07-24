@@ -51,7 +51,18 @@ class PayoutDetailScreen extends StatelessWidget {
               bottomWidget: const TransactionTypeField(),
             ),
           ),
+          const SizedBox(height: 5),
 
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Divider(
+              thickness: 1,
+              height: 1,
+              color: Color(0x4D000000),
+            ),
+          ),
+
+          const SizedBox(height: 15),
           /// Transaction List
           Expanded(
             child: ListView.separated(

@@ -7,6 +7,7 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 
+import '../../../core/utils/texthelper.dart';
 import '../../nav_page/navbar.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -44,22 +45,16 @@ class MenuScreen extends StatelessWidget {
                         children: [
                           Text(
                             "Wallet Balance",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextHelper.max16
+
                           ),
 
                           SizedBox(height: 6.h),
 
                           Text(
                             "₹ 245005.23",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextHelper.lato12,
+
                           ),
                         ],
                       ),
@@ -95,7 +90,7 @@ class MenuScreen extends StatelessWidget {
                         "Services",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

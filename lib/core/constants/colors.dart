@@ -77,12 +77,109 @@ class AppColors {
   static const inactiveBtn = Color(0xffF40C29);
   static const pendingBtn = Color(0xffFF9800);
   static const resetBtn = Color(0xff17A2B8);
-
-
-
-
   static const Color profileBlue = Color(0xFF011C5B);
+  //silver gradient
+  static const Color silverDark = Color(0xFF7A96AC);
+  static const Color silverLight = Color(0xFFEAEFF3);
+  static const Color silverBlue = Color(0xFFC2D4E1);
+  static const Color silverWhite = Color(0xFFFFFFFF);
+  static const Color silverGrey = Color(0xFFD4DEE5);
+  static const Color silverMid = Color(0xFFABBDC8);
+  static const Color silverEnd = Color(0xFFBCCAD7);
 
-
-
+  static const LinearGradient silverGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF7A96AC),
+      Color(0xFFEAEFF3),
+      Color(0xFFC2D4E1),
+      Color(0xFFFFFFFF),
+      Color(0xFFD4DEE5),
+      Color(0xFFABBDC8),
+      Color(0xFFBCCAD7),
+    ],
+    stops: [
+      0.00,
+      0.18,
+      0.31,
+      0.49,
+      0.62,
+      0.79,
+      0.95,
+    ],
+  );
+  static const basicGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFFDFFFE),
+      Color(0xFF7ABBAC),
+      Color(0xFFB1FFEF),
+      Color(0xFF8AD2C3),
+      Color(0xFFCFFEF4),
+      Color(0xFF6CA196),
+      Color(0xFF35544E),
+    ],
+    stops: [0.0, 0.28, 0.39, 0.54, 0.75, 0.85, 1.0],
+  );
+  static const LinearGradient silverPlusGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFA8A8A6),
+      Color(0xFF696969),
+      Color(0xFFF9F8F6),
+      Color(0xFFA8A8A6),
+      Color(0xFF7F7F7F),
+      Color(0xFFD4D4D4),
+    ],
+    stops: [0.00, 0.25, 0.53, 0.72, 0.92, 1.00,
+    ],
+  );
+  static const LinearGradient goldGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFA3652A),
+      Color(0xFFFEFBF2),
+      Color(0xFFEFB06E),
+      Color(0xFFF9C176),
+      Color(0xFFE77B33),
+      Color(0xFFDC702A),
+      Color(0xFF733D19),
+    ],
+    stops: [
+      0.00,
+      0.00,
+      0.21,
+      0.46,
+      0.68,
+      0.84,
+      1.00,
+    ],
+  );
+  static const LinearGradient goldPlusGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF8C421D),
+      Color(0xFFFCFBE7),
+      Color(0xFFD4A041),
+      Color(0xFFFBE67B),
+      Color(0xFFF7D14E),
+      Color(0xFFD4A041),
+    ],
+    stops: [
+      0.00,
+      0.00,
+      0.15,
+      0.38,
+      0.77,
+      1.00,
+    ],
+  );
 }
+
+
+
