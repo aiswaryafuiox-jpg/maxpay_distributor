@@ -79,6 +79,7 @@ class AssetImages {
   static const linkShare = "assets/images/link_share.svg";
   static const applogout = "assets/images/app_logout.svg";
   static const weblogout = "assets/images/web_logout.svg";
+  static const iconPerson = "assets/images/icon_person.svg";
 }
 
 SizedBox adjustWidth(double width) {

@@ -72,6 +72,16 @@ class TextHelper {
       color: AppColors.clrSecondary,
     );
   }
+  static TextStyle get pin {
+    return const TextStyle(
+      fontFamily: 'Poppins',
+
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColors.pinText,
+    );
+  }
+
 
   static TextStyle get max8 {
     return const TextStyle(

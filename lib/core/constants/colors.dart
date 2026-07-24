@@ -86,6 +86,7 @@ class AppColors {
   static const Color silverGrey = Color(0xFFD4DEE5);
   static const Color silverMid = Color(0xFFABBDC8);
   static const Color silverEnd = Color(0xFFBCCAD7);
+  static const Color pinText = Color(0xFF0F1010);
 
   static const LinearGradient silverGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -180,6 +181,4 @@ class AppColors {
     ],
   );
 }
-
-
 

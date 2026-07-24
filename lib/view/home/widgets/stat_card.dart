@@ -71,9 +71,9 @@ class StatCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w600,
                 letterSpacing: 0,
-                fontSize: 10.sp,
+                fontSize: 11.sp,
                 color: titleColor,
               ),
             ),
@@ -87,7 +87,7 @@ class StatCard extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w600,
-                  fontSize: 11.sp,
+                  fontSize: 10.sp,
                   color: valueColor,
                 ),
               ),
@@ -98,53 +98,42 @@ class StatCard extends StatelessWidget {
     );
   }
 }
-
 /// 🔥 Zoom In + Zoom Out + Blink Animation
 class BlinkingZoomCard extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
-
   const BlinkingZoomCard({super.key, required this.child, this.onTap});
-
   @override
   State<BlinkingZoomCard> createState() => _BlinkingZoomCardState();
 }
-
 class _BlinkingZoomCardState extends State<BlinkingZoomCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
-
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..repeat(reverse: true);
-
     /// 🔍 Zoom Animation
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 1.08,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
     /// ✨ Blink Animation
     _opacityAnimation = Tween<double>(
       begin: 1.0,
       end: 0.4,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
