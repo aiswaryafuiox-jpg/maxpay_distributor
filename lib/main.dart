@@ -7,14 +7,17 @@ import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller/home_controller.dart';
+import 'core/bindings/initial_binding.dart';
 import 'core/constants/routes_path.dart';
 
 
+import 'core/di/service_locator.dart' as di;
 import 'core/router/app_router.dart';
 import 'core/utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
 
   // Initialize SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
@@ -49,6 +52,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
+
+            initialBinding: InitialBinding(),
 
 
           themeMode: themeController.themeMode,

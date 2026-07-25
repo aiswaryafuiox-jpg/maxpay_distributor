@@ -183,15 +183,18 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
                 children: [
                   Text(
                     "Due Amount",
-                    style: TextHelper.max2.copyWith(color: Colors.white),
+                    style: TextHelper.max16.copyWith(
+                      fontSize: 16
+                    )
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "₹ 245005.23",
-                    style: TextHelper.max4.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextHelper.lato12.copyWith(
+                      fontSize: 18,
+                    )
+
+
                   ),
                 ],
               ),
@@ -242,14 +245,10 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
 
             _label("Description"),
             _textField(descriptionController, "Write Here", maxLines: 3),
-
             const SizedBox(height: 15),
-
             _label("Receipt"),
             _textField(receiptController, "Enter"),
-
             const SizedBox(height: 30),
-
             SizedBox(
               width: 170,
               child: CommonButton(
@@ -262,7 +261,6 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
       ),
     );
   }
-
   Widget _label(String text) {
     return Align(
       alignment: Alignment.centerLeft,

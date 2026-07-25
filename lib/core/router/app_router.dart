@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:maxpay/core/bindings/initial_binding.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
@@ -73,6 +74,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.loginPhoneName,
       page: () => const LoginPhoneNamePage(),
+      binding: InitialBinding(),
     ),
     GetPage(
       name: AppRoutes.otpVerification,
