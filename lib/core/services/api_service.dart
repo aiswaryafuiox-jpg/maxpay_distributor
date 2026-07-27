@@ -53,6 +53,10 @@ class ApiService {
           log("ERROR => ${e.message}");
           log("ERROR RESPONSE => ${e.response?.data}");
 
+          if (e.requestOptions.path.contains(ApiRoutes.verifyPin)) {
+            return handler.next(e);
+          }
+
           if (e.response?.statusCode == 401) {
             _handleUnauthorized();
           } else {

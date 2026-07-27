@@ -5,12 +5,14 @@ import 'package:maxpay/core/constants/colors.dart';
 
 class CommonButton extends StatelessWidget {
   final String title;
+  final bool isLoading;
   final VoidCallback onTap;
 
   const CommonButton({
     super.key,
     required this.title,
     required this.onTap,
+    this.isLoading = false,
   });
 
   @override
@@ -34,7 +36,7 @@ class CommonButton extends StatelessWidget {
           title,
           style: TextStyle(
             color: Colors.white,
-            fontSize: isTablet ? 16.sp : 16.sp,
+            fontSize: isTablet ? 16.sp : 14.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

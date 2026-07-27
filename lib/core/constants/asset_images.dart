@@ -8,6 +8,8 @@ class AssetImages {
   static const splash2 = "assets/images/splash2.webp";
   static const splash3 = "assets/images/splash3.webp";
   static const successLogin = "assets/images/success_image.webp";
+  static const edit = "assets/images/edit.svg";
+  static const edit1 = "assets/images/edit1.svg";
 
   // Navbar
   static const home = "assets/images/home.svg";
@@ -57,7 +59,7 @@ class AssetImages {
   static const webSignup = "assets/images/web_signup.svg";
   static const wallet = "assets/images/wallet.svg";
   static const profile = "assets/images/profile.svg";
-  static const rating ="assets/images/rating.svg";
+  static const rating = "assets/images/rating.svg";
   static const fingerprint = "assets/images/fingerprint.svg";
   static const acc = "assets/images/acc.svg";
   static const grade = "assets/images/grade.svg";

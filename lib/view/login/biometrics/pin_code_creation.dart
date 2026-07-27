@@ -179,14 +179,13 @@
 //   }
 // }
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/controller/login_controller.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
-import 'package:maxpay/view/update_pin/widget/pin_box_widget.dart';
+import 'package:pinput/pinput.dart';
 
 class PinCodeCreationPage extends StatefulWidget {
   const PinCodeCreationPage({super.key});
@@ -223,116 +222,134 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
 
           child: Column(
             children: [
-
               SizedBox(height: 40.h),
 
               /// TITLE
               Center(
                 child: Text(
                   "Create your M-PIN",
-                  style: TextHelper.max13(context).copyWith(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: TextHelper.max13(
+                    context,
+                  ).copyWith(fontSize: 24.sp, fontWeight: FontWeight.w700),
                 ),
               ),
 
               SizedBox(height: 45.h),
 
-              /// PIN BOXES
-              GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(_focusNode);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    4,
-                        (index) => Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: PinBoxWidget(
-                        number:
-                        index < pin.length ? pin[index] : "",
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              /// Hidden TextField
-              SizedBox(
-                width: 1,
-                height: 1,
-                child: TextField(
+              /// PIN INPUT (Pinput)
+              Center(
+                child: Pinput(
+                  length: 4,
                   controller: _pinController,
                   focusNode: _focusNode,
                   autofocus: true,
                   keyboardType: TextInputType.number,
-                  maxLength: 4,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    counterText: "",
-                  ),
                   onChanged: (value) {
                     setState(() {});
                   },
+                  defaultPinTheme: PinTheme(
+                    width: 56.w,
+
+                    height: 56.w,
+                    textStyle: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBackgroundColor,
+                      shape: .circle,
+
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                  ),
+                  focusedPinTheme: PinTheme(
+                    width: 56.w,
+                    height: 56.w,
+                    textStyle: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBackgroundColor,
+                      shape: .circle,
+                      border: Border.all(color: theme.primaryColor, width: 2),
+                    ),
+                  ),
+                  submittedPinTheme: PinTheme(
+                    width: 56.w,
+                    height: 56.w,
+                    textStyle: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.surface,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor,
+                      shape: .circle,
+                      border: Border.all(color: theme.primaryColor),
+                    ),
+                  ),
                 ),
               ),
 
               const Spacer(),
 
-              if (pin.length == 4)
-                Row(
-                  children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        FocusScope.of(context).unfocus();
 
-                    Expanded(
-                      child: InkWell(
-          onTap: () async {
-    FocusScope.of(context).unfocus();
+                        await Future.delayed(const Duration(milliseconds: 150));
 
-    await Future.delayed(const Duration(milliseconds: 150));
+                        _pinController.clear();
 
-    _pinController.clear();
+                        if (mounted) {
+                          setState(() {});
+                        }
 
-    if (mounted) {
-    setState(() {});
-    }
-
-    Get.back();
-    },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16.h),
-                          child: Text(
-                            "Cancel",
-                            textAlign: TextAlign.center,
-                            style: TextHelper.max4.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                        Get.back();
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        child: Text(
+                          "Cancel",
+                          textAlign: TextAlign.center,
+                          style: TextHelper.max4.copyWith(
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ),
+                  ),
 
-                    SizedBox(width: 18.w),
+                  SizedBox(width: 18.w),
 
-                    Expanded(
-                      child: CommonButton(
-                        title: "Add",onTap: () {
+                  Expanded(
+                    child: CommonButton(
+                      title: "Add",
+
+                      onTap: () {
                         // Close keyboard
                         FocusScope.of(context).unfocus();
 
-                        // Wait for keyboard to close
-                        Future.delayed(const Duration(milliseconds: 200), () {
-                          Get.toNamed(AppRoutes.successScreen);
-                        });
+                        if (_pinController.text.length == 4) {
+                          final controller = Get.find<LoginController>();
+                          controller.createPin(_pinController.text);
+                        } else {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter a valid 4-digit PIN",
+                          );
+                        }
                       },
-                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
               SizedBox(height: 30.h),
             ],

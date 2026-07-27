@@ -13,6 +13,7 @@ import 'package:maxpay/view/kyc/kyc_screen.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_intro.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_scanning.dart';
 import 'package:maxpay/view/login/biometrics/pin_code_creation.dart';
+import 'package:maxpay/view/login/biometrics/enter_pin_screen.dart';
 import 'package:maxpay/view/login/biometrics/success_screen.dart';
 import 'package:maxpay/view/login/otp_verification_screen.dart';
 import 'package:maxpay/view/login/login_phone_name.dart';
@@ -91,14 +92,12 @@ class AppPages {
       name: AppRoutes.pinCodeCreation,
       page: () => const PinCodeCreationPage(),
     ),
+    GetPage(name: AppRoutes.enterPin, page: () => const PinCodeEnterPage()),
     GetPage(name: AppRoutes.successScreen, page: () => const SuccessScreen()),
     GetPage(name: AppRoutes.home, page: () => const HomePageScreen()),
     GetPage(name: AppRoutes.main, page: () => const NavPageScreen()),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
-    GetPage(
-      name: AppRoutes.lowWallet,
-      page: () => const LowWalletScreen(),
-    ),
+    GetPage(name: AppRoutes.lowWallet, page: () => const LowWalletScreen()),
     //
     GetPage(
       name: AppRoutes.onlineTransaction,
@@ -109,7 +108,6 @@ class AppPages {
       page: () => const PayoutDetailScreen(),
     ),
 
-
     GetPage(
       name: AppRoutes.payoutRequest,
       page: () => const PayoutRequestScreen(),
@@ -119,7 +117,6 @@ class AppPages {
       page: () => const PaymentRequestScreen(),
     ),
 
-
     GetPage(
       name: AppRoutes.withdrawrequest1,
       page: () => const WalletCreditScreen(),
@@ -128,10 +125,7 @@ class AppPages {
       name: AppRoutes.withdrawrequest2,
       page: () => const WalletCreditScreen(),
     ),
-    GetPage(
-      name: AppRoutes.retailer,
-      page: () => const RetailerScreen(),
-    ),
+    GetPage(name: AppRoutes.retailer, page: () => const RetailerScreen()),
     GetPage(
       name: AppRoutes.createRetailerScreen,
       page: () => const CreateRetailerScreen(),
@@ -144,10 +138,7 @@ class AppPages {
       name: AppRoutes.retviewDetailsScreen,
       page: () => const RetViewDetailsScreen(),
     ),
-    GetPage(
-      name: AppRoutes.executive,
-      page: () => const ExecutiveScreen(),
-    ),
+    GetPage(name: AppRoutes.executive, page: () => const ExecutiveScreen()),
     GetPage(
       name: AppRoutes.createExecutive,
       page: () => const CreateExecutiveScreen(),
@@ -156,8 +147,6 @@ class AppPages {
       name: AppRoutes.exviewDetails,
       page: () => const ExeViewDetailsScreen(),
     ),
-
-
 
     GetPage(
       name: AppRoutes.autoTransferScreen,
@@ -176,9 +165,11 @@ class AppPages {
       page: () => const PayoutStatusScreen(),
     ),
 
-//commission
-    GetPage(name: AppRoutes.commission, page: () => const CommissionSettingsScreen()),
-
+    //commission
+    GetPage(
+      name: AppRoutes.commission,
+      page: () => const CommissionSettingsScreen(),
+    ),
 
     GetPage(name: AppRoutes.refund, page: () => const RefundScreen()),
     GetPage(name: AppRoutes.cashback, page: () => const CashbackScreen()),
@@ -223,14 +214,8 @@ class AppPages {
         return StatementReadMoreScreen(details: details);
       },
     ),
-    GetPage(
-      name: AppRoutes.outstanding,
-      page: () => const OutstandingScreen(),
-    ),
-    GetPage(
-      name: AppRoutes.dayBook,
-      page: () => const DayBookScreen(),
-    ),
+    GetPage(name: AppRoutes.outstanding, page: () => const OutstandingScreen()),
+    GetPage(name: AppRoutes.dayBook, page: () => const DayBookScreen()),
     GetPage(
       name: AppRoutes.regChargeCredit,
       page: () => const RegChargeCreditScreen(),

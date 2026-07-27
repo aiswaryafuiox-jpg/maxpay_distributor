@@ -10,11 +10,13 @@ import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import '../../controller/login_controller.dart';
+
 class LoginPhoneNamePage extends StatefulWidget {
   const LoginPhoneNamePage({super.key});
   @override
   State<LoginPhoneNamePage> createState() => _LoginPhoneNamePageState();
 }
+
 class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
   bool _isAccepted = false;
   final LoginController controller = Get.find<LoginController>();
@@ -25,8 +27,9 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
     final isDark = theme.brightness == Brightness.dark;
     final isTablet = Responsive.isTablet(context);
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
+
       appBar: const CommonAppBar(title: "Login"),
       body: SafeArea(
         child: Center(
@@ -39,6 +42,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
               child: Column(
                 children: [
                   SizedBox(height: 40.h),
+
                   /// LOGO
                   Center(
                     child: SvgPicture.asset(
@@ -49,10 +53,9 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                     ),
                   ),
                   SizedBox(height: 30.h),
+
                   /// PHONE FIELD
-                  PhoneNUmberField(
-                    controller: controller.phoneController,
-                  ),
+                  PhoneNUmberField(controller: controller.phoneController),
                   SizedBox(height: 18.h),
 
                   /// TERMS
@@ -69,11 +72,9 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                               _isAccepted = value ?? false;
                             });
                           },
-                          fillColor:
-                          WidgetStateProperty.all(Colors.white),
+                          fillColor: WidgetStateProperty.all(Colors.white),
                           checkColor: Colors.black,
-                          side:
-                          WidgetStateBorderSide.resolveWith((states) {
+                          side: WidgetStateBorderSide.resolveWith((states) {
                             return const BorderSide(
                               color: Colors.black,
                               width: 1.2,
@@ -98,21 +99,16 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                             ),
                             children: const [
                               TextSpan(
-                                text:
-                                "Registration implies acceptance of the ",
+                                text: "Registration implies acceptance of the ",
                               ),
                               TextSpan(
                                 text: "Terms of Service",
-                                style: TextStyle(
-                                  color: AppColors.clrPrimary,
-                                ),
+                                style: TextStyle(color: AppColors.clrPrimary),
                               ),
                               TextSpan(text: " and "),
                               TextSpan(
                                 text: "Privacy Policy.",
-                                style: TextStyle(
-                                  color: AppColors.clrPrimary,
-                                ),
+                                style: TextStyle(color: AppColors.clrPrimary),
                               ),
                             ],
                           ),
@@ -140,18 +136,13 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                         }
 
                         if (controller.phoneController.text.trim().isEmpty) {
-                          Get.snackbar(
-                            "Error",
-                            "Enter mobile number",
-                          );
+                          Get.snackbar("Error", "Enter mobile number");
                           return;
                         }
 
-                        if (controller.phoneController.text.trim().length != 10) {
-                          Get.snackbar(
-                            "Error",
-                            "Enter valid mobile number",
-                          );
+                        if (controller.phoneController.text.trim().length !=
+                            10) {
+                          Get.snackbar("Error", "Enter valid mobile number");
                           return;
                         }
 
@@ -178,10 +169,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
 class PhoneNUmberField extends StatefulWidget {
   final TextEditingController controller;
 
-  const PhoneNUmberField({
-    super.key,
-    required this.controller,
-  });
+  const PhoneNUmberField({super.key, required this.controller});
 
   @override
   State<PhoneNUmberField> createState() => _PhoneNUmberFieldState();
@@ -197,9 +185,7 @@ class _PhoneNUmberFieldState extends State<PhoneNUmberField> {
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkplceholder
-            : const Color(0xFFF8F9FA),
+        color: isDark ? AppColors.darkplceholder : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(8.r),
       ),
       padding: EdgeInsets.symmetric(
@@ -286,7 +272,7 @@ class _PhoneNUmberFieldState extends State<PhoneNUmberField> {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-            )
+            ),
           ),
         ],
       ),

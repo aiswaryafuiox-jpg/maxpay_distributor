@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'core/bindings/initial_binding.dart';
 import 'core/constants/routes_path.dart';
-
 
 import 'core/di/service_locator.dart' as di;
 import 'core/router/app_router.dart';
@@ -22,6 +22,7 @@ void main() async {
   // Initialize GetX Controllers
   Get.put(ThemeController(sharedPreferences));
   Get.put(NavbarController());
+  Get.put(AppLifecycleController());
 
   // Restrict to portrait
   await SystemChrome.setPreferredOrientations([
@@ -50,12 +51,19 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
 
-            initialBinding: InitialBinding(),
-
+          initialBinding: InitialBinding(),
 
           themeMode: themeController.themeMode,
           initialRoute: AppRoutes.splash,
           getPages: AppPages.pages,
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(1.0)),
+              child: SafeArea(top: false, child: child!),
+            );
+          },
         );
       },
     );

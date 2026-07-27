@@ -8,6 +8,7 @@ class AppRoutes {
   static const String biometricsIntro = '/biometricsIntro';
   static const String biometricsScanning = '/biometricsScanning';
   static const String pinCodeCreation = '/pinCodeCreation';
+  static const String enterPin = '/enterPin';
   static const String successScreen = '/successScreen';
   static const String home = '/home';
   static const String main = '/main';
