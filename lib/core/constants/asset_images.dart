@@ -23,9 +23,9 @@ class AssetImages {
   static const todaysCredit = "assets/images/todays_credit.svg";
   static const refunded = "assets/images/refunded.svg";
   static const complaints = "assets/images/complaints.svg";
-  static const success = "assets/images/success_icon.svg";
-  static const processing = "assets/images/processing_icon.svg";
-  static const failedAll = "assets/images/failed_icon.svg";
+  static const success = "assets/images/success.svg";
+  static const processing = "assets/images/processing.svg";
+  static const failedAll = "assets/images/failed_all.svg";
   static const statement = "assets/images/statement.svg";
   //support
   static const call = "assets/images/call.svg";
@@ -43,7 +43,6 @@ class AssetImages {
   static const paymentStatus = "assets/images/payment_status.svg";
 
   // Others
-  static const addWallet1 = "assets/images/add_wallet1.png";
   static const favorite = "assets/images/favorite.svg";
   static const dthRefresh = "assets/images/dth_refresh.svg";
   static const promoFrame = "assets/images/elec.svg";
@@ -75,6 +74,12 @@ class AssetImages {
   static const filter = "assets/images/location_regular.png";
   static const delete = "assets/images/delete_regular.svg";
   static const jio = "assets/images/jio.svg";
+  static const scanWeb = "assets/images/scan_web.png";
+  static const webLoginBg = "assets/images/web_login_bg.png";
+  static const linkShare = "assets/images/link_share.svg";
+  static const applogout = "assets/images/app_logout.svg";
+  static const weblogout = "assets/images/web_logout.svg";
+  static const iconPerson = "assets/images/icon_person.svg";
 }
 
 SizedBox adjustWidth(double width) {

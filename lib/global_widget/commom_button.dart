@@ -18,8 +18,8 @@ class CommonButton extends StatelessWidget {
     final isTablet = MediaQuery.of(context).size.width > 600;
 
     return SizedBox(
-      width: isTablet ? 220.w : 185.w,
-      height: isTablet ? 55.h : 50.h,
+      width: isTablet ? 220.w : 170.w,
+      height: isTablet ? 55.h : 45.h,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(

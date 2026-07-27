@@ -144,58 +144,6 @@ class ExecutiveCard extends StatelessWidget {
                 ],
               ),
 
-              ///const SizedBox(height: 14),
-
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Expanded(
-              //       child: Text.rich(
-              //         TextSpan(
-              //           children: [
-              //             TextSpan(
-              //               text: "Executive Name: ",
-              //               style: TextHelper.max1.copyWith(
-              //                 color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-              //               ),
-              //             ),
-              //             TextSpan(
-              //               text: "Klein Moriarti",
-              //               style: TextHelper.max1.copyWith(
-              //                 fontWeight: FontWeight.w600,
-              //                 color: isDark
-              //                     ? AppColors.textclr
-              //                     : AppColors.clrTextblack,
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       ),
-              //     ),
-              //     Container(
-              //       padding: const EdgeInsets.symmetric(
-              //         horizontal: 10,
-              //         vertical: 4,
-              //       ),
-              //       decoration: BoxDecoration(
-              //         gradient: const LinearGradient(
-              //           colors: [
-              //             Color(0xffF7F7F7),
-              //             Color(0xffD8DEE6),
-              //           ],
-              //         ),
-              //         borderRadius: BorderRadius.circular(5),
-              //       ),
-              //       child: Text(
-              //         "Silver",
-              //         style: TextHelper.max1.copyWith(
-              //           color: Colors.black87,
-              //           fontSize: 10,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
 
               const SizedBox(height: 16),
               Row(

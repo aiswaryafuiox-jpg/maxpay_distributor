@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/settings/commission_settings/widget/commission_card.dart';
 
+import '../../../core/constants/colors.dart';
+
 class CommissionSettingsScreen extends StatelessWidget {
   const CommissionSettingsScreen({super.key});
 
@@ -23,6 +25,8 @@ class CommissionSettingsScreen extends StatelessWidget {
               CommissionCard(
                 packageName: "Package Name",
                 badgeText: "Basic",
+                badgeGradient: AppColors.basicGradient,
+
                 badgeColor: Color(0xFFB9F4E7),
                 badgeTextColor: Color(0xFF007A63),
 
@@ -42,6 +46,8 @@ class CommissionSettingsScreen extends StatelessWidget {
               CommissionCard(
                 packageName: "Package Name",
                 badgeText: "Silver",
+                badgeGradient: AppColors.silverGradient,
+
                 badgeColor: Color(0xFFE5E5E5),
                 badgeTextColor: Color(0xFF666666),
 
@@ -61,6 +67,7 @@ class CommissionSettingsScreen extends StatelessWidget {
               CommissionCard(
                 packageName: "Package Name",
                 badgeText: "Silver Plus",
+                badgeGradient: AppColors.silverPlusGradient,
                 badgeColor: Color(0xFFD9D9D9),
                 badgeTextColor: Color(0xFF333333),
 
@@ -82,6 +89,7 @@ class CommissionSettingsScreen extends StatelessWidget {
               CommissionCard(
                 packageName: "Package Name",
                 badgeText: "Gold",
+                badgeGradient: AppColors.goldGradient,
                 badgeColor: Color(0xFFFFD979),
                 badgeTextColor: Color(0xFF9B5A00),
 
@@ -101,6 +109,7 @@ class CommissionSettingsScreen extends StatelessWidget {
               CommissionCard(
                 packageName: "Package Name",
                 badgeText: "Gold Plus",
+                badgeGradient: AppColors.goldPlusGradient ,
                 badgeColor: Color(0xFFF8D04F),
                 badgeTextColor: Color(0xFF8C5A00),
 

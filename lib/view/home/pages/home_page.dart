@@ -33,16 +33,16 @@ class HomePageScreen extends StatelessWidget {
               const HomeHeaderSection(),
 
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 30.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     /// 🔹 THE EARNINGS CHART
                     const EarningsChart(),
-                    SizedBox(height: 8.h),
+
                     /// 🔹 NEWS TICKER
                     const NewsTicker(),
-                    SizedBox(height: 8.h),
+
                     /// 🔹 DASHBOARD GRID
                     GridView.count(
                       crossAxisCount: 3,
@@ -56,7 +56,7 @@ class HomePageScreen extends StatelessWidget {
                         StatCard(
                           onTap: () {
                             //Get.toNamed(AppRoutes.addwallet);
-                            Get.toNamed(AppRoutes.addWalletScreen);
+                            Get.toNamed(AppRoutes.addwallet);
                           },
                           title: 'Add Wallet',
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
@@ -87,7 +87,7 @@ class HomePageScreen extends StatelessWidget {
                               Get.toNamed(AppRoutes.menu);
                             },
 
-                            title: 'Transfer & \n Details',
+                            title: 'Transfer & Details',
                             textColor: Colors.white,
 
                             bgColor: AppColors.clrPrimary,
@@ -105,7 +105,7 @@ class HomePageScreen extends StatelessWidget {
                         ),
                         StatCard(
                           title: 'Todays Credit',
-                          value: '₹5,000.00 /\n 20 Nos',
+                          value: '₹2500.00',
                           textColor: const Color(0xff636363),
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
                           border: Border.all(color: AppColors.card4),
@@ -115,8 +115,8 @@ class HomePageScreen extends StatelessWidget {
                           ),
                         ),
                         StatCard(
-                          title: "Today's Transfer",
-                          value: '₹5,000.00 /\n 20 Nos',
+                          title: "Today's\nTransfer",
+                          value: '₹2500.00',
                           textColor: const Color(0xff636363),
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
                           border: Border.all(color: AppColors.card4),
@@ -133,7 +133,7 @@ class HomePageScreen extends StatelessWidget {
                           title: 'Today Earnings',
                           textColor: const Color(0xff636363),
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                          value: '₹5,000.00 /\n 20 Nos',
+                          value: '300.00',
                           border: Border.all(color: AppColors.card4),
                           imageWidget: SvgPicture.asset(
                             AssetImages.complaints,
@@ -152,13 +152,12 @@ class HomePageScreen extends StatelessWidget {
                           title: 'Success',
                           value: '₹5,000.00 /\n20 Nos',
                           border: Border.all(
-                            color: AppColors.card4,
-                            width: 1,
+                            color: Colors.transparent,
+                            width: 0,
                           ),
                           imageWidget: SvgPicture.asset(
                             AssetImages.success,
-                            height: 24.h,
-                            width: 24.w,
+                            height: 45.h,
                           ),
 
                           textColor: Colors.green,
@@ -174,13 +173,12 @@ class HomePageScreen extends StatelessWidget {
                           title: 'Processing',
                           value: '₹5,000.00 /\n20 Nos',
                           border: Border.all(
-                            color: AppColors.card4,
-                            width: 1,
+                            color: Colors.transparent,
+                            width: 0,
                           ),
                           imageWidget: SvgPicture.asset(
                             AssetImages.processing,
-                             height: 24.h,
-                            width: 24.w,
+                            height: 45.h,
                           ),
 
                           textColor: Colors.orange,
@@ -196,13 +194,12 @@ class HomePageScreen extends StatelessWidget {
                           title: 'Failed',
                           value: '₹5,000.00 /\n20 Nos',
                           border: Border.all(
-                            color: AppColors.card4,
-                            width: 1,
+                            color: Colors.transparent,
+                            width: 0,
                           ),
                           imageWidget: SvgPicture.asset(
                             AssetImages.failedAll,
-                            height: 24.h,
-                            width: 24.w,
+                            height: 45.h,
                           ),
 
                           textColor: Colors.red,

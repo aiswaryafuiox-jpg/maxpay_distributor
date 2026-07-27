@@ -53,6 +53,8 @@ dependencies:
   shared_preferences: ^2.5.5
   shimmer: ^3.0.0
   smooth_page_indicator: ^2.0.1
+  dio: ^5.10.0
+  get_it: ^9.2.1
 
 dev_dependencies:
   flutter_test:
@@ -130,8 +132,12 @@ flutter:
           weight: 900
           style: italic
 
-#    - family: Lufga
-#      fonts:
+
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/lato/Lato-Regular.ttf
+
+
 #        - asset: assets/fonts/lufga/LufgaThin.ttf
 #          weight: 100
 #        - asset: assets/fonts/lufga/LufgaThinItalic.ttf

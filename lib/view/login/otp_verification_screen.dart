@@ -5,7 +5,6 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
-import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
@@ -51,7 +50,6 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-       appBar: const CommonAppBar(title: ""),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -61,29 +59,29 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
             child: Column(
               children: [
                 /// 🔹 HEADER / BACK BUTTON
-                // Padding(
-                //   padding: EdgeInsets.symmetric(
-                //     horizontal: 24.w,
-                //     vertical: 16.h,
-                //   ),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: GestureDetector(
-                //       onTap: () => navigator?.pop(),
-                //       child: Container(
-                //         width: 45.w,
-                //         height: 45.w,
-                //         // decoration: BoxDecoration(
-                //         //   shape: BoxShape.circle,
-                //         //   border: Border.all(
-                //         //     color: Colors.grey.withValues(alpha: 0.3),
-                //         //   ),
-                //         // ),
-                //         child: Icon(Icons.arrow_back_ios_new, size: 18.sp),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => navigator?.pop(),
+                      child: Container(
+                        width: 45.w,
+                        height: 45.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Icon(Icons.arrow_back_ios_new, size: 18.sp),
+                      ),
+                    ),
+                  ),
+                ),
 
                 Expanded(
                   child: SingleChildScrollView(
@@ -179,7 +177,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         /// 🔹 Timer Placeholder
                         Text(
-                          'Resend Otp',
+                          'Resend code in 00:30',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w500,

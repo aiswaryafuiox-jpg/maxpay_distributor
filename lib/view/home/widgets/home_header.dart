@@ -80,7 +80,7 @@ class HomeHeaderSection extends StatelessWidget {
                                     alpha: 0.7,
                                   ),
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14.sp,
+                                  fontSize: 12.sp,
                                 ),
                               ),
                             ],

@@ -179,13 +179,13 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
-import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/update_pin/widget/pin_box_widget.dart';
 
 class PinCodeCreationPage extends StatefulWidget {
@@ -196,27 +196,19 @@ class PinCodeCreationPage extends StatefulWidget {
 }
 
 class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
-  String _pin = "";
+  final TextEditingController _pinController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
-  void _handleKeyPress(String key) {
-    setState(() {
-      if (key == 'backspace') {
-        if (_pin.isNotEmpty) {
-          _pin = _pin.substring(0, _pin.length - 1);
-        }
-      } else if (key == 'submit') {
-        // Handle direct submit if needed
-      } else {
-        if (_pin.length < 4) {
-          _pin += key;
-        }
-      }
-    });
+  @override
+  void dispose() {
+    _pinController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final pin = _pin;
+    final pin = _pinController.text;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -231,6 +223,7 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
 
           child: Column(
             children: [
+
               SizedBox(height: 40.h),
 
               /// TITLE
@@ -247,84 +240,101 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
               SizedBox(height: 45.h),
 
               /// PIN BOXES
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  4,
-                  (index) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 2.w),
-                    child: PinBoxWidget(
-                      number: index < pin.length ? pin[index] : "",
+              GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(_focusNode);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    4,
+                        (index) => Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2.w),
+                      child: PinBoxWidget(
+                        number:
+                        index < pin.length ? pin[index] : "",
+                      ),
                     ),
                   ),
                 ),
               ),
 
+              /// Hidden TextField
+              SizedBox(
+                width: 1,
+                height: 1,
+                child: TextField(
+                  controller: _pinController,
+                  focusNode: _focusNode,
+                  autofocus: true,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    counterText: "",
+                  ),
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                ),
+              ),
+
               const Spacer(),
 
-              /// 🔹 NUMERIC KEYBOARD / CANCEL & ADD BUTTONS
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: pin.length == 4
-                    ? Padding(
-                        padding: EdgeInsets.only(bottom: 30.h),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () async {
-                                  await Future.delayed(
-                                    const Duration(milliseconds: 150),
-                                  );
+              if (pin.length == 4)
+                Row(
+                  children: [
 
-                                  if (mounted) {
-                                    setState(() {
-                                      _pin = "";
-                                    });
-                                  }
+                    Expanded(
+                      child: InkWell(
+          onTap: () async {
+    FocusScope.of(context).unfocus();
 
-                                  Get.back();
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 16.h,
-                                  ),
-                                  child: Text(
-                                    "Cancel",
-                                    textAlign: TextAlign.center,
-                                    style: TextHelper.max4.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ),
+    await Future.delayed(const Duration(milliseconds: 150));
+
+    _pinController.clear();
+
+    if (mounted) {
+    setState(() {});
+    }
+
+    Get.back();
+    },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          child: Text(
+                            "Cancel",
+                            textAlign: TextAlign.center,
+                            style: TextHelper.max4.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
-
-                            SizedBox(width: 18.w),
-
-                            Expanded(
-                              child: CommonButton(
-                                title: "Add",
-                                onTap: () {
-                                  Future.delayed(
-                                    const Duration(milliseconds: 200),
-                                    () {
-                                      Get.toNamed(AppRoutes.successScreen);
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Padding(
-                        padding: EdgeInsets.only(bottom: 20.h),
-                        child: CustomNumericKeyboard(
-                          onKeyPressed: _handleKeyPress,
+                          ),
                         ),
                       ),
-              ),
+                    ),
+
+                    SizedBox(width: 18.w),
+
+                    Expanded(
+                      child: CommonButton(
+                        title: "Add",onTap: () {
+                        // Close keyboard
+                        FocusScope.of(context).unfocus();
+
+                        // Wait for keyboard to close
+                        Future.delayed(const Duration(milliseconds: 200), () {
+                          Get.toNamed(AppRoutes.successScreen);
+                        });
+                      },
+                      ),
+                    ),
+                  ],
+                ),
+
+              SizedBox(height: 30.h),
             ],
           ),
         ),

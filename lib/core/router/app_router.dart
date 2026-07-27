@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:maxpay/core/bindings/initial_binding.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
@@ -45,7 +46,10 @@ import '../../view/report/onlinetransaction/online_transaction_screen.dart';
 import '../../view/report/paymentrequest/payment_request_screen.dart';
 import '../../view/report/payoutrequest/payout_request_screen.dart';
 import '../../view/report/regChargeCredit/regChargeCreditScreen.dart';
+import '../../view/settings/bulkPackage/BulkPackageChangeScreen.dart';
+import '../../view/settings/bulkPackage/bulkPackageChargeScreen.dart';
 import '../../view/settings/profile_set/profile_screen.dart';
+import '../../view/settings/scan/scanwebLoginScreen.dart';
 import '../../view/transfer&details/autotransfer/autotransferscreen.dart';
 import '../../view/transfer&details/daybook/day_book_screen.dart';
 import '../../view/transfer&details/executive/create_executive.dart';
@@ -70,6 +74,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.loginPhoneName,
       page: () => const LoginPhoneNamePage(),
+      binding: InitialBinding(),
     ),
     GetPage(
       name: AppRoutes.otpVerification,
@@ -131,10 +136,6 @@ class AppPages {
     GetPage(
       name: AppRoutes.createRetailerScreen,
       page: () => const CreateRetailerScreen(),
-    ),
-    GetPage(
-      name: AppRoutes.addWalletScreen,
-      page: () => const AddWalletScreen(),
     ),
     GetPage(
       name: AppRoutes.retaddWalletScreen,
@@ -242,5 +243,18 @@ class AppPages {
       page: () => const WalletBalanceScreen(),
     ),
     GetPage(name: AppRoutes.update, page: () => const UpdatePinPage()),
+    //
+    GetPage(
+      name: AppRoutes.bulkPackageCharge,
+      page: () => const BulkPackageChargeScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.scanWebLogin,
+      page: () => const ScanWebLoginScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.bulkPackageChange,
+      page: () => const BulkPackageChangeScreen(),
+    ),
   ];
 }

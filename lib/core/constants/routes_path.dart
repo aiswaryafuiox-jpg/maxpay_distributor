@@ -21,9 +21,8 @@ class AppRoutes {
   static const String withdrawrequest1 = '/withdrawrequest1';
   static const String withdrawrequest2 = '/withdrawrequest2';
   static const String retailer = '/retailer';
-  static const retaddWalletScreen = "/retaddWalletScreen";
   static const createRetailerScreen = "/createRetailerScreen";
-  static const String addWalletScreen = "/addWalletScreen";
+  static const retaddWalletScreen = "/retaddWalletScreen";
   static const retviewDetailsScreen = "/retviewDetailsScreen";
   static const executive ='/executive';
   static const createExecutive="/createExecutive";
@@ -61,6 +60,9 @@ class AppRoutes {
   static const String regChargeCredit = '/reg-charge-credit';
   static const String  payOutDetails = '/payout-detail';
   static const String  payOutStatus = '/payout-status';
+  static const String bulkPackageCharge = '/bulk-package-charge';
+  static const String bulkPackageChange = '/bulk-package-change';
+  static const scanWebLogin = "/scanWebLogin";
 
 
 

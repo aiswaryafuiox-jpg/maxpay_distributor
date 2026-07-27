@@ -7,7 +7,7 @@ class TextHelper {
     return const TextStyle(
       fontFamily: 'Poppins',
 
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
       color: AppColors.clrTextgrey,
     );
@@ -72,6 +72,16 @@ class TextHelper {
       color: AppColors.clrSecondary,
     );
   }
+  static TextStyle get pin {
+    return const TextStyle(
+      fontFamily: 'Poppins',
+
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColors.pinText,
+    );
+  }
+
 
   static TextStyle get max8 {
     return const TextStyle(
@@ -80,6 +90,15 @@ class TextHelper {
       fontSize: 16,
       fontWeight: FontWeight.w400,
       color: AppColors.clrTextblack,
+    );
+  }
+  static TextStyle get max16 {
+    return const TextStyle(
+      fontFamily: 'Poppins',
+
+      fontSize: 18,
+      fontWeight: FontWeight.w600,
+      color: AppColors.white,
     );
   }
 
@@ -94,7 +113,7 @@ class TextHelper {
    static TextStyle max10(BuildContext context) {
     return  TextStyle(      fontFamily: 'Poppins',
 
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: FontWeight.w600,
       color: Theme.of(context).colorScheme.onSurface,
     );
@@ -102,7 +121,7 @@ class TextHelper {
    static TextStyle max11(BuildContext context) {
     return  TextStyle(      fontFamily: 'Poppins',
 
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onTertiaryFixedVariant,
     );
@@ -130,6 +149,15 @@ static TextStyle max12(BuildContext context) {
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+  static TextStyle lat014(BuildContext context) {
+    return TextStyle(      fontFamily: 'Lato',/////////
+
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color: Theme.of(context).colorScheme.onSurface,
+    );
+  }
+
   static TextStyle max14(BuildContext context) {
     return TextStyle(      fontFamily: 'Poppins',
 
@@ -138,5 +166,31 @@ static TextStyle max12(BuildContext context) {
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+  static TextStyle get lato14 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: AppColors.clrTextblack,
+    );
+  }
+
+  static TextStyle get lato11 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: AppColors.clrTextblack,
+    );
+  }
+  static TextStyle get lato12 {
+    return const TextStyle(
+      fontFamily: 'Lato',
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      color: AppColors.white,
+    );
+  }
+
 
 }

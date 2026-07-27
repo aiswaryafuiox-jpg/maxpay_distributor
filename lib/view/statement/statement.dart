@@ -327,7 +327,7 @@ class _StatementScreenState extends State<StatementScreen> {
                   'Read More',
                   style: TextHelper.max1.copyWith(
                     color: Colors.white,
-                    fontSize: 10.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -358,13 +358,8 @@ class _StatementScreenState extends State<StatementScreen> {
           Text(
             value,
             style: TextHelper.max7.copyWith(
-              color:
-                  valueColor ??
-                  (isBold
-                      ? theme.colorScheme.onSurface
-                      : Colors.black),
+              color: valueColor ?? theme.colorScheme.onSurface,
               fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
-
             ),
           ),
         ],

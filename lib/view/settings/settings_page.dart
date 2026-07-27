@@ -7,17 +7,13 @@ import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
-
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-
     return Obx(() {
       final isDark = themeController.isDarkMode;
-
       return Container(
         decoration: BoxDecoration(
           image: isDark
@@ -29,14 +25,115 @@ class SettingsPage extends StatelessWidget {
         ),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: CommonAppBar(title: "Settings", onBack: _goHome),
+          //appBar: CommonAppBar(title: "Settings", onBack: _goHome),
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 46.h),
+                //child: Column(
+                 // children: [
                 child: Column(
                   children: [
+                    SizedBox(height: 20.h),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: _goHome,
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  size: 18.sp,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              SizedBox(width: 15.w),
+
+                              Text(
+                                "Settings",
+                                style: TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Column(
+                          children: [
+                            Text(
+                              "Web Login",
+                              style: TextStyle(
+                                fontFamily: "Poppins",
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+
+                            SizedBox(height: 6.h),
+
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                    vertical: 6.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF00BC62),
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Link",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      SvgPicture.asset(
+                                        AssetImages.linkShare,
+                                        width: 15.w,
+                                        height: 15.h,
+                                        colorFilter: const ColorFilter.mode(
+                                          Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                SizedBox(width: 8.w),
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.toNamed(AppRoutes.scanWebLogin);
+                                  },
+                                  child: Image.asset(
+                                    AssetImages.qr_code,
+                                    width: 50.w,
+                                    height: 50.w,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 5.h),
+
                     _buildMenuTile(
                       context,
                       'Profile',
@@ -65,7 +162,7 @@ class SettingsPage extends StatelessWidget {
                       context,
                       'Bulk Package Update',
                           () {
-                        //Get.toNamed(AppRoutes.profile);
+                        Get.toNamed(AppRoutes.bulkPackageCharge);
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
@@ -128,28 +225,6 @@ class SettingsPage extends StatelessWidget {
                       },
                       SvgPicture.asset(AssetImages.history, width: 24.w),
                     ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Web Signup',
-                    //   () {
-                    //     Get.toNamed(AppRoutes.weblogin);
-                    //   },
-                    //   SvgPicture.asset(AssetImages.webSignup, width: 24.w),
-                    // ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Web Login',
-                    //   () {},
-                    //   SvgPicture.asset(AssetImages.webLogin, width: 24.w),
-                    // ),
-                    // _buildMenuTile(
-                    //   context,
-                    //   'Support',
-                    //   () {
-                    //     Get.toNamed(AppRoutes.support);
-                    //   },
-                    //   SvgPicture.asset(AssetImages.support, width: 24.w),
-                    // ),
 
                     /// 🔹 LOGOUT BUTTONS
                     Padding(
@@ -162,9 +237,9 @@ class SettingsPage extends StatelessWidget {
                           Expanded(
                             child: _buildLogoutButton(
                               context,
-                              ' App Logout',
-                              Icons.logout_rounded,
-                              () {},
+                              'App Logout',
+                              AssetImages.applogout,
+                                  () {},
                             ),
                           ),
                           SizedBox(width: 15.w),
@@ -172,8 +247,8 @@ class SettingsPage extends StatelessWidget {
                             child: _buildLogoutButton(
                               context,
                               'Web Logout',
-                              Icons.logout_rounded,
-                              () {},
+                              AssetImages.weblogout,
+                                  () {},
                               true,
                             ),
                           ),
@@ -252,8 +327,10 @@ class SettingsPage extends StatelessWidget {
   Widget _buildLogoutButton(
     BuildContext context,
     String label,
-    IconData icon,
-    VoidCallback onTap, [
+    //IconData icon,
+      String iconPath,
+
+      VoidCallback onTap, [
     bool isRight = false,
   ]) {
     return ElevatedButton.icon(
@@ -267,7 +344,13 @@ class SettingsPage extends StatelessWidget {
         elevation: 0,
       ),
       iconAlignment: isRight ? IconAlignment.end : IconAlignment.start,
-      icon: Icon(icon, color: Colors.white, size: 20.sp),
+
+      icon: SvgPicture.asset(
+        iconPath,
+        width: 20.w,
+        height: 20.h,
+      ),
+
       label: Text(
         label,
         style: TextStyle(
