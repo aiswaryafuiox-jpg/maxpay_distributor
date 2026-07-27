@@ -23,7 +23,6 @@ import 'package:maxpay/view/mobile_recharge/mobile_recharge_page.dart';
 import 'package:maxpay/view/my_earning/my_earning_screen.dart';
 import 'package:maxpay/view/nav_page/nav_page.dart';
 import 'package:maxpay/view/refund/refund_screen.dart';
-import 'package:maxpay/view/request/walletrequestpending/wallet_request_pending_screen.dart';
 import 'package:maxpay/view/settings/commission_settings/commission_settings_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
 

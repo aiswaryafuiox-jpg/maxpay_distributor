@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/theme.dart';
-import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

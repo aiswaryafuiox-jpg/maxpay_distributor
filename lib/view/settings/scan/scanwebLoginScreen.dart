@@ -29,7 +29,7 @@ class ScanWebLoginScreen extends StatelessWidget {
                 sigmaY: 5,
               ),
               child: Container(
-                color: Colors.black.withOpacity(0.35),
+                color: Colors.black.withValues(alpha: 0.35),
               ),
             ),
           ),

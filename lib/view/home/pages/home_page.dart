@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
@@ -13,7 +12,6 @@ import 'package:maxpay/view/home/widgets/news_ticker.dart';
 import 'package:maxpay/view/home/widgets/stat_card.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 
-import '../../../controller/home_controller.dart';
 
 class HomePageScreen extends StatelessWidget {
   const HomePageScreen({super.key});

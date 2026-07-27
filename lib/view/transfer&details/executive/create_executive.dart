@@ -157,7 +157,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               const SizedBox(height: 8),
 
               DropdownButtonFormField<String>(
-                value: selectedPackage,
+                initialValue: selectedPackage,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: isDark

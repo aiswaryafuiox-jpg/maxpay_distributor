@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 

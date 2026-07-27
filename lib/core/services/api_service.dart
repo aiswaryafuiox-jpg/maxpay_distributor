@@ -140,7 +140,7 @@ class ApiService {
       };
     } on DioException catch (e) {
       log("DIO EXCEPTION => ${e.message}");
-      throw e;
+      rethrow;
     } catch (e) {
       log("UNKNOWN ERROR => $e");
       throw Exception("Unexpected error occurred");

@@ -479,7 +479,7 @@ class EarningsChart extends StatelessWidget {
   borderRadius: BorderRadius.circular(18.r),
   boxShadow: [
   BoxShadow(
-  color: Colors.black.withOpacity(.08),
+  color: Colors.black.withValues(alpha: .08),
   blurRadius: 12,
   offset: const Offset(0, 5),
   ),
@@ -592,9 +592,9 @@ class EarningsChart extends StatelessWidget {
   end: Alignment.bottomCenter,
   colors: [
   const Color(0xffFF6385)
-      .withOpacity(.20),
+      .withValues(alpha: .20),
   const Color(0xffFF6385)
-      .withOpacity(0),
+      .withValues(alpha: 0),
   ],
   ),
   ),

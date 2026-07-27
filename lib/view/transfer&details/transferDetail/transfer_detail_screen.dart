@@ -115,7 +115,7 @@ class _TransferDetailScreenState
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   itemCount: 8,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       SizedBox(height: 12.h),
                   itemBuilder: (context, index) {
                     return TransferDetailCard(

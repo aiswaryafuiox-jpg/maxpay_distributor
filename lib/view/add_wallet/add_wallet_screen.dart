@@ -130,7 +130,6 @@
 //   }
 // }
 import 'package:flutter/material.dart';
-import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 
@@ -209,7 +208,7 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
 
             _label("Payment Type"),
             DropdownButtonFormField<String>(
-              value: paymentType,
+              initialValue: paymentType,
               decoration: _decoration("Select"),
               dropdownColor:
               isDark ? const Color(0xff2F3349) : Colors.white,

@@ -149,7 +149,7 @@ class RetViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Silver",
+              initialValue: "Silver",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,
@@ -207,7 +207,7 @@ class RetViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Auto",
+              initialValue: "Auto",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,
@@ -251,7 +251,7 @@ class RetViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Active",
+              initialValue: "Active",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,
@@ -303,7 +303,7 @@ class RetViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Active",
+              initialValue: "Active",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,

@@ -68,7 +68,7 @@ class PayoutDetailScreen extends StatelessWidget {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: transactions.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
               const SizedBox(height: 14),
               itemBuilder: (context, index) {
                 final item = transactions[index];

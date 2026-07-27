@@ -157,7 +157,7 @@ class _CreateRetailerScreenState extends State<CreateRetailerScreen> {
               const SizedBox(height: 8),
 
               DropdownButtonFormField<String>(
-                value: selectedPackage,
+                initialValue: selectedPackage,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: isDark

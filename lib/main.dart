@@ -3,10 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'controller/home_controller.dart';
 import 'core/bindings/initial_binding.dart';
 import 'core/constants/routes_path.dart';
 

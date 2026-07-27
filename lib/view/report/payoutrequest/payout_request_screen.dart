@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maxpay/global_widget/common_filter_box.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
-import 'package:maxpay/view/report/apipayoutdetail/widget/payout_card.dart';
 import 'package:maxpay/view/report/payoutrequest/widget/payout_request_card.dart';
 import 'package:maxpay/view/report/payoutrequest/widget/payout_request_top_widget.dart';
 
@@ -70,7 +68,7 @@ class PayoutRequestScreen extends StatelessWidget {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: transactions.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
               const SizedBox(height: 14),
               itemBuilder: (context, index) {
                 final item = transactions[index];
