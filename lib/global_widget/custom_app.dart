@@ -42,7 +42,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
         style: TextStyle(
           fontFamily: 'Poppins',
-          fontSize: 22,
+          fontSize: 18,
           fontWeight: FontWeight.w600,
           color: theme.colorScheme.onSurface,
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
-
-import '../../../../core/constants/routes_path.dart';
 
 class RetailerTopTabs extends StatelessWidget {
   const RetailerTopTabs({super.key});
@@ -11,64 +11,62 @@ class RetailerTopTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildTab(
-        String text,
-        Color color, {
-          VoidCallback? onTap,
-        }) {
-      return Expanded(
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(2),
-          child: Container(
-            height: 38,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(2),
-            ),
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextHelper.max1.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+      String text,
+      Color color, {
+      BorderRadius? borderRadius,
+      VoidCallback? onTap,
+    }) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: borderRadius,
+        child: Container(
+          height: 38,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(color: color, borderRadius: borderRadius),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextHelper.max1.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
       );
     }
 
-    return Row(
-      children: [
-        buildTab(
-          "Total Retailer:300",
-          AppColors.clrPrimary,
-          onTap: () {
-            // TODO: Total Retailer
-          },
-        ),
-
-        const SizedBox(width: 2),
-
-        buildTab(
-          "Retailer List",
-          AppColors.redClr,
-          onTap: () {
-            // TODO: Retailer List
-          },
-        ),
-
-        const SizedBox(width: 2),
-
-        buildTab(
-          "Create Retailer",
-          AppColors.create,
-          onTap: () {
-            Get.toNamed(AppRoutes.createRetailerScreen);
-          },
-        ),
-      ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 4,
+            child: buildTab(
+              "Total Retailer: ${Get.find<RetailerController>().retailers.length}",
+              AppColors.clrPrimary,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(4),
+                bottomLeft: Radius.circular(4),
+              ),
+            ),
+          ),
+          Expanded(flex: 2, child: buildTab("Retailer List", AppColors.redClr)),
+          Expanded(
+            flex: 3,
+            child: buildTab(
+              "Create Retailer",
+              AppColors.create,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(4),
+                bottomRight: Radius.circular(4),
+              ),
+              onTap: () {
+                Get.toNamed(AppRoutes.createRetailerScreen);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

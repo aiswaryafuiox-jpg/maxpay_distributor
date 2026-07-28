@@ -4,7 +4,6 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/common_filter_box.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginHistoryScreen extends StatelessWidget {
   const LoginHistoryScreen({super.key});

@@ -55,6 +55,7 @@ class TransferDetailCard extends StatelessWidget {
               Text(
                 "Transaction ID: TXN6453564",
                 style: TextHelper.max1.copyWith(
+
                   fontWeight: FontWeight.w500,
                   color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
@@ -68,6 +69,7 @@ class TransferDetailCard extends StatelessWidget {
                   Text(
                     "Date & Time:",
                     style: TextHelper.max1.copyWith(
+                      fontSize: 12,
                       color: isDark
                           ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
                           : AppColors.darktextclr,
@@ -79,6 +81,7 @@ class TransferDetailCard extends StatelessWidget {
                   Text(
                     "2026-11-29 14:38:43",
                     style: TextHelper.max1.copyWith(
+                      fontSize: 12,
                       color: isDark
                           ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
                           : AppColors.darktextclr,
@@ -196,6 +199,7 @@ class TransferDetailCard extends StatelessWidget {
             value,
             style: TextHelper.max4.copyWith(
               color: valueColor ?? theme.colorScheme.onSurface,
+              fontSize: 16,
               fontWeight:
               isAmount ? FontWeight.w700 : FontWeight.w600,
             ),
@@ -256,7 +260,7 @@ class TransferDetailCard extends StatelessWidget {
             value,
             style: TextStyle(
               fontFamily: "Lato",
-              fontSize: isAmount ? 15.sp : 14.sp,
+              fontSize: isAmount ? 16.sp : 16.sp,
               fontWeight: FontWeight.w700,
               color: valueColor ?? theme.colorScheme.onSurface,
             ),

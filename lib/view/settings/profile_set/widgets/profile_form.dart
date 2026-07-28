@@ -3,133 +3,163 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/view/settings/profile_set/widgets/profile_textfield.dart';
+import 'package:get/get.dart';
+import '../../../../controller/profile_controller.dart';
 
 class ProfileForm extends StatelessWidget {
   const ProfileForm({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        /// PROFILE IMAGE
-        Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            const CircleAvatar(
-              radius: 45,
-              backgroundImage: NetworkImage(
-                "https://i.pravatar.cc/300",
-              ),
-            ),
+    final ProfileController controller = Get.find<ProfileController>();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.clrPrimary,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 2,
-                ),
-              ),
-              child: const Icon(
-                Icons.camera_alt,
-                color: Colors.white,
-                size: 16,
-              ),
-            ),
-          ],
-        ),
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const SizedBox(
+          height: 400,
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
 
-        const SizedBox(height: 16),
+      final profile = controller.profileData.value;
+      if (profile == null) {
+        return const SizedBox(
+          height: 400,
+          child: Center(child: Text("No Profile Data Found")),
+        );
+      }
 
-        /// USER ID
-        Text(
-          "User ID : RT0122154",
-          style: TextHelper.max1.copyWith(
-            color: AppColors.profileBlue,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-
-        const SizedBox(height: 6),
-
-        /// USER TYPE
-        RichText(
-          text: TextSpan(
+      return Column(
+        children: [
+          /// PROFILE IMAGE
+          Stack(
+            alignment: Alignment.bottomRight,
             children: [
-              TextSpan(
-                text: "User Type : ",
-                style: TextHelper.max1.copyWith(
-                  color: AppColors.profileBlue,
-                  fontWeight: FontWeight.w600,
-                ),
+              CircleAvatar(
+                radius: 45,
+                backgroundImage: controller.selectedImage.value != null
+                    ? FileImage(controller.selectedImage.value!)
+                    : (profile.profileImg != null
+                              ? NetworkImage(profile.profileImg!)
+                              : const NetworkImage("https://i.pravatar.cc/300"))
+                          as ImageProvider,
               ),
-              TextSpan(
-                text: "Retailer",
-                style: TextHelper.max1.copyWith(
-                  color: AppColors.retailerColor,
-                  fontWeight: FontWeight.w600,
+
+              GestureDetector(
+                onTap: () => controller.pickImage(),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColors.clrPrimary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
             ],
           ),
-        ),
 
-        const SizedBox(height: 28),
+          const SizedBox(height: 16),
 
-        const ProfileTextField(
-          title: "Name",
-          value: "William",
-        ),
+          /// USER ID
+          Text(
+            "User ID : ${profile.userId ?? 'N/A'}",
+            style: TextHelper.max1.copyWith(
+              color: isDark ? AppColors.white : AppColors.profileBlue,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 6),
 
-        const ProfileTextField(
-          title: "Address",
-          value: "Kanyakumari",
-          maxLines: 2,
-        ),
+          /// USER TYPE
+          RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "User Type : ",
+                  style: TextHelper.max1.copyWith(
+                    color: isDark ? AppColors.white : AppColors.profileBlue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(
+                  text: profile.userType ?? 'N/A',
+                  style: TextHelper.max1.copyWith(
+                    color: AppColors.retailerColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 28),
 
-        const ProfileTextField(
-          title: "Pin Code",
-          value: "626144",
-        ),
+          ProfileTextField(
+            title: "Name",
+            controller: controller.nameController,
+          ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        const ProfileTextField(
-          title: "Mail ID",
-          value: "sample@gmail.com",
-        ),
+          ProfileTextField(
+            title: "Address",
+            controller: controller.addressController,
+            maxLines: 2,
+          ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        const ProfileTextField(
-          title: "Phone No",
-          value: "+91 9876541302",
-        ),
+          ProfileTextField(
+            title: "Pin Code",
+            controller: controller.pincodeController,
+          ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        const ProfileTextField(
-          title: "WhatsApp Number",
-          value: "+91 9876541302",
-        ),
+          ProfileTextField(
+            title: "Mail ID",
+            controller: controller.emailController,
+          ),
 
-        const SizedBox(height: 30),
+          const SizedBox(height: 16),
 
-        CommonButton(
-          title: "Update",
-          onTap: () {
-            // TODO: Update profile
-          },
-        ),
+          ProfileTextField(
+            title: "Phone No",
+            controller: controller.phoneController,
+          ),
 
-        const SizedBox(height: 20),
-      ],
-    );
+          const SizedBox(height: 16),
+
+          ProfileTextField(
+            title: "WhatsApp Number",
+            controller: controller.whatsappController,
+          ),
+
+          const SizedBox(height: 30),
+
+          Obx(
+            () => CommonButton(
+              title: controller.isUpdating.value ? "Updating..." : "Update",
+              onTap: controller.isUpdating.value
+                  ? () {}
+                  : () {
+                      controller.updateProfileData();
+                    },
+            ),
+          ),
+
+          const SizedBox(height: 20),
+        ],
+      );
+    });
   }
 }

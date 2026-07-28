@@ -53,7 +53,7 @@ class AppTheme {
       surfaceContainer: AppColors.darkbgBlack,
       outline: AppColors.clrTextgrey,
       surfaceBright: AppColors.clrplceholder,
-      onTertiaryFixedVariant: AppColors.darktextclr
+      onTertiaryFixedVariant: AppColors.darktextclr,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.clrBg,
@@ -64,7 +64,6 @@ class AppTheme {
       displayLarge: TextStyle(color: AppColors.clrTextblack),
       bodyLarge: TextStyle(color: AppColors.clrTextblack),
       bodyMedium: TextStyle(color: AppColors.clrTextblack),
-      
     ),
   );
 
@@ -81,7 +80,7 @@ class AppTheme {
       surfaceContainer: AppColors.darkbgBlack,
       onSurface: AppColors.clrBg,
       onSurfaceVariant: AppColors.clrTextgrey,
-onTertiaryFixedVariant: AppColors.textclr,
+      onTertiaryFixedVariant: AppColors.textclr,
       outline: AppColors.clrplceholder,
       surfaceBright: AppColors.darkplceholder,
     ),

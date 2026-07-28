@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
+import '../../../core/utils/texthelper.dart';
+
 class PinTextFieldWidget extends StatelessWidget {
   final String hintText;
 
@@ -16,14 +18,14 @@ class PinTextFieldWidget extends StatelessWidget {
     return TextFormField(
       keyboardType: TextInputType.number,
       maxLength: 4,
-      style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 14.sp),
+      style: TextHelper.max1,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(
         counterText: "",
         hintText: hintText,
-        hintStyle: TextStyle(
+        hintStyle: TextHelper.max1.copyWith(
           color: isDark ? AppColors.textclr : Colors.grey.shade400,
-          fontSize: 14.sp,
+
         ),
         filled: true,
         fillColor: isDark ? AppColors.darkplceholder : const Color(0xFFF7F7F7),

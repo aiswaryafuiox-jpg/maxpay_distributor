@@ -8,10 +8,7 @@ import 'package:maxpay/view/report/report_page.dart';
 import 'package:maxpay/view/request/walletrequestpending/wallet_request_pending_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
 import 'package:maxpay/view/supportscreen/support_screen.dart';
-import 'package:maxpay/view/wallet request/request.dart';
 
-import '../../controller/home_controller.dart';
-import '../home/widgets/services_section.dart';
 
 
 class NavPageScreen extends StatefulWidget {

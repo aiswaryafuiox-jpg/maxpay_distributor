@@ -777,6 +777,9 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/settings/profile_set/widgets/profile_form.dart';
+import 'package:get/get.dart';
+import '../../../../controller/profile_controller.dart';
+import '../../../../core/di/service_locator.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -788,6 +791,15 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isActive = true;
 
+  @override
+  void initState() {
+    super.initState();
+    Get.put(ProfileController(sl(), sl(), sl(), sl(), sl(), sl()));
+    isActive = Get.find<ProfileController>().profileData.value?.isActive == 1
+        ? true
+        : false;
+  }
+
   Future<void> _showStatusDialog() async {
     final action = isActive ? "inactive" : "active";
 
@@ -797,8 +809,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final isDark = Theme.of(context).brightness == Brightness.dark;
 
         return AlertDialog(
-          backgroundColor:
-          isDark ? AppColors.darkplceholder : Colors.white,
+          backgroundColor: isDark ? AppColors.darkplceholder : Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -822,18 +833,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.pop(context, false);
                     },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.red,
-                      ),
+                      side: const BorderSide(color: Colors.red),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: const Text(
                       "Cancel",
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
+                      style: TextStyle(color: Colors.red),
                     ),
                   ),
                 ),
@@ -843,6 +850,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
+                      final controller = Get.find<ProfileController>();
+                      controller.updateStatusSendOtp(isActive ? 0 : 1);
                       Navigator.pop(context, true);
                     },
                     style: ElevatedButton.styleFrom(
@@ -853,9 +862,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: const Text(
                       "Yes",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -887,15 +894,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: _showStatusDialog,
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 14),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 4,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             decoration: BoxDecoration(
               color: isActive
-                  ? (isDark
-                  ? const Color(0xFF0B4A2D)
-                  : AppColors.active1Bg)
+                  ? (isDark ? const Color(0xFF0B4A2D) : AppColors.active1Bg)
                   : AppColors.inactiveBg,
               borderRadius: BorderRadius.circular(5),
             ),

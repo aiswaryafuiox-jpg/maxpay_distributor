@@ -6,6 +6,8 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/widget/transaction_card.dart';
 
+import '../../global_widget/custom_app.dart';
+
 enum TransactionStatus { success, pending, failed }
 
 class TransactionScreen extends StatefulWidget {
@@ -34,50 +36,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
     if (isSuccess) {
       bgColor = isDark ? const Color(0xFFE2F8E9) : const Color(0xFFD1FFE8);
-
       title = "Transaction Success";
     } else if (isPending) {
       bgColor = isDark ? const Color(0xFFFFF1DD) : const Color(0xFFFFF1DD);
-
       title = "Transaction Pending";
     } else {
       bgColor = isDark ? const Color(0xFFFFE4E6) : const Color(0xFFFFE4E6);
-
       title = "Transaction Failed";
     }
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-
-      appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: false,
-
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: theme.colorScheme.onSurface,
-              size: 18,
-            ),
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-        ),
+      appBar: CommonAppBar(
+        title: title,
+        onBack: () {
+          Get.back();
+        },
       ),
 
       body: Padding(

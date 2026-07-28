@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 
 class TransactionCard extends StatelessWidget {
@@ -43,27 +42,27 @@ class TransactionCard extends StatelessWidget {
             children: [
               Text(
                 "Transaction ID: TXN6453564",
-                style: TextStyle(
-                  fontSize: 11,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+                style: TextHelper.max1
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     "Date & Time:",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    style: TextHelper.max1.copyWith(
+                      fontSize: 11
+                    )
+
+
+
                   ),
+                  SizedBox(height: 5),
                   Text(
                     "29-11-2026 07:38:43 PM",
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    style: TextHelper.max1.copyWith(
+                      fontSize: 11
+                    )
+
                   ),
                 ],
               ),
@@ -74,8 +73,8 @@ class TransactionCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Divider(
               height: 1,
-              thickness: 1,
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.1),
+              thickness: 0.5,
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 2),
             ),
           ),
 
@@ -96,7 +95,7 @@ class TransactionCard extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 11,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -109,7 +108,7 @@ class TransactionCard extends StatelessWidget {
                   children: [
                     Text(
                       "Jio",
-                      style: TextStyle(
+                      style: TextHelper.lato14.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                         color: theme.brightness == Brightness.dark
@@ -120,9 +119,10 @@ class TransactionCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       "Number: ******7823",
-                      style: TextStyle(
-                        fontSize: 11,
-                        //color: theme.colorScheme.onSurfaceVariant,
+                      style: TextHelper.lato11.copyWith(
+                        fontWeight: FontWeight.w600,
+
+                        fontSize: 12,
                         color: theme.brightness == Brightness.dark
                             ? Colors.black
                             : theme.colorScheme.onSurface,
@@ -159,15 +159,6 @@ class TransactionCard extends StatelessWidget {
                             color: Colors.red,
                             isCompact: false,
                           ),
-                          // const SizedBox(width: 4),
-                          // customButton(
-                          //   text: "View",
-                          //   color: AppColors.lightbg,
-                          //   isCompact: false,
-                          //   onTap: () {
-                          //     Get.toNamed(AppRoutes.view);
-                          //   },
-                          // ),
                         ],
                       ),
                     )
@@ -178,7 +169,7 @@ class TransactionCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: isPending ? Color(0xFFD98200) :Color(0xFF00A954), //AppColors.fav3,
+                        color: isPending ? Color(0xFFD98200) :Color(0xFF00A954),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -203,33 +194,6 @@ class TransactionCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.end,
-        //         children: [
-        //           customButton(
-        //             text: "Fav",
-        //             color: isFavorite ? const Color(0xFFFF6D00) : AppColors.fav,
-        //             icon: Icons.star_border,
-        //             onTap: onFavoriteTap,
-        //           ),
-        //           customButton(
-        //             text: "Dispute",
-        //             color: Colors.red,
-        //             onTap: () {
-        //               _showDisputeDialog(context);
-        //             },
-        //           ),
-        //           customButton(
-        //             text: "View",
-        //             color: AppColors.lightbg,
-        //             onTap: () {
-        //               Get.toNamed(AppRoutes.view);
-        //             },
-        //           ),
-        //           customButton(text: "Share", color: AppColors.fav2),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ],
       ),
     )]]));
   }

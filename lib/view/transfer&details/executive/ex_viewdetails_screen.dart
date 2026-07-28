@@ -149,7 +149,7 @@ class ExeViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Select",
+              initialValue: "Select",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,
@@ -208,7 +208,7 @@ class ExeViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Auto",
+              initialValue: "Auto",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,
@@ -303,7 +303,7 @@ class ExeViewDetailsScreen extends StatelessWidget {
             SizedBox(height: 6.h),
 
             DropdownButtonFormField<String>(
-              value: "Active",
+              initialValue: "Active",
               style: TextStyle(
                 fontSize: 14.sp, // Selected value font size
                 color: Theme.of(context).colorScheme.onSurface,

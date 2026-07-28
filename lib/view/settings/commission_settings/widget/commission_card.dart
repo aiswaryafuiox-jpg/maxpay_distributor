@@ -7,6 +7,7 @@ class CommissionCard extends StatelessWidget {
 
   final String badgeText;
   final Color badgeColor;
+  final Gradient? badgeGradient;
   final Color badgeTextColor;
 
   final String totalProducts;
@@ -25,6 +26,7 @@ class CommissionCard extends StatelessWidget {
     required this.packageName,
     required this.badgeText,
     required this.badgeColor,
+    this.badgeGradient,
     required this.badgeTextColor,
     required this.totalProducts,
     required this.updatedProducts,
@@ -84,6 +86,8 @@ class CommissionCard extends StatelessWidget {
                   vertical: 5,
                 ),
                 decoration: BoxDecoration(
+                  gradient: badgeGradient,
+
                   color: badgeColor,
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -102,8 +106,8 @@ class CommissionCard extends StatelessWidget {
 
           Divider(
             color: isDark
-                ? Colors.white.withValues(alpha: .15)
-                : Colors.grey.withValues(alpha: .25),
+                ? Colors.white.withValues(alpha: 0.30)
+                : const Color(0xFF000000).withValues(alpha: 0.30),
           ),
 
           const SizedBox(height: 14),
@@ -123,9 +127,10 @@ class CommissionCard extends StatelessWidget {
 
                 VerticalDivider(
                   width: 1,
-                  color: Colors.grey.withValues(alpha: .35),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.30)
+                      : const Color(0xFF000000).withValues(alpha: 0.30),
                 ),
-
                 Expanded(
                   child: _column(
                     context,
@@ -137,7 +142,9 @@ class CommissionCard extends StatelessWidget {
 
                 VerticalDivider(
                   width: 1,
-                  color: Colors.grey.withValues(alpha: .35),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.30)
+                      : const Color(0xFF000000).withValues(alpha: 0.30),
                 ),
 
                 Expanded(
@@ -197,8 +204,8 @@ class CommissionCard extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           style: TextHelper.max1.copyWith(
-            color: Colors.grey,
-            fontSize: 11,
+            color: Color(0xFF636363),
+            fontSize: 12,
           ),
         ),
 

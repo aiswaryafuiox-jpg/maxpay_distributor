@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:maxpay/view/transfer&details/executive/widget/executive_card.dart';
 import 'package:maxpay/view/transfer&details/executive/widget/executive_top_tabs.dart';
 
-import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_card.dart';
-import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_top_tabs.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../global_widget/custom_app.dart';

@@ -9,6 +9,7 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/date_uttils.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/utils/theme.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 
 class HomeHeaderSection extends StatelessWidget {
   const HomeHeaderSection({super.key});
@@ -22,6 +23,9 @@ class HomeHeaderSection extends StatelessWidget {
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
       final isDark = themeController.isDarkMode;
+      
+      final profileController = Get.find<ProfileController>();
+      final profileData = profileController.profileData.value;
 
       return Column(
         children: [
@@ -39,10 +43,12 @@ class HomeHeaderSection extends StatelessWidget {
                           radius: 20,
                           backgroundColor: Colors.red.withValues(alpha: 0.2),
                           child: NetworkImageWithLoader(
-                            'https://i.pravatar.cc/150?u=martin',
+                            profileData?.profileImg ?? 'https://i.pravatar.cc/150?u=martin',
                             radius: 20,
                             errorWidget: Text(
-                              'M',
+                              (profileData?.name != null && profileData!.name!.isNotEmpty) 
+                                ? profileData.name![0].toUpperCase() 
+                                : 'M',
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: AppColors.clrPrimary,
@@ -72,7 +78,7 @@ class HomeHeaderSection extends StatelessWidget {
                               ),
 
                               Text(
-                                'Aswanth',
+                                profileData?.name ?? 'Loading...',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -80,7 +86,7 @@ class HomeHeaderSection extends StatelessWidget {
                                     alpha: 0.7,
                                   ),
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14.sp,
+                                  fontSize: 12.sp,
                                 ),
                               ),
                             ],
@@ -165,14 +171,105 @@ class HomeHeaderSection extends StatelessWidget {
                     SizedBox(width: 12.w),
 
                     /// THEME SWITCH
-                    _ThemeToggleButton(
-                      isDark: isDark,
-                      isTablet: isTablet,
-                      onChanged: (isDarkMode) {
-                        themeController.setTheme(
-                          isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                        );
+                    GestureDetector(
+                      onTap: () {
+                        themeController.toggleTheme();
                       },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                        width: isTablet ? 76.w : 68.w,
+                        height: isTablet ? 32.h : 34.h,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF1E1E2D),
+                          borderRadius: BorderRadius.circular(24.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.10),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Stack(
+                          children: [
+                            AnimatedAlign(
+                              duration: const Duration(milliseconds: 450),
+                              curve: Curves.fastOutSlowIn,
+                              alignment: isDark
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(3.r),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 400),
+                                  width: isTablet ? 34.w : 28.w,
+                                  height: isTablet ? 34.w : 28.w,
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? const Color(0xFF1E1E2D)
+                                        : Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.15,
+                                        ),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: AnimatedSwitcher(
+                                      duration: const Duration(
+                                        milliseconds: 300,
+                                      ),
+                                      transitionBuilder: (child, animation) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                      child: Icon(
+                                        isDark
+                                            ? Icons.nightlight_round
+                                            : Icons.wb_sunny_rounded,
+                                        key: ValueKey(isDark),
+                                        size: 14.sp,
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.orange,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            AnimatedAlign(
+                              duration: const Duration(milliseconds: 400),
+                              alignment: isDark
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                                child: Icon(
+                                  isDark
+                                      ? Icons.wb_sunny_rounded
+                                      : Icons.nightlight_round,
+                                  size: 13.sp,
+                                  color: isDark
+                                      ? Colors.black.withValues(alpha: 0.4)
+                                      : Colors.white.withValues(alpha: 0.4),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -235,6 +332,7 @@ class _ThemeToggleButtonState extends State<_ThemeToggleButton> {
       widget.onChanged(_isDark);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final width = widget.isTablet ? 86.w : 68.w;

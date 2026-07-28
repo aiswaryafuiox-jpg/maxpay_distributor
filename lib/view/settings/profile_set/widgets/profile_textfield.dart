@@ -4,13 +4,15 @@ import 'package:maxpay/core/utils/texthelper.dart';
 
 class ProfileTextField extends StatelessWidget {
   final String title;
-  final String value;
+  final TextEditingController? controller;
+  final String? initialValue;
   final int maxLines;
 
   const ProfileTextField({
     super.key,
     required this.title,
-    required this.value,
+    this.controller,
+    this.initialValue,
     this.maxLines = 1,
   });
 
@@ -36,13 +38,8 @@ class ProfileTextField extends StatelessWidget {
 
         const SizedBox(height: 8),
 
-        /// Value Box
         Container(
           width: double.infinity,
-          constraints: BoxConstraints(
-            minHeight: isAddressField ? 80 : 48,
-          ),
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.darkplceholder
@@ -54,17 +51,17 @@ class ProfileTextField extends StatelessWidget {
                   : AppColors.totalborde2,
             ),
           ),
-
-          child: Align(
-            alignment: isAddressField
-                ? Alignment.topLeft
-                : Alignment.centerLeft,
-            child: Text(
-              value,
-              maxLines: maxLines,
-              style: TextHelper.max9(context).copyWith(
-                color: theme.colorScheme.onSurface,
-              ),
+          child: TextFormField(
+            controller: controller,
+            initialValue: initialValue,
+            maxLines: maxLines,
+            style: TextHelper.max9(context).copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              isDense: true,
             ),
           ),
         ),
