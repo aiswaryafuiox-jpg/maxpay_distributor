@@ -4,6 +4,8 @@ import 'package:maxpay/global_widget/common_filter_box.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/my_earning/widget/my_earning_widget.dart';
 
+import '../../core/utils/texthelper.dart';
+
 class MyEarningsScreen extends StatelessWidget {
   const MyEarningsScreen({super.key});
 
@@ -36,26 +38,11 @@ class MyEarningsScreen extends StatelessWidget {
                 color: AppColors.clrPrimary,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Text(
-                    "Total Earnings",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'poppins',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text("Total Earnings", style: TextHelper.max16),
                   SizedBox(height: 4),
-                  Text(
-                    "₹ 2405.23",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text("₹ 2405.23", style: TextHelper.lato12),
                 ],
               ),
             ),

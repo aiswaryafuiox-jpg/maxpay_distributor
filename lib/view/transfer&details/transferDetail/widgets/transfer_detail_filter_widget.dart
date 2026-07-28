@@ -127,7 +127,7 @@ class _TransferDetailFilterWidgetState
 
           /// TRANSACTION TYPE
           DropdownButtonFormField<String>(
-            value: widget.selectedType,            isExpanded: true,
+            initialValue: widget.selectedType,            isExpanded: true,
 
             hint: Text(
               "Transaction Type",

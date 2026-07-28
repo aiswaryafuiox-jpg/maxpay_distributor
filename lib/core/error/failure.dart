@@ -4,11 +4,7 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  ServerFailure({required String message}) : super(message);
-}
-
-class CacheFailure extends Failure {
-  CacheFailure(super.message);
+  ServerFailure(super.message);
 }
 
 class NetworkFailure extends Failure {

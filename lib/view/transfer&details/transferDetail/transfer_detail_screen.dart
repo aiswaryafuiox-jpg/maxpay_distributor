@@ -116,7 +116,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                 title: isReverse
                     ? "Wallet Reverse"
                     : "Wallet Transfer",
-                amount: "₹ 2405.23",
+                amount: "₹ 245005.23",
                 isReverse: isReverse,
               ),
 
@@ -127,7 +127,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   itemCount: 8,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       SizedBox(height: 12.h),
                   itemBuilder: (context, index) {
                     return TransferDetailCard(

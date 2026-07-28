@@ -9,8 +9,10 @@ class StatCard extends StatelessWidget {
   final Color? bgColor;
   final Color? borderColor;
   final Color? textColor;
+  final Color? valueColor;
+  final bool needSpacingbwImage;
+
   final VoidCallback? onTap;
-  final Border? border;
 
   const StatCard({
     super.key,
@@ -20,74 +22,65 @@ class StatCard extends StatelessWidget {
     this.bgColor,
     this.borderColor,
     this.textColor,
+    this.valueColor,
     this.onTap,
-    this.border,
+    this.needSpacingbwImage = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final keepsTintInDark =
-        border?.top.color == Colors.transparent && border?.top.width == 0;
-    final effectiveBgColor = isDark && !keepsTintInDark
-        ? AppColors.darkplceholder
-        : bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white);
-    final effectiveBorder = isDark && !keepsTintInDark
-        ? Border.all(color: const Color(0xFF3A4058), width: 0.8)
-        : border ??
-              Border.all(
-                color: borderColor ?? AppColors.clrPrimary,
-                width: 0.8,
-              );
-    final titleColor = isDark && !keepsTintInDark
-        ? Colors.white
-        : textColor ?? theme.colorScheme.onSurface;
-    final valueColor = isDark && keepsTintInDark
-        ? AppColors.clrTextblack
-        : theme.textTheme.bodyLarge?.color;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          color: effectiveBgColor,
-          borderRadius: BorderRadius.circular(isDark ? 8.r : 12.r),
+          color: bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
 
-          /// 🔵 Blue Border
-          border: effectiveBorder,
+          borderRadius: BorderRadius.circular(12.r),
+
+          border: Border.all(
+            color: borderColor ?? AppColors.clrPrimary,
+            width: 0.8,
+          ),
         ),
+
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            /// 🔹 CUSTOM IMAGE / ICON WIDGET
-            imageWidget,
 
-            SizedBox(height: 10.h),
+          children: [
+            /// IMAGE / ICON
+            SizedBox(
+              height: 40.h,
+              child: Center(child: imageWidget),
+            ),
+            if (needSpacingbwImage) SizedBox(height: 2.h),
 
             Text(
               title,
               textAlign: TextAlign.center,
+              maxLines: 2,
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w700,
-                letterSpacing: 0,
-                fontSize: 12.sp,
-                color: titleColor,
+                fontSize: 10.sp,
+                color: textColor ?? theme.colorScheme.onSurface,
               ),
             ),
 
             if (value != null) ...[
               SizedBox(height: 2.h),
-
               Text(
                 value!,
                 textAlign: TextAlign.center,
+                maxLines: 2,
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w800,
-                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10.sp,
+                  height: 1.2,
                   color: valueColor,
                 ),
               ),
@@ -103,9 +96,7 @@ class StatCard extends StatelessWidget {
 class BlinkingZoomCard extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
-
   const BlinkingZoomCard({super.key, required this.child, this.onTap});
-
   @override
   State<BlinkingZoomCard> createState() => _BlinkingZoomCardState();
 }
@@ -113,14 +104,11 @@ class BlinkingZoomCard extends StatefulWidget {
 class _BlinkingZoomCardState extends State<BlinkingZoomCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
-
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),

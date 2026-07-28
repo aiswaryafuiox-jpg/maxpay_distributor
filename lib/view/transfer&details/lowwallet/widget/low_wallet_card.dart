@@ -84,7 +84,7 @@ class LowWalletCard extends StatelessWidget {
                 "Wallet Amount:",
                 style: TextHelper.max5.copyWith(
                   color: AppColors.clrSecondary,
-                  fontSize: 13,
+                  fontSize: 14,
                 ),
               ),
 
@@ -94,18 +94,16 @@ class LowWalletCard extends StatelessWidget {
                 amount,
                 style: TextHelper.max10(context).copyWith(
                   color: AppColors.clrSecondary,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: 10),
-
+          const SizedBox(height: 12),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.bottomRight,
             child: SizedBox(
-              width: 90,
+              width: 100,
               height: 30,
               child: CommonButton(
                 title: "Add Wallet",

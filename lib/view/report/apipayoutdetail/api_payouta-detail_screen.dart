@@ -51,13 +51,24 @@ class PayoutDetailScreen extends StatelessWidget {
               bottomWidget: const TransactionTypeField(),
             ),
           ),
+          const SizedBox(height: 5),
 
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Divider(
+              thickness: 1,
+              height: 1,
+              color: Color(0x4D000000),
+            ),
+          ),
+
+          const SizedBox(height: 15),
           /// Transaction List
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: transactions.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
               const SizedBox(height: 14),
               itemBuilder: (context, index) {
                 final item = transactions[index];

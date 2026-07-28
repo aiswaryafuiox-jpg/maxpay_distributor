@@ -83,12 +83,14 @@ class SupportScreen extends StatelessWidget {
         children: [
           /// Profile Image
           CircleAvatar(
-            radius: 22,
+            radius: 24,
             backgroundColor: const Color(0xFFEAEAEA),
-            child: Icon(
-              Icons.person,
-              size: 24,
-              color: Colors.grey.shade600,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: SvgPicture.asset(
+                AssetImages.iconPerson,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
 
@@ -102,8 +104,11 @@ class SupportScreen extends StatelessWidget {
                 Text(
                   title,
                   style: TextHelper.max1.copyWith(
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface,
+                    color: isDark
+                        ? theme.colorScheme.onSurface
+                        : const Color(0xFF344054),
                   ),
                 ),
 
@@ -112,9 +117,10 @@ class SupportScreen extends StatelessWidget {
                 Text(
                   phone,
                   style: TextHelper.max9(context).copyWith(
+                    fontSize: 16,
                     color: isDark
-                        ? AppColors.textclr
-                        : Colors.grey.shade700,
+                        ? theme.colorScheme.onSurface.withValues(alpha: 0.8)
+                        : const Color(0xFF667085),
                   ),
                 ),
               ],

@@ -4,7 +4,6 @@ import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/report/paymentrequest/widget/payment_request_top_widget.dart';
 import 'package:maxpay/view/report/paymentrequest/widget/paymentrequest_card.dart';
 
-import '../payoutrequest/widget/payout_request_card.dart';
 
 class PaymentRequestScreen extends StatelessWidget {
   const PaymentRequestScreen({super.key});
@@ -44,10 +43,12 @@ class PaymentRequestScreen extends StatelessWidget {
           ),
 
           /// Divider
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: const Divider(
               thickness: 1,
+              height: 1,
+              color: Color(0x4D000000),
             ),
           ),
 
@@ -58,7 +59,7 @@ class PaymentRequestScreen extends StatelessWidget {
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: transactions.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 14),
+              separatorBuilder: (_, _) => const SizedBox(height: 14),
               itemBuilder: (context, index) {
                 final item = transactions[index];
 

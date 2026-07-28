@@ -5,12 +5,14 @@ import 'package:maxpay/core/constants/colors.dart';
 
 class CommonButton extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final bool isLoading;
+  final VoidCallback? onTap;
 
   const CommonButton({
     super.key,
     required this.title,
-    required this.onTap,
+    this.onTap,
+    this.isLoading = false,
   });
 
   @override
@@ -18,8 +20,8 @@ class CommonButton extends StatelessWidget {
     final isTablet = MediaQuery.of(context).size.width > 600;
 
     return SizedBox(
-      width: isTablet ? 220.w : 185.w,
-      height: isTablet ? 55.h : 50.h,
+      width: isTablet ? 220.w : 170.w,
+      height: isTablet ? 55.h : 45.h,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -34,7 +36,7 @@ class CommonButton extends StatelessWidget {
           title,
           style: TextStyle(
             color: Colors.white,
-            fontSize: isTablet ? 16.sp : 16.sp,
+            fontSize: isTablet ? 16.sp : 14.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

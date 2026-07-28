@@ -134,7 +134,7 @@ class _DetailRow extends StatelessWidget {
             style: TextHelper.max1.copyWith(
               color: theme.colorScheme.onSurface,
               fontSize: 14.sp,
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.w400,
             ),
           ),
           trailing ??
@@ -164,8 +164,8 @@ class _ProductBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 22.r,
-      width: 22.r,
+      height: 30.r,
+      width: 30.r,
       decoration: const BoxDecoration(
         color: Color(0xFFE50914),
         shape: BoxShape.circle,
@@ -175,7 +175,7 @@ class _ProductBadge extends StatelessWidget {
         text,
         style: TextHelper.max1.copyWith(
           color: Colors.white,
-          fontSize: 8.sp,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w700,
         ),
       ),

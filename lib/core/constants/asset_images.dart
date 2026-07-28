@@ -8,6 +8,8 @@ class AssetImages {
   static const splash2 = "assets/images/splash2.webp";
   static const splash3 = "assets/images/splash3.webp";
   static const successLogin = "assets/images/success_image.webp";
+  static const edit = "assets/images/edit.svg";
+  static const edit1 = "assets/images/edit1.svg";
 
   // Navbar
   static const home = "assets/images/home.svg";
@@ -23,9 +25,13 @@ class AssetImages {
   static const todaysCredit = "assets/images/todays_credit.svg";
   static const refunded = "assets/images/refunded.svg";
   static const complaints = "assets/images/complaints.svg";
-  static const success = "assets/images/success_icon.svg";
-  static const processing = "assets/images/processing_icon.svg";
-  static const failedAll = "assets/images/failed_icon.svg";
+  static const success = "assets/images/success.svg";
+  static const processing = "assets/images/processing.svg";
+  static const failedAll = "assets/images/failed_all.svg";
+  static const successIcon = "assets/images/successs_icon1.svg";
+  static const processIcon = "assets/images/process_icon1.svg";
+
+  static const failedIcon = "assets/images/failed_icon1.svg";
   static const statement = "assets/images/statement.svg";
   //support
   static const call = "assets/images/call.svg";
@@ -43,7 +49,6 @@ class AssetImages {
   static const paymentStatus = "assets/images/payment_status.svg";
 
   // Others
-  static const addWallet1 = "assets/images/add_wallet1.png";
   static const favorite = "assets/images/favorite.svg";
   static const dthRefresh = "assets/images/dth_refresh.svg";
   static const promoFrame = "assets/images/elec.svg";
@@ -58,7 +63,7 @@ class AssetImages {
   static const webSignup = "assets/images/web_signup.svg";
   static const wallet = "assets/images/wallet.svg";
   static const profile = "assets/images/profile.svg";
-  static const rating ="assets/images/rating.svg";
+  static const rating = "assets/images/rating.svg";
   static const fingerprint = "assets/images/fingerprint.svg";
   static const acc = "assets/images/acc.svg";
   static const grade = "assets/images/grade.svg";
@@ -75,6 +80,12 @@ class AssetImages {
   static const filter = "assets/images/location_regular.png";
   static const delete = "assets/images/delete_regular.svg";
   static const jio = "assets/images/jio.svg";
+  static const scanWeb = "assets/images/scan_web.png";
+  static const webLoginBg = "assets/images/web_login_bg.png";
+  static const linkShare = "assets/images/link_share.svg";
+  static const applogout = "assets/images/app_logout.svg";
+  static const weblogout = "assets/images/web_logout.svg";
+  static const iconPerson = "assets/images/icon_person.svg";
 }
 
 SizedBox adjustWidth(double width) {

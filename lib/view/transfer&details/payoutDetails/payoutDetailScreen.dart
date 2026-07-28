@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 
 class PayoutDetailsScreen extends StatelessWidget {

@@ -31,19 +31,19 @@ class CustomBottomNavBar extends GetView<NavbarController> {
 
       return BottomNavigationBar(
         currentIndex: selectedIndex,
-        elevation: 18,
+        elevation: 12,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: isDark ? AppColors.clrPrimary : AppColors.blueColor,
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: TextStyle(
           color: isDark ? AppColors.clrPrimary : AppColors.blueColor,
-          fontSize: 12.sp,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
         ),
         unselectedLabelStyle: TextStyle(
           color: Colors.grey,
-          fontSize: 12.sp,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
         ),

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/responsive.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
-import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
+import '../../controller/login_controller.dart';
+import '../../data/model/login_sendOtp_response_model.dart';
 
 class ScreenOtpVerification extends StatefulWidget {
   const ScreenOtpVerification({super.key});
@@ -20,6 +19,29 @@ class ScreenOtpVerification extends StatefulWidget {
 class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
   final TextEditingController _otpController = TextEditingController();
   bool _showVerifyButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _autoFillOtp();
+  }
+
+  void _autoFillOtp() {
+    final args = Get.arguments;
+    if (args is LoginSendOtpResponseModel) {
+      final otp = args.data?.otp;
+      if (otp != null) {
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            setState(() {
+              _otpController.text = otp.toString();
+              _showVerifyButton = _otpController.text.length == 4;
+            });
+          }
+        });
+      }
+    }
+  }
 
   void _handleKeyPress(String key) {
     setState(() {
@@ -51,7 +73,6 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-       appBar: const CommonAppBar(title: ""),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -61,29 +82,29 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
             child: Column(
               children: [
                 /// 🔹 HEADER / BACK BUTTON
-                // Padding(
-                //   padding: EdgeInsets.symmetric(
-                //     horizontal: 24.w,
-                //     vertical: 16.h,
-                //   ),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: GestureDetector(
-                //       onTap: () => navigator?.pop(),
-                //       child: Container(
-                //         width: 45.w,
-                //         height: 45.w,
-                //         // decoration: BoxDecoration(
-                //         //   shape: BoxShape.circle,
-                //         //   border: Border.all(
-                //         //     color: Colors.grey.withValues(alpha: 0.3),
-                //         //   ),
-                //         // ),
-                //         child: Icon(Icons.arrow_back_ios_new, size: 18.sp),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 16.h,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => navigator?.pop(),
+                      child: Container(
+                        width: 45.w,
+                        height: 45.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.grey.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Icon(Icons.arrow_back_ios_new, size: 18.sp),
+                      ),
+                    ),
+                  ),
+                ),
 
                 Expanded(
                   child: SingleChildScrollView(
@@ -179,7 +200,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         /// 🔹 Timer Placeholder
                         Text(
-                          'Resend Otp',
+                          'Resend code in 00:30',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w500,
@@ -201,7 +222,8 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                           child: CustomElevatedButton(
                             text: 'Verify OTP',
                             onPressed: () {
-                              Get.toNamed(AppRoutes.pinCodeCreation);
+                              final controller = Get.find<LoginController>();
+                              controller.verifyOtp(_otpController.text);
                             },
                           ),
                         )

@@ -139,6 +139,8 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
+import '../../../core/utils/texthelper.dart';
+
 class EarningsCard extends StatelessWidget {
   const EarningsCard({super.key});
 
@@ -155,9 +157,7 @@ class EarningsCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF2F3349)
-            : AppColors.background,
+        color: isDark ? const Color(0xFF2F3349) : AppColors.background,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.grey.withValues(alpha: 0.15),
@@ -183,9 +183,7 @@ class EarningsCard extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(width: 12),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -211,14 +209,8 @@ class EarningsCard extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
-          Divider(
-            color: Colors.grey.withValues(alpha: 0.4),
-            thickness: 0.8,
-          ),
-
+          Divider(color: Colors.grey.withValues(alpha: 0.4), thickness: 0.8),
           const SizedBox(height: 10),
 
           /// Bottom Section
