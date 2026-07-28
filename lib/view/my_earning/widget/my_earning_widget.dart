@@ -177,7 +177,7 @@ class EarningsCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: secondaryTextColor,
                   ),
@@ -192,7 +192,7 @@ class EarningsCard extends StatelessWidget {
                   Text(
                     "Date & Time:",
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: secondaryTextColor,
                     ),
@@ -202,7 +202,7 @@ class EarningsCard extends StatelessWidget {
                     "29-11-2026 07:38:43PM",
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: secondaryTextColor,
                     ),
@@ -274,7 +274,8 @@ class EarningsCard extends StatelessWidget {
                   Text(
                     "My Earnings",
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
                       color: secondaryTextColor,
                     ),
                   ),

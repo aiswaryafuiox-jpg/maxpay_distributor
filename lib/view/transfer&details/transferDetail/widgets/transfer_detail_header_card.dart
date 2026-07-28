@@ -13,7 +13,6 @@ class TransferDetailHeaderCard extends StatelessWidget {
     required this.title,
     required this.amount,
     required this.isReverse,
-
   });
 
   @override
@@ -35,22 +34,16 @@ class TransferDetailHeaderCard extends StatelessWidget {
           Text(
             title,
             style: TextHelper.max4.copyWith(
-              color: isReverse
-                  ? Colors.red
-                  : Colors.white,
+              color: isReverse ? Colors.red : Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 15.sp,
             ),
           ),
-
           SizedBox(height: 6.h),
-
           Text(
             amount,
             style: TextHelper.max13(context).copyWith(
-              color: isReverse
-                  ? Colors.red
-                  : Colors.white,
+              color: isReverse ? Colors.red : Colors.white,
               fontWeight: FontWeight.w700,
               fontSize: 22.sp,
             ),

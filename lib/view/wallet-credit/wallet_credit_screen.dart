@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:maxpay/controller/wallet_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/wallet-credit/widget/wallet_credit_filter.dart';
 
 class WalletCreditScreen extends StatelessWidget {
-  const WalletCreditScreen({super.key});
-
+   WalletCreditScreen({super.key});
+  
+  final WalletController controller = sl<WalletController>();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -24,7 +27,9 @@ class WalletCreditScreen extends StatelessWidget {
         child: Column(
           children: [
             /// 🔹 Filter Box
-            const WalletCreditFilterWidget(),
+            WalletCreditFilterWidget(
+  controller: controller,
+),
 
             const SizedBox(height: 16),
 

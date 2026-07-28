@@ -43,7 +43,7 @@ class MyEarningsScreen extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'poppins',
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

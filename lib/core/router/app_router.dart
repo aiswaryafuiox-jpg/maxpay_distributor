@@ -118,11 +118,11 @@ class AppPages {
 
     GetPage(
       name: AppRoutes.withdrawrequest1,
-      page: () => const WalletCreditScreen(),
+      page: () =>  WalletCreditScreen(),
     ),
     GetPage(
       name: AppRoutes.withdrawrequest2,
-      page: () => const WalletCreditScreen(),
+      page: () =>  WalletCreditScreen(),
     ),
     GetPage(
       name: AppRoutes.retailer,

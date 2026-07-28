@@ -7,11 +7,13 @@ import 'package:maxpay/core/utils/texthelper.dart';
 class TransferDetailFilterWidget extends StatefulWidget {
   final String selectedType;
   final ValueChanged<String> onChanged;
+  final List<String> transferTypes;
 
   const TransferDetailFilterWidget({
     super.key,
     required this.selectedType,
     required this.onChanged,
+    required this.transferTypes,
   });
 
   @override
@@ -175,22 +177,28 @@ class _TransferDetailFilterWidgetState
               ),
             ),
 
-            items: [
-              DropdownMenuItem(
-                value: "Reverse",
-                child: Text(
-                  "Reverse",
-                  style: TextHelper.max9(context),
-                ),
-              ),
-              DropdownMenuItem(
-                value: "Transfer",
-                child: Text(
-                  "Transfer",
-                  style: TextHelper.max9(context),
-                ),
-              ),
-            ],
+            items: (() {
+              final items = widget.transferTypes.map((type) {
+                return DropdownMenuItem(
+                  value: type,
+                  child: Text(
+                    type,
+                    style: TextHelper.max9(context),
+                  ),
+                );
+              }).toList();
+              
+              if (items.isEmpty || !widget.transferTypes.contains(widget.selectedType)) {
+                items.add(DropdownMenuItem(
+                  value: widget.selectedType,
+                  child: Text(
+                    widget.selectedType,
+                    style: TextHelper.max9(context),
+                  ),
+                ));
+              }
+              return items;
+            })(),
 
             onChanged: (value) {
               if (value != null) {

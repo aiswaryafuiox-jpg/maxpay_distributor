@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/transfer_detail_controller.dart';
+import 'package:maxpay/core/service/api_service.dart';
+import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
+import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/transferDetail/widgets/transfer_detail_card.dart';
@@ -14,8 +19,17 @@ class TransferDetailScreen extends StatefulWidget {
       _TransferDetailScreenState();
 }
 
-class _TransferDetailScreenState
-    extends State<TransferDetailScreen> {
+class _TransferDetailScreenState extends State<TransferDetailScreen> {
+
+  final controller = Get.put(
+  TransferDetailController(
+    GetTransferDetailsUseCase(
+      TransferDetailRepositoryImpl(
+        ApiService(),
+      ),
+    ),
+  ),
+);
   String selectedTransactionType = "Transfer";
   bool isReverse = false;
 
@@ -83,19 +97,17 @@ class _TransferDetailScreenState
           child: Column(
             children: [
               /// Filter
-              TransferDetailFilterWidget(
-                selectedType: selectedTransactionType,
-                onChanged: (value) {
-                  if (value == "Reverse") {
-                    _showReverseDialog();
-                  } else {
-                    setState(() {
-                      selectedTransactionType = "Transfer";
-                      isReverse = false;
-                    });
-                  }
-                },
-              ),
+              Obx(() => TransferDetailFilterWidget(
+      transferTypes: controller.transferDetails.map((e) => e.name ?? "").toList(),
+      selectedType: controller.selectedTransactionType.value,
+      onChanged: (value) {
+        if (value == "Reverse") {
+          _showReverseDialog();
+        } else {
+          controller.changeTransactionType(value);
+        }
+      },
+    )),
 
               SizedBox(height: 16.h),
 
