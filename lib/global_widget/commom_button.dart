@@ -7,12 +7,14 @@ class CommonButton extends StatelessWidget {
   final String title;
   final bool isLoading;
   final VoidCallback? onTap;
+  final Color color;
 
   const CommonButton({
     super.key,
     required this.title,
     this.onTap,
     this.isLoading = false,
+    this.color = AppColors.clrPrimary,
   });
 
   @override

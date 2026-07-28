@@ -29,4 +29,12 @@ class ApiRoutes {
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String getExecutives = "/api/distributor_executives";
+  static const String getExecutiveDetail = "/api/distributor_executive_detail";
+  static const String getExecutiveCommissionPackages = "/api/distributor_executive_commission_packages";
+  static const String updateExecutive = "/api/distributor_update_executive";
+  static const String addExecutiveWalletDetails = "/api/distributor_add_executive_wallet_details";
+  static const String addExecutiveWallet = "/api/distributor_add_executive_wallet";
+  static const String transactionProducts = "/api/distributor_transaction_products";
+  static const String transactionReport = "/api/distributor_transaction_report";
 }
