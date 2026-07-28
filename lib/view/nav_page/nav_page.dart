@@ -5,9 +5,9 @@ import 'package:maxpay/view/home/pages/home_page.dart';
 import 'package:maxpay/view/nav_page/navbar.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:maxpay/view/report/report_page.dart';
-import 'package:maxpay/view/request/walletrequestpending/wallet_request_pending_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
 import 'package:maxpay/view/supportscreen/support_screen.dart';
+import 'package:maxpay/view/wallet%20request/request.dart';
 
 
 
@@ -42,7 +42,7 @@ class _ScreenNavBarState extends State<NavPageScreen>
       const HomePageScreen(),
       const ReportPage(),
 
-      const WalletRequestPendingScreen(),
+      const WalletRequestScreen(),
 
       const SupportScreen(),
 

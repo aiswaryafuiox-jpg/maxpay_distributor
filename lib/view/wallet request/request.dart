@@ -7,6 +7,9 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:maxpay/controller/wallet_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/data/model/wallet_credit_type_model.dart';
 
 class WalletRequestScreen extends StatefulWidget {
   const WalletRequestScreen({super.key});
@@ -16,6 +19,7 @@ class WalletRequestScreen extends StatefulWidget {
 }
 
 class _WalletRequestScreenState extends State<WalletRequestScreen> {
+  final WalletController _walletController = Get.put(sl<WalletController>());
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _bankNameController = TextEditingController();
   final TextEditingController _utrController = TextEditingController();
@@ -84,12 +88,13 @@ class _WalletRequestScreenState extends State<WalletRequestScreen> {
               SizedBox(height: 14.h),
 
               _WalletFieldLabel(label: 'Payment Type'),
-              _PaymentTypeField(
+              Obx(() => _PaymentTypeField(
                 value: _paymentType,
+                items: _walletController.walletCreditTypes.toList(),
                 onChanged: (value) {
                   setState(() => _paymentType = value);
                 },
-              ),
+              )),
               SizedBox(height: 14.h),
 
               _WalletFieldLabel(label: 'Bank Name'),
@@ -212,10 +217,11 @@ class _WalletTextField extends StatelessWidget {
 }
 
 class _PaymentTypeField extends StatelessWidget {
-  const _PaymentTypeField({required this.value, required this.onChanged});
+  const _PaymentTypeField({required this.value, required this.onChanged, required this.items});
 
   final String? value;
   final ValueChanged<String?> onChanged;
+  final List<Data> items;
 
   @override
   Widget build(BuildContext context) {
@@ -266,14 +272,12 @@ class _PaymentTypeField extends StatelessWidget {
             borderSide: BorderSide(color: AppColors.clrPrimary, width: 1.w),
           ),
         ),
-        items: const [
-          DropdownMenuItem(value: 'UPI', child: Text('UPI')),
-          DropdownMenuItem(
-            value: 'Bank Transfer',
-            child: Text('Bank Transfer'),
-          ),
-          DropdownMenuItem(value: 'Cash Deposit', child: Text('Cash Deposit')),
-        ],
+        items: items.map((e) {
+          return DropdownMenuItem<String>(
+            value: e.name,
+            child: Text(e.name ?? ''),
+          );
+        }).toList(),
         onChanged: onChanged,
       ),
     );
