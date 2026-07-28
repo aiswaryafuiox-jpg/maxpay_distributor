@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:maxpay/core/di/service_locator.dart';
-import 'package:maxpay/core/service/local_storage_service.dart';
+import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maxpay/controller/app_lifecycle_controller.dart';
@@ -20,8 +19,8 @@ void main() async {
 
   // Initialize SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
-  
-   await LocalStorageService().init();
+
+  await LocalStorageService().init();
   // Initialize GetX Controllers
   Get.put(ThemeController(sharedPreferences));
   Get.put(NavbarController());
@@ -32,7 +31,6 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  await initDependencies();
   runApp(const MyApp());
 }
 

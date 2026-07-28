@@ -139,7 +139,6 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
-import '../../../core/utils/texthelper.dart';
 
 class EarningsCard extends StatelessWidget {
   const EarningsCard({super.key});

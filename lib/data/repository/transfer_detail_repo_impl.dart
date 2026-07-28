@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:maxpay/core/error/failure.dart';
-import 'package:maxpay/core/service/api_service.dart';
+import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/wallet_credit_type_model.dart';
@@ -30,7 +30,7 @@ Future<Either<Failure, TransferDetailModel>> getTransferDetails() async {
     return Right(model);
   } catch (e) {
     print(e);
-    return Left(ServerFailure(message: e.toString()));
+    return Left(ServerFailure( e.toString()));
   }
 }
 }

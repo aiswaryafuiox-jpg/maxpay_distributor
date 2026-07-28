@@ -35,7 +35,7 @@ class WalletCreditFilterWidget extends StatelessWidget {
           /// Dropdown
           Obx(() {
   return DropdownButtonFormField<int>(
-    value: controller.selectedCreditTypeId.value,
+    initialValue: controller.selectedCreditTypeId.value,
     isExpanded: true,
 
     decoration: InputDecoration(

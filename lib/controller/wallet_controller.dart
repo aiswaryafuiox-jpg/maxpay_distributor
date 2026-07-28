@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:maxpay/data/model/wallet_credit_type_model.dart';
 import 'package:maxpay/domain/usecase/wallet_credit_type_usecase.dart';
 

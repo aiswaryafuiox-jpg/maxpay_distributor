@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
-import 'package:maxpay/core/service/api_service.dart';
+import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
@@ -15,21 +15,15 @@ class TransferDetailScreen extends StatefulWidget {
   const TransferDetailScreen({super.key});
 
   @override
-  State<TransferDetailScreen> createState() =>
-      _TransferDetailScreenState();
+  State<TransferDetailScreen> createState() => _TransferDetailScreenState();
 }
 
 class _TransferDetailScreenState extends State<TransferDetailScreen> {
-
   final controller = Get.put(
-  TransferDetailController(
-    GetTransferDetailsUseCase(
-      TransferDetailRepositoryImpl(
-        ApiService(),
-      ),
+    TransferDetailController(
+      GetTransferDetailsUseCase(TransferDetailRepositoryImpl(ApiService())),
     ),
-  ),
-);
+  );
   String selectedTransactionType = "Transfer";
   bool isReverse = false;
 
@@ -88,34 +82,34 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Transfer Detail",
-      ),
+      appBar: const CommonAppBar(title: "Transfer Detail"),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
             children: [
               /// Filter
-              Obx(() => TransferDetailFilterWidget(
-      transferTypes: controller.transferDetails.map((e) => e.name ?? "").toList(),
-      selectedType: controller.selectedTransactionType.value,
-      onChanged: (value) {
-        if (value == "Reverse") {
-          _showReverseDialog();
-        } else {
-          controller.changeTransactionType(value);
-        }
-      },
-    )),
+              Obx(
+                () => TransferDetailFilterWidget(
+                  transferTypes: controller.transferDetails
+                      .map((e) => e.name ?? "")
+                      .toList(),
+                  selectedType: controller.selectedTransactionType.value,
+                  onChanged: (value) {
+                    if (value == "Reverse") {
+                      _showReverseDialog();
+                    } else {
+                      controller.changeTransactionType(value);
+                    }
+                  },
+                ),
+              ),
 
               SizedBox(height: 16.h),
 
               /// Header Card
               TransferDetailHeaderCard(
-                title: isReverse
-                    ? "Wallet Reverse"
-                    : "Wallet Transfer",
+                title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
                 amount: "₹ 245005.23",
                 isReverse: isReverse,
               ),
@@ -127,15 +121,12 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   itemCount: 8,
-                  separatorBuilder: (_, _) =>
-                      SizedBox(height: 12.h),
+                  separatorBuilder: (_, _) => SizedBox(height: 12.h),
                   itemBuilder: (context, index) {
                     return TransferDetailCard(
                       transactionId: "TXN6453564",
                       dateTime: "2026-11-29 14:38:43",
-                      transactionType: isReverse
-                          ? "Reverse"
-                          : "Transfer",
+                      transactionType: isReverse ? "Reverse" : "Transfer",
                       userType: "Retailer",
                       userName: "John",
                       regMobNo: "9087654321",
