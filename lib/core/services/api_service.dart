@@ -55,7 +55,9 @@ class ApiService {
 
           if (e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
               e.requestOptions.path.contains(ApiRoutes.updateStatusVerifyOtp) ||
-              e.requestOptions.path.contains(ApiRoutes.updateProfileVerifyOtp)) {
+              e.requestOptions.path.contains(
+                ApiRoutes.updateProfileVerifyOtp,
+              )) {
             return handler.next(e);
           }
 
@@ -76,25 +78,22 @@ class ApiService {
 
   /// GET API
   Future<Map<String, dynamic>> get(
-      String endpoint, {
-        Map<String, dynamic>? queryParameters,
-      }) async {
+    String endpoint, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     return _handleResponse(
-          () => _dio.get(
-        endpoint,
-        queryParameters: queryParameters,
-      ),
+      () => _dio.get(endpoint, queryParameters: queryParameters),
     );
   }
 
   /// POST API
   Future<Map<String, dynamic>> post(
-      String endpoint, {
-        dynamic data,
-        Map<String, dynamic>? headers,
-      }) async {
+    String endpoint, {
+    dynamic data,
+    Map<String, dynamic>? headers,
+  }) async {
     return _handleResponse(
-          () => _dio.post(
+      () => _dio.post(
         endpoint,
         data: data,
         options: headers != null ? Options(headers: headers) : null,
@@ -104,12 +103,12 @@ class ApiService {
 
   /// PUT API
   Future<Map<String, dynamic>> put(
-      String endpoint, {
-        dynamic data,
-        Map<String, dynamic>? headers,
-      }) async {
+    String endpoint, {
+    dynamic data,
+    Map<String, dynamic>? headers,
+  }) async {
     return _handleResponse(
-          () => _dio.put(
+      () => _dio.put(
         endpoint,
         data: data,
         options: headers != null ? Options(headers: headers) : null,
@@ -118,22 +117,14 @@ class ApiService {
   }
 
   /// DELETE API
-  Future<Map<String, dynamic>> delete(
-      String endpoint, {
-        dynamic data,
-      }) async {
-    return _handleResponse(
-          () => _dio.delete(
-        endpoint,
-        data: data,
-      ),
-    );
+  Future<Map<String, dynamic>> delete(String endpoint, {dynamic data}) async {
+    return _handleResponse(() => _dio.delete(endpoint, data: data));
   }
 
   /// Common Response Handler
   Future<Map<String, dynamic>> _handleResponse(
-      Future<Response> Function() request,
-      ) async {
+    Future<Response> Function() request,
+  ) async {
     try {
       final response = await request();
 
@@ -141,9 +132,7 @@ class ApiService {
         return response.data as Map<String, dynamic>;
       }
 
-      return {
-        "data": response.data,
-      };
+      return {"data": response.data};
     } on DioException catch (e) {
       log("DIO EXCEPTION => ${e.message}");
       rethrow;
@@ -160,9 +149,6 @@ class ApiService {
 
     g.Get.offAllNamed(AppRoutes.loginPhoneName);
 
-    g.Get.snackbar(
-      "Session Expired",
-      "Please login again.",
-    );
+    g.Get.snackbar("Session Expired", "Please login again.");
   }
 }

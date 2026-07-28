@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:maxpay/core/services/api_service.dart';
 import '../../data/repository/login_sendOtp_repo_impl.dart';
 import '../../domain/repository/login_sendOtp_repo.dart';
 import '../../domain/usecase/login_sendOtp_usecase.dart';
@@ -24,12 +25,13 @@ import '../../domain/usecase/retailer/create_retailer_usecase.dart';
 import '../../domain/usecase/retailer/update_retailer_usecase.dart';
 import '../../domain/usecase/retailer/get_add_wallet_details_usecase.dart';
 import '../../domain/usecase/retailer/add_wallet_usecase.dart';
-import '../services/api_service.dart';
+
+
+// SharedPreferences
 
 final sl = GetIt.instance;
 Future<void> init() async {
   /// Api Service
-  sl.registerLazySingleton<ApiService>(() => ApiService());
 
   /// Login Repository
   sl.registerLazySingleton<LoginRepository>(

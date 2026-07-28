@@ -71,6 +71,7 @@ class TextHelper {
       color: AppColors.clrSecondary,
     );
   }
+
   static TextStyle get pin {
     return const TextStyle(
       fontFamily: 'Poppins',
@@ -81,7 +82,6 @@ class TextHelper {
     );
   }
 
-
   static TextStyle get max8 {
     return const TextStyle(
       fontFamily: 'Poppins',
@@ -91,6 +91,7 @@ class TextHelper {
       color: AppColors.clrTextblack,
     );
   }
+
   static TextStyle get max16 {
     return const TextStyle(
       fontFamily: 'Poppins',
@@ -102,54 +103,62 @@ class TextHelper {
   }
 
   static TextStyle max9(BuildContext context) {
-    return TextStyle(      fontFamily: 'Poppins',
+    return TextStyle(
+      fontFamily: 'Poppins',
 
       fontSize: 14,
       fontWeight: FontWeight.w400,
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
-   static TextStyle max10(BuildContext context) {
-    return  TextStyle(      fontFamily: 'Poppins',
+
+  static TextStyle max10(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Poppins',
 
       fontSize: 16,
       fontWeight: FontWeight.w600,
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
-   static TextStyle max11(BuildContext context) {
-    return  TextStyle(      fontFamily: 'Poppins',
+
+  static TextStyle max11(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Poppins',
 
       fontSize: 13,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onTertiaryFixedVariant,
     );
-    
-  
-}
+  }
 
-static TextStyle max12(BuildContext context) {
-  final theme = Theme.of(context);
+  static TextStyle max12(BuildContext context) {
+    final theme = Theme.of(context);
 
-  return TextStyle(      fontFamily: 'Poppins',
+    return TextStyle(
+      fontFamily: 'Poppins',
 
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
-    color: theme.brightness == Brightness.light
-        ? AppColors.darktextclr
-        : AppColors.textclr,
-  );
-}
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: theme.brightness == Brightness.light
+          ? AppColors.darktextclr
+          : AppColors.textclr,
+    );
+  }
+
   static TextStyle max13(BuildContext context) {
-    return TextStyle(      fontFamily: 'Poppins',
+    return TextStyle(
+      fontFamily: 'Poppins',
 
       fontSize: 24,
       fontWeight: FontWeight.w700,
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+
   static TextStyle lat014(BuildContext context) {
-    return TextStyle(      fontFamily: 'Lato',/////////
+    return TextStyle(
+      fontFamily: 'Lato', /////////
 
       fontSize: 20,
       fontWeight: FontWeight.w700,
@@ -158,13 +167,15 @@ static TextStyle max12(BuildContext context) {
   }
 
   static TextStyle max14(BuildContext context) {
-    return TextStyle(      fontFamily: 'Poppins',
+    return TextStyle(
+      fontFamily: 'Poppins',
 
       fontSize: 24,
       fontWeight: FontWeight.w500,
       color: Theme.of(context).colorScheme.onSurface,
     );
   }
+
   static TextStyle get lato14 {
     return const TextStyle(
       fontFamily: 'Lato',
@@ -182,6 +193,7 @@ static TextStyle max12(BuildContext context) {
       color: AppColors.clrTextblack,
     );
   }
+
   static TextStyle get lato12 {
     return const TextStyle(
       fontFamily: 'Lato',
@@ -190,6 +202,4 @@ static TextStyle max12(BuildContext context) {
       color: AppColors.white,
     );
   }
-
-
 }

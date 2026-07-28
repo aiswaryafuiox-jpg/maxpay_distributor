@@ -10,3 +10,10 @@ class ServerFailure extends Failure {
 class NetworkFailure extends Failure {
   NetworkFailure(super.message);
 }
+
+class AuthFailure extends Failure {
+  AuthFailure(super.message);
+}
+class UnexpectedFailure extends Failure {
+  UnexpectedFailure(super.message);
+}

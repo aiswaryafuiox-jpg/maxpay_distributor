@@ -40,16 +40,9 @@ class MyEarningsScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Text(
-                    "Total Earnings",
-                    style: TextHelper.max16,
-
-                  ),
+                  Text("Total Earnings", style: TextHelper.max16),
                   SizedBox(height: 4),
-                  Text(
-                    "₹ 2405.23",
-                    style: TextHelper.lato12,
-                  ),
+                  Text("₹ 2405.23", style: TextHelper.lato12),
                 ],
               ),
             ),

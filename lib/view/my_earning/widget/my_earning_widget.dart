@@ -139,7 +139,6 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
-import '../../../core/utils/texthelper.dart';
 
 class EarningsCard extends StatelessWidget {
   const EarningsCard({super.key});
@@ -157,9 +156,7 @@ class EarningsCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF2F3349)
-            : AppColors.background,
+        color: isDark ? const Color(0xFF2F3349) : AppColors.background,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Colors.grey.withValues(alpha: 0.15),
@@ -178,8 +175,9 @@ class EarningsCard extends StatelessWidget {
                   "Transaction No: 9876543212",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextHelper.max1.copyWith(
-                    fontSize: 12,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                     color: secondaryTextColor,
                   ),
                 ),
@@ -191,7 +189,7 @@ class EarningsCard extends StatelessWidget {
                   Text(
                     "Date & Time:",
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: secondaryTextColor,
                     ),
@@ -201,7 +199,7 @@ class EarningsCard extends StatelessWidget {
                     "29-11-2026 07:38:43PM",
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: secondaryTextColor,
                     ),
@@ -211,11 +209,9 @@ class EarningsCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          Divider(
-            color: Colors.grey.withValues(alpha: 0.4),
-            thickness: 0.8,
-          ),
+          Divider(color: Colors.grey.withValues(alpha: 0.4), thickness: 0.8),
           const SizedBox(height: 10),
+
           /// Bottom Section
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -269,7 +265,8 @@ class EarningsCard extends StatelessWidget {
                   Text(
                     "My Earnings",
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
                       color: secondaryTextColor,
                     ),
                   ),

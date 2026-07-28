@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/routes_path.dart';
 import '../../../../core/utils/texthelper.dart';
