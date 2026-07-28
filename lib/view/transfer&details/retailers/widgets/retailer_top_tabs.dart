@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
@@ -10,21 +11,18 @@ class RetailerTopTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildTab(
-        String text,
-        Color color, {
-          BorderRadius? borderRadius,
-          VoidCallback? onTap,
-        }) {
+      String text,
+      Color color, {
+      BorderRadius? borderRadius,
+      VoidCallback? onTap,
+    }) {
       return InkWell(
         onTap: onTap,
         borderRadius: borderRadius,
         child: Container(
           height: 38,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: borderRadius,
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: borderRadius),
           child: Text(
             text,
             textAlign: TextAlign.center,
@@ -44,7 +42,7 @@ class RetailerTopTabs extends StatelessWidget {
           Expanded(
             flex: 4,
             child: buildTab(
-              "Total Retailer:300",
+              "Total Retailer: ${Get.find<RetailerController>().retailers.length}",
               AppColors.clrPrimary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(4),
@@ -52,13 +50,7 @@ class RetailerTopTabs extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: buildTab(
-              "Retailer List",
-              AppColors.redClr,
-            ),
-          ),
+          Expanded(flex: 2, child: buildTab("Retailer List", AppColors.redClr)),
           Expanded(
             flex: 3,
             child: buildTab(

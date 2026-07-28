@@ -6,12 +6,12 @@ import 'package:maxpay/core/constants/colors.dart';
 class CommonButton extends StatelessWidget {
   final String title;
   final bool isLoading;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const CommonButton({
     super.key,
     required this.title,
-    required this.onTap,
+    this.onTap,
     this.isLoading = false,
   });
 

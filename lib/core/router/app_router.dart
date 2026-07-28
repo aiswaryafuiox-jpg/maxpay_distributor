@@ -1,6 +1,15 @@
 import 'package:get/get.dart';
+import 'package:maxpay/controller/home_controller.dart';
+import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/core/bindings/initial_binding.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/domain/usecase/profile/get_profile_usecase.dart';
+import 'package:maxpay/domain/usecase/profile/resend_update_profile_otp_usecase.dart';
+import 'package:maxpay/domain/usecase/profile/update_profile_usecase.dart';
+import 'package:maxpay/domain/usecase/profile/update_status_send_otp_usecase.dart';
+import 'package:maxpay/domain/usecase/profile/verify_update_profile_otp_usecase.dart';
+import 'package:maxpay/domain/usecase/profile/verify_update_status_otp_usecase.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
@@ -64,10 +73,27 @@ import '../../view/transfer&details/retailers/addwalletscreen.dart';
 import '../../view/transfer&details/retailers/create_retailer.dart';
 import '../../view/transfer&details/retailers/viewdetailscreen.dart';
 import '../../view/transfer&details/transferDetail/transfer_detail_screen.dart';
+import '../di/service_locator.dart';
 
 class AppPages {
   static final pages = [
-    GetPage(name: AppRoutes.splash, page: () => const MainSplashScreen()),
+    GetPage(
+      name: AppRoutes.splash,
+      page: () => const MainSplashScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<ProfileController>(
+          () => ProfileController(
+            sl<GetProfileUseCase>(),
+            sl<UpdateProfileUseCase>(),
+            sl<VerifyUpdateProfileOtpUseCase>(),
+            sl<ResendUpdateProfileOtpUseCase>(),
+            sl<UpdateStatusSendOtpUseCase>(),
+            sl<VerifyUpdateStatusOtpUseCase>(),
+          ),
+          fenix: true,
+        );
+      }),
+    ),
     GetPage(name: AppRoutes.intro, page: () => const IntroPage()),
     GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
     GetPage(name: AppRoutes.selectSim, page: () => const SelectSimPage()),
@@ -95,7 +121,17 @@ class AppPages {
     GetPage(name: AppRoutes.enterPin, page: () => const PinCodeEnterPage()),
     GetPage(name: AppRoutes.successScreen, page: () => const SuccessScreen()),
     GetPage(name: AppRoutes.home, page: () => const HomePageScreen()),
-    GetPage(name: AppRoutes.main, page: () => const NavPageScreen()),
+    GetPage(
+      name: AppRoutes.main,
+      page: () => const NavPageScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<HomePageController>(
+          () => HomePageController(),
+
+          fenix: true,
+        );
+      }),
+    ),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
     GetPage(name: AppRoutes.lowWallet, page: () => const LowWalletScreen()),
     //
@@ -125,7 +161,13 @@ class AppPages {
       name: AppRoutes.withdrawrequest2,
       page: () => const WalletCreditScreen(),
     ),
-    GetPage(name: AppRoutes.retailer, page: () => const RetailerScreen()),
+    GetPage(
+      name: AppRoutes.retailer,
+      page: () => const RetailerScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      }),
+    ),
     GetPage(
       name: AppRoutes.createRetailerScreen,
       page: () => const CreateRetailerScreen(),

@@ -12,13 +12,13 @@ import 'package:maxpay/view/home/widgets/news_ticker.dart';
 import 'package:maxpay/view/home/widgets/stat_card.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 
-
 class HomePageScreen extends StatelessWidget {
   const HomePageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -58,9 +58,8 @@ class HomePageScreen extends StatelessWidget {
                           },
                           title: 'Add Wallet',
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                          border: Border.all(color: AppColors.card4),
+                          borderColor: AppColors.card4,
                           imageWidget: SvgPicture.asset(
-
                             AssetImages.addWallet,
                             height: 32.h,
                           ),
@@ -72,8 +71,10 @@ class HomePageScreen extends StatelessWidget {
                           title: 'Wallet Balance',
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
                           value: '₹25500.00',
-                          textColor: const Color(0xff636363),
-                          border: Border.all(color: AppColors.card4),
+                          textColor: isDark
+                              ? const Color.fromARGB(255, 171, 171, 171)
+                              : AppColors.darktextclr,
+                          borderColor: AppColors.card4,
                           imageWidget: SvgPicture.asset(
                             AssetImages.walletBalance,
                             height: 32.h,
@@ -89,35 +90,42 @@ class HomePageScreen extends StatelessWidget {
                             textColor: Colors.white,
 
                             bgColor: AppColors.clrPrimary,
-                            border: Border.all(
-                              color: const Color(0xFFFF383C),
-                              width: 1.5.w,
-                            ),                            imageWidget: SvgPicture.asset(
+                            borderColor: isDark
+                                ? AppColors.white
+                                : AppColors.redClr,
+                            imageWidget: SvgPicture.asset(
                               AssetImages.transactions,
                               height: 32.h,
                               colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,),
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
                         StatCard(
                           title: 'Todays Credit',
+                          textColor: isDark
+                              ? const Color.fromARGB(255, 171, 171, 171)
+                              : AppColors.darktextclr,
                           value: '₹2500.00',
-                          textColor: const Color(0xff636363),
+
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                          border: Border.all(color: AppColors.card4),
+                          borderColor: AppColors.card4,
                           imageWidget: SvgPicture.asset(
                             AssetImages.todaysCredit,
                             height: 32.h,
                           ),
                         ),
                         StatCard(
-                          title: "Today's\nTransfer",
+                          title: "Today's Transfer",
                           value: '₹2500.00',
-                          textColor: const Color(0xff636363),
+                          textColor:
+                              Theme.of(context).brightness == Brightness.dark
+                              ? const Color.fromARGB(255, 171, 171, 171)
+                              : AppColors.darktextclr,
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                          border: Border.all(color: AppColors.card4),
+                          borderColor: AppColors.card4,
                           imageWidget: SvgPicture.asset(
                             AssetImages.refunded,
                             height: 32.h,
@@ -125,14 +133,15 @@ class HomePageScreen extends StatelessWidget {
                         ),
                         StatCard(
                           onTap: () {
-
                             Get.toNamed(AppRoutes.myearning);
                           },
                           title: 'Today Earnings',
-                          textColor: const Color(0xff636363),
+                          textColor: isDark
+                              ? const Color.fromARGB(255, 171, 171, 171)
+                              : AppColors.darktextclr,
                           bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
                           value: '300.00',
-                          border: Border.all(color: AppColors.card4),
+                          borderColor: AppColors.card4,
                           imageWidget: SvgPicture.asset(
                             AssetImages.complaints,
                             height: 32.h,
@@ -149,13 +158,11 @@ class HomePageScreen extends StatelessWidget {
                           },
                           title: 'Success',
                           value: '₹5,000.00 /\n20 Nos',
-                          border: Border.all(
-                            color: Colors.transparent,
-                            width: 0,
-                          ),
+                          borderColor: AppColors.card4,
+                          valueColor: AppColors.darkbgBlack,
                           imageWidget: SvgPicture.asset(
-                            AssetImages.success,
-                            height: 45.h,
+                            AssetImages.successIcon,
+                            height: 25.h,
                           ),
 
                           textColor: Colors.green,
@@ -170,13 +177,11 @@ class HomePageScreen extends StatelessWidget {
                           },
                           title: 'Processing',
                           value: '₹5,000.00 /\n20 Nos',
-                          border: Border.all(
-                            color: Colors.transparent,
-                            width: 0,
-                          ),
+                          borderColor: AppColors.card4,
+                          valueColor: AppColors.darkbgBlack,
                           imageWidget: SvgPicture.asset(
-                            AssetImages.processing,
-                            height: 45.h,
+                            AssetImages.processIcon,
+                            height: 25.h,
                           ),
 
                           textColor: Colors.orange,
@@ -191,45 +196,15 @@ class HomePageScreen extends StatelessWidget {
                           },
                           title: 'Failed',
                           value: '₹5,000.00 /\n20 Nos',
-                          border: Border.all(
-                            color: Colors.transparent,
-                            width: 0,
-                          ),
+                          borderColor: AppColors.card4,
+                          valueColor: AppColors.darkbgBlack,
                           imageWidget: SvgPicture.asset(
-                            AssetImages.failedAll,
-                            height: 45.h,
+                            AssetImages.failedIcon,
+                            height: 25.h,
                           ),
 
                           textColor: Colors.red,
                         ),
-
-                        // StatCard(
-                        //   bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                        //   title: 'Upgrade Package',
-                        //   border: Border.all(color: AppColors.card4),
-                        //   imageWidget: SvgPicture.asset(
-                        //     AssetImages.failedAll,
-                        //     height: 45.h,
-                        //   ),
-                        // ),
-                        // StatCard(
-                        //   title: 'Business Group',
-                        //   bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                        //   border: Border.all(color: AppColors.card4),
-                        //   imageWidget: SvgPicture.asset(
-                        //     AssetImages.failedAll,
-                        //     height: 45.h,
-                        //   ),
-                        // ),
-                        // StatCard(
-                        //   title: 'Referral Link',
-                        //   bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                        //   border: Border.all(color: AppColors.card4),
-                        //   imageWidget: SvgPicture.asset(
-                        //     AssetImages.failedAll,
-                        //     height: 45.h,
-                        //   ),
-                        // ),
                       ],
                     ),
 

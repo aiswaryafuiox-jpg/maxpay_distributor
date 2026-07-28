@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_card.dart';
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_top_tabs.dart';
 
+import '../../../controller/retailer_controller.dart';
 import '../../../core/constants/colors.dart';
 import '../../../global_widget/custom_app.dart';
 
@@ -14,43 +17,60 @@ class RetailerScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(title: "Retailers",
+      appBar: const CommonAppBar(title: "Retailers"),
+      body: RefreshIndicator(
+        onRefresh: () => Get.find<RetailerController>().fetchRetailers(),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const RetailerTopTabs(),
+              const SizedBox(height: 18),
 
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const RetailerTopTabs(),
-            const SizedBox(height: 18),
-
-            Center(
-              child: SizedBox(
-                width: 300, // Adjust width as needed
-                child: Divider(
-                  color: isDark
-                      ? AppColors.darkFilterBorder
-                      : Colors.grey.shade300,
-                  thickness: 1,
+              Center(
+                child: SizedBox(
+                  width: 300, // Adjust width as needed
+                  child: Divider(
+                    color: isDark
+                        ? AppColors.darkFilterBorder
+                        : Colors.grey.shade300,
+                    thickness: 1,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
+              Expanded(
+                child: GetBuilder<RetailerController>(
+                  init:
+                      Get.find<
+                        RetailerController
+                      >(), // Explicitly initialize if needed
+                  builder: (controller) {
+                    return Obx(() {
+                      if (controller.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
+                      if (controller.retailers.isEmpty) {
+                        return const Center(child: Text("No retailers found."));
+                      }
 
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                children: [
-                  RetailerCard(isActive: true),
-                  RetailerCard(isActive: false),
-                ],
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: controller.retailers.length,
+                        itemBuilder: (context, index) {
+                          final retailer = controller.retailers[index];
+                          return RetailerCard(retailer: retailer);
+                        },
+                      );
+                    });
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

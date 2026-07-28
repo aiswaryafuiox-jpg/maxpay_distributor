@@ -28,6 +28,10 @@ class AssetImages {
   static const success = "assets/images/success.svg";
   static const processing = "assets/images/processing.svg";
   static const failedAll = "assets/images/failed_all.svg";
+  static const successIcon = "assets/images/successs_icon1.svg";
+  static const processIcon = "assets/images/process_icon1.svg";
+
+  static const failedIcon = "assets/images/failed_icon1.svg";
   static const statement = "assets/images/statement.svg";
   //support
   static const call = "assets/images/call.svg";

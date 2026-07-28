@@ -33,7 +33,7 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color card1 = Color(0xFFDCFFEE);
   static const Color card2 = Color(0xFFFFF0D8);
-  static const Color card3 = Color(0xFFFFE4E8);
+  static const Color card3 = Color.fromRGBO(255, 204, 211, 1);
   static const Color card4 = Color(0x66495BFF);
   static const Color fav = Color.fromARGB(255, 225, 168, 145);
   static const Color fav2 = Color(0xFF0DB561);
@@ -87,7 +87,10 @@ class AppColors {
   static const Color silverMid = Color(0xFFABBDC8);
   static const Color silverEnd = Color(0xFFBCCAD7);
   static const Color pinText = Color(0xFF0F1010);
-
+  static const Color graph = Color(0xffEAEBF1);
+  static const Color chart = Color(0xff615E83);
+  static const Color chart1 = Color(0xff6D4E3F);
+  static const Color chart2 = Color(0xffFFDDBE);
   static const LinearGradient silverGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -100,15 +103,7 @@ class AppColors {
       Color(0xFFABBDC8),
       Color(0xFFBCCAD7),
     ],
-    stops: [
-      0.00,
-      0.18,
-      0.31,
-      0.49,
-      0.62,
-      0.79,
-      0.95,
-    ],
+    stops: [0.00, 0.18, 0.31, 0.49, 0.62, 0.79, 0.95],
   );
   static const basicGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -135,8 +130,7 @@ class AppColors {
       Color(0xFF7F7F7F),
       Color(0xFFD4D4D4),
     ],
-    stops: [0.00, 0.25, 0.53, 0.72, 0.92, 1.00,
-    ],
+    stops: [0.00, 0.25, 0.53, 0.72, 0.92, 1.00],
   );
   static const LinearGradient goldGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -150,15 +144,7 @@ class AppColors {
       Color(0xFFDC702A),
       Color(0xFF733D19),
     ],
-    stops: [
-      0.00,
-      0.00,
-      0.21,
-      0.46,
-      0.68,
-      0.84,
-      1.00,
-    ],
+    stops: [0.00, 0.00, 0.21, 0.46, 0.68, 0.84, 1.00],
   );
   static const LinearGradient goldPlusGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -171,14 +157,6 @@ class AppColors {
       Color(0xFFF7D14E),
       Color(0xFFD4A041),
     ],
-    stops: [
-      0.00,
-      0.00,
-      0.15,
-      0.38,
-      0.77,
-      1.00,
-    ],
+    stops: [0.00, 0.00, 0.15, 0.38, 0.77, 1.00],
   );
 }
-

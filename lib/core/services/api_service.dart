@@ -53,7 +53,9 @@ class ApiService {
           log("ERROR => ${e.message}");
           log("ERROR RESPONSE => ${e.response?.data}");
 
-          if (e.requestOptions.path.contains(ApiRoutes.verifyPin)) {
+          if (e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
+              e.requestOptions.path.contains(ApiRoutes.updateStatusVerifyOtp) ||
+              e.requestOptions.path.contains(ApiRoutes.updateProfileVerifyOtp)) {
             return handler.next(e);
           }
 

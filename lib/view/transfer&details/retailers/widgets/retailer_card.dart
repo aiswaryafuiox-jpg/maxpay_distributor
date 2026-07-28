@@ -5,14 +5,14 @@ import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/routes_path.dart';
 import '../../../../core/utils/texthelper.dart';
 
+import '../../../../data/model/retailer/retailer_list_response_model.dart';
+import '../../../../controller/retailer_controller.dart';
+import 'package:get/get.dart';
 
 class RetailerCard extends StatelessWidget {
-  final bool isActive;
+  final Retailer retailer;
 
-  const RetailerCard({
-    super.key,
-    required this.isActive,
-  });
+  const RetailerCard({super.key, required this.retailer});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,7 @@ class RetailerCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkplceholder
-            : AppColors.lightbg2,
+        color: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: isDark
@@ -36,7 +34,6 @@ class RetailerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Text.rich(
             TextSpan(
               children: [
@@ -47,12 +44,10 @@ class RetailerCard extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: "John Williamson",
+                  text: retailer.retailerName ?? "-",
                   style: TextHelper.max1.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                   ),
                 ),
               ],
@@ -71,12 +66,12 @@ class RetailerCard extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: "+91 9876546271",
+                  text: retailer.regMobileNumber != null
+                      ? "+91 ${retailer.regMobileNumber}"
+                      : "-",
                   style: TextHelper.max1.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                   ),
                 ),
               ],
@@ -86,9 +81,7 @@ class RetailerCard extends StatelessWidget {
           const SizedBox(height: 12),
 
           Divider(
-            color: isDark
-                ? AppColors.darkFilterBorder
-                : Colors.grey.shade300,
+            color: isDark ? AppColors.darkFilterBorder : Colors.grey.shade300,
             thickness: 1,
           ),
 
@@ -103,14 +96,12 @@ class RetailerCard extends StatelessWidget {
                   Text(
                     "Due Amount",
                     style: TextHelper.max1.copyWith(
-                      color: isDark
-                          ? AppColors.textclr
-                          : AppColors.clrTextgrey,
+                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "₹100.00",
+                    "₹${retailer.dueAmount ?? 0.00}",
                     style: TextHelper.max2.copyWith(
                       color: Color(0xFFEE0023),
                       fontSize: 20,
@@ -125,14 +116,12 @@ class RetailerCard extends StatelessWidget {
                   Text(
                     "Wallet Amount",
                     style: TextHelper.max1.copyWith(
-                      color: isDark
-                          ? AppColors.textclr
-                          : AppColors.clrTextgrey,
+                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "₹500.00",
+                    "₹${retailer.walletAmount ?? 0.00}",
                     style: TextHelper.max2.copyWith(
                       color: AppColors.clrPrimary,
                       fontSize: 20,
@@ -156,11 +145,13 @@ class RetailerCard extends StatelessWidget {
                       TextSpan(
                         text: "Executive Name: ",
                         style: TextHelper.max1.copyWith(
-                          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                          color: isDark
+                              ? AppColors.textclr
+                              : AppColors.clrTextgrey,
                         ),
                       ),
                       TextSpan(
-                        text: "Klein Moriarti",
+                        text: retailer.executiveName ?? "-",
                         style: TextHelper.max1.copyWith(
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -178,8 +169,9 @@ class RetailerCard extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                gradient: AppColors.silverGradient,
-    borderRadius: BorderRadius.circular(5),),
+                  gradient: AppColors.silverGradient,
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Text(
                   "Silver",
                   style: TextHelper.max1.copyWith(
@@ -191,186 +183,143 @@ class RetailerCard extends StatelessWidget {
             ],
           ),
 
-      const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-      // Row(
-      //   children: [
-      //     Expanded(
-      //       child: SizedBox(
-      //         height: 34,
-      //         child: ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             elevation: 0,
-      //             backgroundColor: isActive ? Colors.green : Colors.red,
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.circular(6),
-      //             ),
-      //           ),
-      //           onPressed: () {},
-      //           child: Text(
-      //             isActive ? "Active" : "Inactive",
-      //             maxLines: 1,
-      //             overflow: TextOverflow.ellipsis,
-      //             style: TextHelper.max1.copyWith(
-      //               color: Colors.white,
-      //               fontSize: 10,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //
-      //     const SizedBox(width: 8),
-      //
-      //     Expanded(
-      //       child: SizedBox(
-      //         height: 34,
-      //         child: ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             elevation: 0,
-      //             backgroundColor: AppColors.view,
-      //             alignment: Alignment.centerLeft,
-      //             padding: const EdgeInsets.symmetric(horizontal: 8),
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.circular(6),
-      //             ),
-      //           ),
-      //           onPressed: () {},
-      //           child: Text(
-      //             "View Details",
-      //             maxLines: 1,
-      //             overflow: TextOverflow.ellipsis,
-      //             style: TextHelper.max1.copyWith(
-      //               color: Colors.white,
-      //               fontSize: 10,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //
-      //     const SizedBox(width: 8),
-      //
-      //     Expanded(
-      //       child: SizedBox(
-      //         height: 34,
-      //         child: ElevatedButton(
-      //           style: ElevatedButton.styleFrom(
-      //             elevation: 0,
-      //             backgroundColor: Colors.green,
-      //             shape: RoundedRectangleBorder(
-      //               borderRadius: BorderRadius.circular(6),
-      //             ),
-      //           ),
-      //           onPressed: () {},
-      //           child: Text(
-      //             "Add Wallet",
-      //             maxLines: 1,
-      //             overflow: TextOverflow.ellipsis,
-      //             style: TextHelper.max1.copyWith(
-      //               color: Colors.white,
-      //               fontSize: 10,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // )]));}}
-        Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: SizedBox(
-                height: 34,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isActive ? Colors.green : Colors.red,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    isActive ? "Active" : "Inactive",
-                    maxLines: 1,
-                    style: TextHelper.max1.copyWith(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: SizedBox(
+          //         height: 34,
+          //         child: ElevatedButton(
+          //           style: ElevatedButton.styleFrom(
+          //             elevation: 0,
+          //             backgroundColor: isActive ? Colors.green : Colors.red,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(6),
+          //             ),
+          //           ),
+          //           onPressed: () {},
+          //           child: Text(
+          //             isActive ? "Active" : "Inactive",
+          //             maxLines: 1,
+          //             overflow: TextOverflow.ellipsis,
+          //             style: TextHelper.max1.copyWith(
+          //               color: Colors.white,
+          //               fontSize: 10,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //
+          //     const SizedBox(width: 8),
+          //
+          //     Expanded(
+          //       child: SizedBox(
+          //         height: 34,
+          //         child: ElevatedButton(
+          //           style: ElevatedButton.styleFrom(
+          //             elevation: 0,
+          //             backgroundColor: AppColors.view,
+          //             alignment: Alignment.centerLeft,
+          //             padding: const EdgeInsets.symmetric(horizontal: 8),
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(6),
+          //             ),
+          //           ),
+          //           onPressed: () {},
+          //           child: Text(
+          //             "View Details",
+          //             maxLines: 1,
+          //             overflow: TextOverflow.ellipsis,
+          //             style: TextHelper.max1.copyWith(
+          //               color: Colors.white,
+          //               fontSize: 10,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //
+          //     const SizedBox(width: 8),
+          //
+          //     Expanded(
+          //       child: SizedBox(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              RetailerListCardButton(
+                color: retailer.isActive == 1
+                    ? AppColors.activeBtn
+                    : AppColors.redClr,
+                textColor: AppColors.white,
+                onPressed: () {},
+                text: retailer.isActive == 1 ? "Active" : "Inactive",
               ),
-            ),
 
-            const SizedBox(width: 6),
+              const SizedBox(width: 6),
 
-            Expanded(
-              flex: 4,
-              child: SizedBox(
-                height: 34,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.view,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  onPressed: () {
-
-                      Get.toNamed(AppRoutes.retviewDetailsScreen);
-                    },
-
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "View Details",
-                      maxLines: 1,
-                      style: TextHelper.max1.copyWith(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
+              RetailerListCardButton(
+                onPressed: () {
+                  if (retailer.id != null) {
+                    Get.toNamed(
+                      AppRoutes.retviewDetailsScreen,
+                      arguments: {'id': retailer.id.toString()},
+                    );
+                  }
+                },
+                color: AppColors.view,
+                textColor: AppColors.white,
+                text: "View Details",
               ),
-            ),
 
-            const SizedBox(width: 6),
+              const SizedBox(width: 6),
 
-            Expanded(
-              flex: 4,
-              child: SizedBox(
-                height: 34,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    elevation: 0,
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.retaddWalletScreen);
-                  },
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      "Add Wallet",
-                      maxLines: 1,
-                      style: TextHelper.max1.copyWith(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ),
+              RetailerListCardButton(
+                color: AppColors.activeBtn,
+                textColor: AppColors.white,
+                onPressed: () {
+                  Get.find<RetailerController>().fetchAddWalletDetails(retailer.id.toString());
+                },
+                text: "Add Wallet",
               ),
-            ),
-          ],
-        )]));}}
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RetailerListCardButton extends StatelessWidget {
+  final String text;
+  final Color color, textColor;
+  final VoidCallback onPressed;
+  const RetailerListCardButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.color = AppColors.activeColor,
+    this.textColor = AppColors.darkbgBlack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextHelper.max1.copyWith(color: textColor, fontSize: 10),
+          ),
+        ),
+      ),
+    );
+  }
+}
