@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_instance/get_instance.dart';
 import 'package:get/route_manager.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/responsive.dart';
@@ -74,6 +76,7 @@ class SuccessScreen extends StatelessWidget {
                   text: 'Go to Home',
                   height: isTablet ? 70.h : 56.h,
                   onPressed: () {
+                    Get.find<ProfileController>().fetchProfile();
                     Get.toNamed(AppRoutes.main);
                   },
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:get/get.dart';
 import '../../../controller/retailer_controller.dart';
@@ -25,43 +26,33 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
   }
 
   InputDecoration fieldDecoration(
-      BuildContext context,
-      String hint,
-      bool isDark,
-      ) {
+    BuildContext context,
+    String hint,
+    bool isDark,
+  ) {
     return InputDecoration(
       hintText: hint,
       hintStyle: TextHelper.max1.copyWith(
         color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
       ),
       filled: true,
-      fillColor:
-      isDark ? AppColors.darkplceholder : AppColors.lightbg2,
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: 14.w,
-        vertical: 14.h,
-      ),
+      fillColor: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
+      contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.r),
         borderSide: BorderSide(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : Colors.grey.shade300,
+          color: isDark ? AppColors.darkFilterBorder : Colors.grey.shade300,
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.r),
         borderSide: BorderSide(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : Colors.grey.shade300,
+          color: isDark ? AppColors.darkFilterBorder : Colors.grey.shade300,
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(
-          color: AppColors.clrPrimary,
-        ),
+        borderSide: BorderSide(color: AppColors.clrPrimary),
       ),
     );
   }
@@ -70,9 +61,7 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
     return Text(
       text,
       style: TextHelper.max4.copyWith(
-        color: isDark
-            ? AppColors.textclr
-            : AppColors.clrTextblack,
+        color: isDark ? AppColors.textclr : AppColors.clrTextblack,
       ),
     );
   }
@@ -84,9 +73,7 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Add Wallet",
-      ),
+      appBar: const CommonAppBar(title: "Add Wallet"),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(20.w),
@@ -103,73 +90,74 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                   children: [
                     /// Wallet Card
                     Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 18.h),
-                decoration: BoxDecoration(
-                  color: AppColors.clrPrimary,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      "Wallet Balance",
-                      style: TextHelper.max1.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 18.h),
+                      decoration: BoxDecoration(
+                        color: AppColors.clrPrimary,
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Wallet Balance",
+                            style: TextHelper.max1.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 6.h),
+                          Text(
+                            (details.walletBalance ?? 0.00).currencyIndian,
+                            style: TextHelper.max13(
+                              context,
+                            ).copyWith(color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 6.h),
-                      Text(
-                        "₹ ${details.walletBalance ?? 0.00}",
-                        style: TextHelper.max13(context).copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
-                SizedBox(height: 25.h),
+                    SizedBox(height: 25.h),
 
-                buildLabel("User Name", isDark),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  initialValue: details.userName ?? "-",
-                  readOnly: true,
-                  decoration: fieldDecoration(context, "", isDark),
-                ),
+                    buildLabel("User Name", isDark),
+                    SizedBox(height: 8.h),
+                    TextFormField(
+                      initialValue: details.userName ?? "-",
+                      readOnly: true,
+                      decoration: fieldDecoration(context, "", isDark),
+                    ),
 
-                SizedBox(height: 16.h),
+                    SizedBox(height: 16.h),
 
-                buildLabel("Last Transfer Amount", isDark),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  initialValue: "₹ ${details.lastTransferAmount ?? 0.00}",
-                  readOnly: true,
-                  decoration: fieldDecoration(context, "", isDark),
-                ),
+                    buildLabel("Last Transfer Amount", isDark),
+                    SizedBox(height: 8.h),
+                    TextFormField(
+                      initialValue: (details.lastTransferDateTime ?? ' 0.00')
+                          .currencyIndian,
+                      readOnly: true,
+                      decoration: fieldDecoration(context, "", isDark),
+                    ),
 
-                SizedBox(height: 16.h),
+                    SizedBox(height: 16.h),
 
-                buildLabel("Last Transfer Date & Time", isDark),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  initialValue: details.lastTransferDateTime ?? "-",
-                  readOnly: true,
-                  decoration: fieldDecoration(context, "", isDark),
-                ),
+                    buildLabel("Last Transfer Date & Time", isDark),
+                    SizedBox(height: 8.h),
+                    TextFormField(
+                      initialValue: details.lastTransferDateTime ?? "-",
+                      readOnly: true,
+                      decoration: fieldDecoration(context, "", isDark),
+                    ),
 
-                SizedBox(height: 16.h),
+                    SizedBox(height: 16.h),
 
-                buildLabel("Outstanding", isDark),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  initialValue: "₹ ${details.outstanding ?? 0.00}",
-                  readOnly: true,
-                  decoration: fieldDecoration(context, "", isDark),
-                ),
+                    buildLabel("Outstanding", isDark),
+                    SizedBox(height: 8.h),
+                    TextFormField(
+                      initialValue: "₹ ${details.outstanding ?? 0.00}",
+                      readOnly: true,
+                      decoration: fieldDecoration(context, "", isDark),
+                    ),
 
-                SizedBox(height: 16.h),
+                    SizedBox(height: 16.h),
                   ],
                 );
               }),
@@ -179,33 +167,32 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
               TextField(
                 controller: amountController,
                 keyboardType: TextInputType.number,
-                decoration: fieldDecoration(
-                  context,
-                  "Enter Amount",
-                  isDark,
-                ),
+                decoration: fieldDecoration(context, "Enter Amount", isDark),
               ),
 
               SizedBox(height: 40.h),
 
               Center(
-                child: Obx(() => CommonButton(
-                  title: "Update",
-                  isLoading: _controller.isAddWalletLoading.value,
-                  onTap: () {
-                    final id = _controller.addWalletDetails.value?.retailerId?.toString();
-                    final amount = amountController.text.trim();
-                    if (id != null && amount.isNotEmpty) {
-                      _controller.submitAddWallet(id, amount);
-                    } else if (amount.isEmpty) {
-                      Get.snackbar(
-                        "Required",
-                        "Please enter an amount",
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    }
-                  },
-                )),
+                child: Obx(
+                  () => CommonButton(
+                    title: "Update",
+                    isLoading: _controller.isAddWalletLoading.value,
+                    onTap: () {
+                      final id = _controller.addWalletDetails.value?.retailerId
+                          ?.toString();
+                      final amount = amountController.text.trim();
+                      if (id != null && amount.isNotEmpty) {
+                        _controller.submitAddWallet(id, amount);
+                      } else if (amount.isEmpty) {
+                        Get.snackbar(
+                          "Required",
+                          "Please enter an amount",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
 
               SizedBox(height: 20.h),

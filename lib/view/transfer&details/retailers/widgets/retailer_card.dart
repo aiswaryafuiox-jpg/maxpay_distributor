@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/view/transfer&details/retailers/widgets/retailor_cardbutton.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/routes_path.dart';
 import '../../../../core/utils/texthelper.dart';
@@ -99,7 +101,7 @@ class RetailerCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "₹${retailer.dueAmount ?? 0.00}",
+                    (retailer.dueAmount ?? 0.00).currencyIndian,
                     style: TextHelper.max2.copyWith(
                       color: Color(0xFFEE0023),
                       fontSize: 20,
@@ -119,7 +121,7 @@ class RetailerCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "₹${retailer.walletAmount ?? 0.00}",
+                    (retailer.walletAmount ?? 0.00).currencyIndian,
                     style: TextHelper.max2.copyWith(
                       color: AppColors.clrPrimary,
                       fontSize: 20,
@@ -277,46 +279,15 @@ class RetailerCard extends StatelessWidget {
                 color: AppColors.activeBtn,
                 textColor: AppColors.white,
                 onPressed: () {
-                  Get.find<RetailerController>().fetchAddWalletDetails(retailer.id.toString());
+                  Get.find<RetailerController>().fetchAddWalletDetails(
+                    retailer.id.toString(),
+                  );
                 },
                 text: "Add Wallet",
               ),
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class RetailerListCardButton extends StatelessWidget {
-  final String text;
-  final Color color, textColor;
-  final VoidCallback onPressed;
-  const RetailerListCardButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.color = AppColors.activeColor,
-    this.textColor = AppColors.darkbgBlack,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            style: TextHelper.max1.copyWith(color: textColor, fontSize: 10),
-          ),
-        ),
       ),
     );
   }

@@ -4,9 +4,8 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
-import 'package:maxpay/core/di/service_locator.dart';
-import 'package:maxpay/controller/transaction_controller.dart';
 import 'package:maxpay/view/transaction_screens/widget/transaction_card.dart';
+import '../../controller/transaction_controller.dart';
 
 import '../../global_widget/custom_app.dart';
 
@@ -22,10 +21,17 @@ class TransactionScreen extends StatefulWidget {
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  final TransactionController controller = Get.put(sl<TransactionController>());
-
+  final TransactionController _controller = Get.find<TransactionController>();
   bool isFavorite = false;
   final Set<int> _favoriteCards = <int>{};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.fetchTransactionReport(statusOverride: widget.status.name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,208 +69,172 @@ class _TransactionScreenState extends State<TransactionScreen> {
         child: Column(
           children: [
             /// FILTER CONTAINER
-            if (isSuccess)
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: theme.brightness == Brightness.light ? AppColors.border : AppColors.darkplceholder,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: theme.brightness == Brightness.light ? AppColors.totalborde2.withValues(alpha: 0.1) : AppColors.darkFilterBorder,
-                  ),
+            Container(
+              padding: const EdgeInsets.all(12),
+
+              decoration: BoxDecoration(
+                color: theme.brightness == Brightness.light
+                    ? AppColors.border
+                    : AppColors.darkplceholder,
+
+                borderRadius: BorderRadius.circular(10),
+
+                border: Border.all(
+                  color: theme.brightness == Brightness.light
+                      ? AppColors.totalborde2.withValues(alpha: 0.1)
+                      : AppColors.darkFilterBorder,
                 ),
-                child: Column(
-                  children: [
-                    /// SELECT CREDIT TYPE
-                    Obx(() {
-                      return DropdownButtonFormField<String>(
-                        value: controller.selectedProductId.value.isEmpty ? null : controller.selectedProductId.value,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: theme.brightness == Brightness.light ? Colors.white : AppColors.darkplceholder,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                          isDense: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: theme.brightness == Brightness.light ? AppColors.darktextclr.withValues(alpha: 0.3) : AppColors.darkFilterBorder,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              color: theme.brightness == Brightness.light ? AppColors.darktextclr.withValues(alpha: 0.3) : AppColors.darkFilterBorder,
-                            ),
-                          ),
+              ),
+
+              child: Column(
+                children: [
+                  /// SELECT CREDIT TYPE
+                  GestureDetector(
+                    onTap: () {
+                      _showProductsBottomSheet(context);
+                    },
+                    child: Container(
+                      width: double.infinity,
+
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
+
+                      decoration: BoxDecoration(
+                        color: theme.brightness == Brightness.light
+                            ? Colors.white
+                            : AppColors.darkplceholder,
+
+                        borderRadius: BorderRadius.circular(8),
+
+                        border: Border.all(
+                          color: theme.brightness == Brightness.light
+                              ? AppColors.darktextclr.withValues(alpha: 0.3)
+                              : AppColors.darkFilterBorder,
                         ),
-                        hint: Text(
-                          "Select Product",
-                          style: TextHelper.max1.copyWith(
-                            color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                          ),
-                        ),
-                        items: controller.productList.map((product) {
-                          return DropdownMenuItem<String>(
-                            value: product.id?.toString() ?? "",
-                            child: Text(
-                              product.name ?? "Unknown",
+                      ),
+
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                        children: [
+                          Obx(
+                            () => Text(
+                              _controller.selectedProduct.value?.name ??
+                                  "Select Product",
                               style: TextHelper.max1.copyWith(
-                                color: isDark ? AppColors.textclr : AppColors.darktextclr,
+                                color: isDark
+                                    ? AppColors.textclr
+                                    : AppColors.clrTextgrey,
                               ),
                             ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            controller.selectedProductId.value = value;
-                            controller.fetchTransactionSuccessReport();
-                          }
-                        },
-                      );
-                    }),
-                    const SizedBox(height: 10),
-                    /// DATE FIELD
-                    Row(
+                          ),
+
+                          Icon(
+                            Icons.chevron_right,
+                            color: isDark
+                                ? AppColors.textclr
+                                : theme.colorScheme.onSurfaceVariant,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  /// DATE FIELD
+                  GestureDetector(
+                    onTap: () => _controller.selectDateRange(context),
+                    child: Row(
                       children: [
                         Expanded(
-                          child: _dateField(
+                          child: customField(
                             context,
-                            hint: "From Date",
-                            textController: controller.fromDateController,
-                            isDark: isDark,
+                            hint: "DD/MM/YYYY",
+                            controller: _controller.dateController,
+                            enabled: false,
                           ),
                         ),
+
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Icon(Icons.arrow_forward, color: theme.colorScheme.onSurface),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            color: theme.colorScheme.onSurface,
+                            size: 16,
+                          ),
                         ),
+
                         Expanded(
-                          child: _dateField(
+                          child: customField(
                             context,
-                            hint: "To Date",
-                            textController: controller.toDateController,
-                            isDark: isDark,
+                            hint: "DD/MM/YYYY",
+                            controller: _controller.dateController,
+                            enabled: false,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    /// SEARCH FIELD
-                    _searchField(
-                      context,
-                      hint: "Search",
-                      textController: controller.searchController,
-                      isDark: isDark,
-                      onSearch: () {
-                        controller.fetchTransactionSuccessReport();
-                      },
-                    ),
-                  ],
-                ),
-              ),
+                  ),
 
-            if (isSuccess) const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
-            if (isSuccess)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.clrPrimary,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        Text("Total Transactions", style: TextHelper.max16),
-                        const SizedBox(height: 4),
-                        Text(controller.totalTransaction.value, style: TextHelper.lato12),
-                      ],
+                  /// SEARCH FIELD
+                  customField(
+                    context,
+                    hint: "Search",
+                    controller: _controller.searchController,
+                    onChanged: (v) {
+                      // Optional: debounce this or rely on submitted
+                    },
+                    onSubmitted: (v) {
+                      _controller.fetchTransactionReport();
+                    },
+                    prefixWidget: SvgPicture.asset(
+                      AssetImages.search,
+                      colorFilter: ColorFilter.mode(
+                        isDark ? AppColors.textclr : AppColors.darktextclr,
+                        BlendMode.srcIn,
+                      ),
                     ),
-                    Container(height: 40, width: 1, color: Colors.white.withValues(alpha: 0.5)),
-                    Column(
-                      children: [
-                        Text("Total Profit", style: TextHelper.max16),
-                        const SizedBox(height: 4),
-                        Text("₹ ${controller.totalProfit.value}", style: TextHelper.lato12),
-                      ],
-                    ),
-                  ],
-                )),
+                  ),
+                ],
               ),
+            ),
 
             const SizedBox(height: 15),
 
             /// TRANSACTION LIST
             Expanded(
               child: Obx(() {
-                if (isSuccess && controller.isLoading.value) {
+                if (_controller.isReportLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (isSuccess && controller.transactionList.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 24.0),
-                      child: Text(
-                        "Data not found",
-                        style: TextHelper.max2.copyWith(
-                          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                        ),
-                      ),
-                    ),
-                  );
+                if (_controller.transactions.isEmpty) {
+                  return const Center(child: Text("No transactions found"));
                 }
 
-                int itemCount = isSuccess ? controller.transactionList.length : 5;
-
                 return ListView.builder(
-                  itemCount: itemCount,
+                  itemCount: _controller.transactions.length,
                   itemBuilder: (context, index) {
-                    if (isSuccess) {
-                      final item = controller.transactionList[index];
-                      return TransactionCard(
-                        bgColor: bgColor,
-                        status: widget.status,
-                        isFavorite: _favoriteCards.contains(index),
-                        onFavoriteTap: () {
-                          setState(() {
-                            if (!_favoriteCards.add(index)) {
-                              _favoriteCards.remove(index);
-                            }
-                          });
-                        },
-                        transactionId: item.transactionNo ?? "N/A",
-                        dateTime: item.dateTime ?? "N/A",
-                        productName: item.productName ?? "Unknown",
-                        productLogo: item.productLogo ?? "",
-                        amount: item.amount ?? "0",
-                        number: item.transactionNo ?? "N/A",
-                        profit: item.commission?.profit ?? "0",
-                      );
-                    } else {
-                      return TransactionCard(
-                        bgColor: bgColor,
-                        status: widget.status,
-                        isFavorite: _favoriteCards.contains(index),
-                        onFavoriteTap: () {
-                          setState(() {
-                            if (!_favoriteCards.add(index)) {
-                              _favoriteCards.remove(index);
-                            }
-                          });
-                        },
-                        transactionId: "TXN6453564",
-                        dateTime: "29-11-2026 07:38:43 PM",
-                        productName: "Jio",
-                        productLogo: "",
-                        amount: "365.00",
-                        number: "******7823",
-                        profit: "0",
-                      );
-                    }
+                    final item = _controller.transactions[index];
+                    return TransactionCard(
+                      item: item,
+                      bgColor: bgColor,
+                      status: widget.status,
+                      isFavorite: _favoriteCards.contains(index),
+                      onFavoriteTap: () {
+                        setState(() {
+                          if (!_favoriteCards.add(index)) {
+                            _favoriteCards.remove(index);
+                          }
+                        });
+                      },
+                    );
                   },
                 );
               }),
@@ -275,111 +245,142 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
-  Widget _dateField(
+  Widget customField(
     BuildContext context, {
     required String hint,
-    required TextEditingController textController,
-    required bool isDark,
+    Widget? prefixWidget,
+    TextEditingController? controller,
+    bool enabled = true,
+    Function(String)? onChanged,
+    Function(String)? onSubmitted,
   }) {
-    return TextFormField(
-      controller: textController,
-      readOnly: true,
-      onTap: () async {
-        final date = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
-        );
-        if (date != null) {
-          textController.text = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-          if (widget.status == TransactionStatus.success) {
-            controller.fetchTransactionSuccessReport();
-          }
-        }
-      },
-      style: TextHelper.max1.copyWith(
-        color: isDark ? AppColors.textclr : AppColors.darktextclr,
+    final theme = Theme.of(context);
+
+    return Container(
+      height: 45,
+
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.light
+            ? Colors.white
+            : AppColors.darkplceholder,
+
+        borderRadius: BorderRadius.circular(8),
+
+        border: Border.all(
+          color: theme.brightness == Brightness.light
+              ? AppColors.darktextclr.withValues(alpha: 0.3)
+              : AppColors.darkFilterBorder,
+        ),
       ),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextHelper.max1.copyWith(
-          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-        ),
-        filled: true,
-        fillColor: isDark ? AppColors.darkplceholder : Theme.of(context).colorScheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        isDense: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+
+      child: Row(
+        children: [
+          if (prefixWidget != null) ...[
+            SizedBox(width: 18, height: 18, child: prefixWidget),
+
+            const SizedBox(width: 8),
+          ],
+
+          Expanded(
+            child: TextField(
+              controller: controller,
+              enabled: enabled,
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
+              style: TextHelper.max1.copyWith(
+                color: theme.brightness == Brightness.dark
+                    ? AppColors.textclr
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+              decoration: InputDecoration(
+                hintText: hint,
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+                hintStyle: TextHelper.max1.copyWith(
+                  color: theme.brightness == Brightness.dark
+                      ? AppColors.textclr
+                      : theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
           ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
-          ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _searchField(
-    BuildContext context, {
-    required String hint,
-    required TextEditingController textController,
-    required bool isDark,
-    required VoidCallback onSearch,
-  }) {
+  void _showProductsBottomSheet(BuildContext context) {
     final theme = Theme.of(context);
-    return TextFormField(
-      controller: textController,
-      textInputAction: TextInputAction.search,
-      onFieldSubmitted: (_) => onSearch(),
-      style: TextHelper.max1.copyWith(
-        color: isDark ? AppColors.textclr : AppColors.darktextclr,
-      ),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextHelper.max1.copyWith(
-          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.5,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        filled: true,
-        fillColor: isDark ? AppColors.darkplceholder : theme.colorScheme.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-        isDense: true,
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(12),
-          child: SvgPicture.asset(
-            AssetImages.search,
-            colorFilter: ColorFilter.mode(
-              isDark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
-              BlendMode.srcIn,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Select Product",
+              style: TextHelper.max3.copyWith(fontWeight: FontWeight.bold),
             ),
-          ),
-        ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            Icons.search,
-            color: isDark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
-          ),
-          onPressed: onSearch,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
-          ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Obx(() {
+                if (_controller.isProductsLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (_controller.products.isEmpty) {
+                  return const Center(child: Text("No products found"));
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: _controller.products.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final product = _controller.products[index];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: product.logo != null
+                          ? Image.network(
+                              product.logo!,
+                              width: 30,
+                              height: 30,
+                              errorBuilder: (_, _, _) =>
+                                  const Icon(Icons.broken_image),
+                            )
+                          : const Icon(Icons.category),
+                      title: Text(
+                        product.name ?? "Unknown",
+                        style: TextHelper.max1,
+                      ),
+                      trailing:
+                          _controller.selectedProduct.value?.id == product.id
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppColors.clrPrimary,
+                            )
+                          : null,
+                      onTap: () {
+                        _controller.selectedProduct.value = product;
+                        Get.back();
+                        _controller.fetchTransactionReport();
+                      },
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
         ),
       ),
+      isScrollControlled: true,
     );
   }
 }
