@@ -1,121 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
-import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
-import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
-import '../data/model/transaction/transaction_product_response_model.dart';
-import '../data/model/transaction/transaction_report_response_model.dart';
+import 'package:maxpay/data/model/daybook/day_book_products_model.dart';
+import 'package:maxpay/data/model/transaction/transaction_report_model.dart';
+import 'package:maxpay/domain/usecase/daybook/get_day_book_products_usecase.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_success_report_usecase.dart';
 
 class TransactionController extends GetxController {
-  final GetTransactionProductsUseCase getTransactionProductsUseCase;
-  final GetTransactionReportUseCase getTransactionReportUseCase;
+  final GetTransactionSuccessReportUseCase getTransactionSuccessReportUseCase;
+  final GetDayBookProductsUseCase getDayBookProductsUseCase;
 
   TransactionController(
-    this.getTransactionProductsUseCase,
-    this.getTransactionReportUseCase,
+    this.getTransactionSuccessReportUseCase,
+    this.getDayBookProductsUseCase,
   );
 
-  RxBool isProductsLoading = false.obs;
-  RxList<TransactionProduct> products = <TransactionProduct>[].obs;
-  Rx<TransactionProduct?> selectedProduct = Rx<TransactionProduct?>(null);
+  var isLoading = false.obs;
+  var isProductsLoading = false.obs;
 
-  RxBool isReportLoading = false.obs;
-  RxList<TransactionReportItem> transactions = <TransactionReportItem>[].obs;
-  
-  RxString currentStatus = "success".obs;
-  final TextEditingController searchController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
+  var transactionList = <TransactionItem>[].obs;
+  var totalTransaction = '0'.obs;
+  var totalProfit = '0'.obs;
 
-  String fromDate = '';
-  String toDate = '';
+  var productList = <ProductData>[].obs;
+  var selectedProductId = ''.obs;
+
+  final fromDateController = TextEditingController();
+  final toDateController = TextEditingController();
+  final searchController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
-    final DateTime today = DateTime.now();
-    fromDate = DateFormat('yyyy-MM-dd').format(today);
-    toDate = DateFormat('yyyy-MM-dd').format(today);
-    dateController.text = DateFormat('dd.MM.yyyy').format(today);
-
-    fetchTransactionProducts();
+    fetchProducts();
+    fetchTransactionSuccessReport();
   }
 
-  Future<void> fetchTransactionReport({String? statusOverride}) async {
-    isReportLoading.value = true;
-    if (statusOverride != null) {
-      currentStatus.value = statusOverride;
-    }
+  @override
+  void onClose() {
+    fromDateController.dispose();
+    toDateController.dispose();
+    searchController.dispose();
+    super.onClose();
+  }
 
-    final body = {
-      'status': currentStatus.value,
-      'product_id': selectedProduct.value?.id?.toString() ?? '',
-      'from_date': fromDate,
-      'to_date': toDate,
-      'search': searchController.text.trim(),
-    };
-
-    final result = await getTransactionReportUseCase.call(body);
+  Future<void> fetchProducts() async {
+    isProductsLoading.value = true;
+    final result = await getDayBookProductsUseCase.call();
 
     result.fold(
       (failure) {
-        isReportLoading.value = false;
-        AppLogger.logError("Failed to fetch report: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        isProductsLoading.value = false;
+        AppLogger.logError("Failed to fetch products: ${failure.message}");
       },
-      (response) {
-        isReportLoading.value = false;
-        if (response.data?.list != null) {
-          transactions.assignAll(response.data!.list!);
-        } else {
-          transactions.clear();
+      (data) {
+        isProductsLoading.value = false;
+        if (data.data != null) {
+          productList.value = data.data!;
         }
       },
     );
   }
 
-  Future<void> selectDateRange(BuildContext context) async {
-    final picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      initialDateRange: DateTimeRange(
-        start: DateTime.tryParse(fromDate) ?? DateTime.now(),
-        end: DateTime.tryParse(toDate) ?? DateTime.now(),
-      ),
+  Future<void> fetchTransactionSuccessReport() async {
+    isLoading.value = true;
+    final result = await getTransactionSuccessReportUseCase.call(
+      selectedProductId.value,
+      fromDateController.text,
+      toDateController.text,
+      searchController.text,
     );
 
-    if (picked != null) {
-      fromDate = DateFormat('yyyy-MM-dd').format(picked.start);
-      toDate = DateFormat('yyyy-MM-dd').format(picked.end);
-      
-      final displayStart = DateFormat('dd.MM.yyyy').format(picked.start);
-      final displayEnd = DateFormat('dd.MM.yyyy').format(picked.end);
-      
-      if (fromDate == toDate) {
-        dateController.text = displayStart;
-      } else {
-        dateController.text = "$displayStart - $displayEnd";
-      }
-
-      fetchTransactionReport();
-    }
-  }
-
-  Future<void> fetchTransactionProducts() async {
-    isProductsLoading.value = true;
-    final result = await getTransactionProductsUseCase.call();
-    
     result.fold(
       (failure) {
-        isProductsLoading.value = false;
-        AppLogger.logError("Failed to fetch products: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        isLoading.value = false;
+        AppLogger.logError("Failed to fetch transaction report: ${failure.message}");
+        Get.snackbar("Error", failure.message);
       },
-      (response) {
-        isProductsLoading.value = false;
-        if (response.data != null) {
-          products.assignAll(response.data!);
+      (data) {
+        isLoading.value = false;
+        if (data.data != null) {
+          totalTransaction.value = data.data!.totalTransaction ?? "0";
+          totalProfit.value = data.data!.totalProfit ?? "0";
+          transactionList.value = data.data!.list ?? [];
         }
       },
     );

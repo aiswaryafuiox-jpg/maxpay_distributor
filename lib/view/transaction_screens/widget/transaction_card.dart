@@ -11,12 +11,27 @@ class TransactionCard extends StatelessWidget {
   final bool isFavorite;
   final VoidCallback? onFavoriteTap;
 
+  final String transactionId;
+  final String dateTime;
+  final String productName;
+  final String productLogo;
+  final String amount;
+  final String number;
+  final String profit;
+
   const TransactionCard({
     super.key,
     required this.bgColor,
     required this.status,
     this.isFavorite = false,
     this.onFavoriteTap,
+    required this.transactionId,
+    required this.dateTime,
+    required this.productName,
+    required this.productLogo,
+    required this.amount,
+    required this.number,
+    this.profit = "0",
   });
 
   @override
@@ -41,7 +56,7 @@ class TransactionCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Transaction ID: TXN6453564",
+                "Transaction ID: $transactionId",
                 style: TextHelper.max1
               ),
               Column(
@@ -58,7 +73,7 @@ class TransactionCard extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    "29-11-2026 07:38:43 PM",
+                    dateTime,
                     style: TextHelper.max1.copyWith(
                       fontSize: 11
                     )
@@ -82,22 +97,22 @@ class TransactionCard extends StatelessWidget {
 
           Row(
             children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  "Jio",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+              CircleAvatar(
+                radius: 19,
+                backgroundColor: Colors.transparent,
+                backgroundImage: productLogo.isNotEmpty 
+                    ? NetworkImage(productLogo) 
+                    : null,
+                child: productLogo.isEmpty
+                    ? Text(
+                        productName.isNotEmpty ? productName[0] : "?",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      )
+                    : null,
               ),
 
               const SizedBox(width: 10),
@@ -107,7 +122,7 @@ class TransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Jio",
+                      productName,
                       style: TextHelper.lato14.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -118,7 +133,7 @@ class TransactionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      "Number: ******7823",
+                      "Number: $number",
                       style: TextHelper.lato11.copyWith(
                         fontWeight: FontWeight.w600,
 
@@ -137,7 +152,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "₹ 365.00",
+                    "₹ $amount",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -194,8 +209,22 @@ class TransactionCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.end,
+                children: [
+                  Text(
+                    "Profit: ₹ $profit",
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
-    )]]));
+    );
   }
 
   Widget customButton({
