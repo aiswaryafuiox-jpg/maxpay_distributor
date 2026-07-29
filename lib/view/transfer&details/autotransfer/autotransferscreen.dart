@@ -4,6 +4,9 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
+import 'package:maxpay/controller/auto_transfer_controller.dart';
+import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 
 class AutoTransferScreen extends StatefulWidget {
   const AutoTransferScreen({super.key});
@@ -20,10 +23,13 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
   TextEditingController();
 
   @override
-  void dispose() {
-    lowWalletController.dispose();
-    transferAmountController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profileController = Get.find<ProfileController>();
+      final String id = profileController.profileData.value?.id?.toString() ?? "";
+      controller.fetchAutoTransferDetails(id);
+    });
   }
 
   Widget buildLabel(

@@ -20,6 +20,8 @@ class CommissionCard extends StatelessWidget {
   final Color statusColor;
 
   final Color? resetColor;
+  final VoidCallback? onResetPressed;
+  final VoidCallback? onStatusPressed;
 
   const CommissionCard({
     super.key,
@@ -35,6 +37,8 @@ class CommissionCard extends StatelessWidget {
     required this.statusText,
     required this.statusColor,
     this.resetColor,
+    this.onResetPressed,
+    this.onStatusPressed,
   });
 
   @override
@@ -171,6 +175,7 @@ class CommissionCard extends StatelessWidget {
                 _button(
                   "Reset",
                   resetColor ?? AppColors.resetBtn,
+                  onResetPressed,
                 ),
 
                 const SizedBox(width: 8),
@@ -178,12 +183,14 @@ class CommissionCard extends StatelessWidget {
                 _button(
                   statusText,
                   statusColor,
+                  onStatusPressed,
                 ),
               ],
             )
                 : _button(
               statusText,
               statusColor,
+              onStatusPressed,
             ),
           ),
         ],
@@ -226,21 +233,25 @@ class CommissionCard extends StatelessWidget {
   Widget _button(
       String text,
       Color color,
+      VoidCallback? onTap,
       ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 6,
-      ),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Text(
-        text,
-        style: TextHelper.max1.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 6,
+        ),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          text,
+          style: TextHelper.max1.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

@@ -61,4 +61,15 @@ class ApiRoutes {
   static const String distributorTransactionSuccessReport = '/api/distributor_transaction_success_report';
   static const String distributorCashBackProductTypes = '/api/distributor_cash_back_product_types';
   static const String distributorCashBack = '/api/distributor_cash_back';
+  static const String distributorCommissionSettings = '/api/distributor_commission_settings';
+  static const String distributorUpdatePackageStatus = '/api/distributor_update_package_status';
+  static const String distributorResetPackageCommission = '/api/distributor_reset_package_commission';
+  static const String distributorBulkPackageOptions = '/api/distributor_bulk_package_options';
+  static const String distributorBulkPackageCharge = '/api/distributor_bulk_package_charge';
+  static const String distributorBulkPackageChange = '/api/distributor_bulk_package_change';
+  static const String distributorGrade = '/api/distributor_grade';
+  static const String distributorGetKyc = '/api/distributor_get_kyc';
+  static const String distributorSubmitKyc = '/api/distributor_submit_kyc';
+  static const String distributorGetSupport = '/api/distributor_get_support';
+  static const String distributorLoginHistory = '/api/distributor_login_history';
 }
