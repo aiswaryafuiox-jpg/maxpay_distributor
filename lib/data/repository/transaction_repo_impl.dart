@@ -4,7 +4,8 @@ import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/model/transaction/transaction_report_model.dart';
-import 'package:maxpay/domain/repository/transaction_repo.dart';
+import 'package:maxpay/domain/repository/transaction_repository.dart';
+
 
 class TransactionRepoImpl implements TransactionRepository {
   final ApiService _apiService;

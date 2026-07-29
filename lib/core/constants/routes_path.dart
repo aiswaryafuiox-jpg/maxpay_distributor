@@ -23,7 +23,8 @@ class AppRoutes {
   static const String withdrawrequest2 = '/withdrawrequest2';
   static const String retailer = '/retailer';
   static const createRetailerScreen = "/createRetailerScreen";
-  static const retaddWalletScreen = "/retaddWalletScreen";
+  static const String retaddWalletScreen = "/retaddWalletScreen";
+  static const String exeAddWalletScreen = "/exeAddWalletScreen";
   static const retviewDetailsScreen = "/retviewDetailsScreen";
   static const executive ='/executive';
   static const createExecutive="/createExecutive";

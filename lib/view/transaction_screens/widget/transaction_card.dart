@@ -2,36 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
+import 'package:maxpay/data/model/transaction/transaction_report_response_model.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/transaction_controller.dart';
 
 class TransactionCard extends StatelessWidget {
   static bool _isDisputeDialogOpen = false;
 
+  final TransactionReportItem item;
   final Color bgColor;
   final TransactionStatus status;
   final bool isFavorite;
   final VoidCallback? onFavoriteTap;
 
-  final String transactionId;
-  final String dateTime;
-  final String productName;
-  final String productLogo;
-  final String amount;
-  final String number;
-  final String profit;
-
   const TransactionCard({
     super.key,
+    required this.item,
     required this.bgColor,
     required this.status,
     this.isFavorite = false,
     this.onFavoriteTap,
-    required this.transactionId,
-    required this.dateTime,
-    required this.productName,
-    required this.productLogo,
-    required this.amount,
-    required this.number,
-    this.profit = "0",
   });
 
   @override
@@ -56,7 +46,7 @@ class TransactionCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Transaction ID: $transactionId",
+                "Transaction ID: ${item.transactionId ?? 'N/A'}",
                 style: TextHelper.max1
               ),
               Column(
@@ -67,17 +57,13 @@ class TransactionCard extends StatelessWidget {
                     style: TextHelper.max1.copyWith(
                       fontSize: 11
                     )
-
-
-
                   ),
                   SizedBox(height: 5),
                   Text(
-                    dateTime,
+                    item.dateTime ?? 'N/A',
                     style: TextHelper.max1.copyWith(
                       fontSize: 11
                     )
-
                   ),
                 ],
               ),
@@ -97,22 +83,21 @@ class TransactionCard extends StatelessWidget {
 
           Row(
             children: [
-              CircleAvatar(
-                radius: 19,
-                backgroundColor: Colors.transparent,
-                backgroundImage: productLogo.isNotEmpty 
-                    ? NetworkImage(productLogo) 
-                    : null,
-                child: productLogo.isEmpty
-                    ? Text(
-                        productName.isNotEmpty ? productName[0] : "?",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      )
-                    : null,
+              Container(
+                width: 38,
+                height: 38,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                clipBehavior: Clip.hardEdge,
+                child: item.productLogo != null
+                  ? Image.network(
+                      item.productLogo!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                    )
+                  : const Icon(Icons.category, color: Colors.grey),
               ),
 
               const SizedBox(width: 10),
@@ -122,7 +107,7 @@ class TransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      productName,
+                      item.productName ?? 'Unknown',
                       style: TextHelper.lato14.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -133,7 +118,7 @@ class TransactionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      "Number: $number",
+                      "Number: ${item.mobile ?? 'N/A'}",
                       style: TextHelper.lato11.copyWith(
                         fontWeight: FontWeight.w600,
 
@@ -152,7 +137,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "₹ $amount",
+                    "₹ ${item.amount ?? 0}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -210,18 +195,29 @@ class TransactionCard extends StatelessWidget {
                 runSpacing: 8,
                 alignment: WrapAlignment.end,
                 children: [
-                  Text(
-                    "Profit: ₹ $profit",
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                  if (item.canDispute == 1)
+                    customButton(
+                      text: "Dispute",
+                      color: Colors.red,
+                      onTap: () {
+                        // _showDisputeDialog(context); // Optional
+                      },
+                      isCompact: true,
                     ),
+                  customButton(
+                    text: "View Details",
+                    color: AppColors.clrPrimary,
+                    onTap: () {
+                      if (item.id != null) {
+                        Get.find<TransactionController>().fetchTransactionDetail(item.id!);
+                      }
+                    },
+                    isCompact: true,
                   ),
                 ],
               ),
-            ),
-          ],
+            )
+          ]
         ],
       ),
     );
