@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
@@ -11,21 +11,18 @@ class ExecutiveTopTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildTab(
-        String text,
-        Color color, {
-          BorderRadius? borderRadius,
-          VoidCallback? onTap,
-        }) {
+      String text,
+      Color color, {
+      BorderRadius? borderRadius,
+      VoidCallback? onTap,
+    }) {
       return InkWell(
         onTap: onTap,
         borderRadius: borderRadius,
         child: Container(
           height: 38,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: borderRadius,
-          ),
+          decoration: BoxDecoration(color: color, borderRadius: borderRadius),
           child: Text(
             text,
             textAlign: TextAlign.center,
@@ -45,7 +42,7 @@ class ExecutiveTopTabs extends StatelessWidget {
           Expanded(
             flex: 4,
             child: buildTab(
-              "Total Executive:300",
+              "Total Executive: ${Get.find<ExecutiveController>().executives.length}",
               AppColors.clrPrimary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(4),
@@ -55,10 +52,7 @@ class ExecutiveTopTabs extends StatelessWidget {
           ),
           Expanded(
             flex: 3,
-            child: buildTab(
-              "Executive List",
-              AppColors.redClr,
-            ),
+            child: buildTab("Executive List", AppColors.redClr),
           ),
           Expanded(
             flex: 3,
@@ -70,7 +64,7 @@ class ExecutiveTopTabs extends StatelessWidget {
                 bottomRight: Radius.circular(4),
               ),
               onTap: () {
-             Get.toNamed(AppRoutes.createExecutive);
+                Get.toNamed(AppRoutes.createExecutive);
               },
             ),
           ),

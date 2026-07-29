@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
+import '../../../controller/executive_controller.dart';
 
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
@@ -14,19 +16,15 @@ class CreateExecutiveScreen extends StatefulWidget {
 }
 
 class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
-  final TextEditingController executiveNameController =
-  TextEditingController(text: "John Williamson");
+  final TextEditingController executiveNameController = TextEditingController(
+    text: "John Williamson",
+  );
 
-  final TextEditingController mobileController =
-  TextEditingController(text: "+91 982345755");
+  final TextEditingController mobileController = TextEditingController(
+    text: "+91 982345755",
+  );
 
   String? selectedPackage;
-
-  final List<String> packages = [
-    "Silver",
-    "Gold",
-    "Platinum",
-  ];
 
   @override
   void dispose() {
@@ -42,9 +40,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Create Executive",
-      ),
+      appBar: const CommonAppBar(title: "Create Executive"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -55,9 +51,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               Text(
                 "Retailer Name",
                 style: TextHelper.max4.copyWith(
-                  color: isDark
-                      ? AppColors.textclr
-                      : AppColors.clrTextblack,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
               ),
 
@@ -66,9 +60,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               TextField(
                 controller: executiveNameController,
                 style: TextHelper.max4.copyWith(
-                  color: isDark
-                      ? AppColors.textclr
-                      : AppColors.clrTextblack,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
                 decoration: InputDecoration(
                   filled: true,
@@ -89,8 +81,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                    BorderSide(color: AppColors.clrPrimary),
+                    borderSide: BorderSide(color: AppColors.clrPrimary),
                   ),
                 ),
               ),
@@ -101,9 +92,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               Text(
                 "Reg. Mob No",
                 style: TextHelper.max4.copyWith(
-                  color: isDark
-                      ? AppColors.textclr
-                      : AppColors.clrTextblack,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
               ),
 
@@ -113,9 +102,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 controller: mobileController,
                 keyboardType: TextInputType.phone,
                 style: TextHelper.max4.copyWith(
-                  color: isDark
-                      ? AppColors.textclr
-                      : AppColors.clrTextblack,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
                 decoration: InputDecoration(
                   filled: true,
@@ -136,8 +123,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                    BorderSide(color: AppColors.clrPrimary),
+                    borderSide: BorderSide(color: AppColors.clrPrimary),
                   ),
                 ),
               ),
@@ -148,74 +134,88 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               Text(
                 "Commission Package",
                 style: TextHelper.max4.copyWith(
-                  color: isDark
-                      ? AppColors.textclr
-                      : AppColors.clrTextblack,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
               ),
 
               const SizedBox(height: 8),
 
-              DropdownButtonFormField<String>(
-                initialValue: selectedPackage,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkplceholder
-                      : AppColors.lightbg2,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 16,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkFilterBorder
-                          : Colors.grey.shade300,
+              Obx(() {
+                final controller = Get.find<ExecutiveController>();
+                final isLoading = controller.isCommissionPackagesLoading.value;
+                final packages = controller.commissionPackages;
+
+                return DropdownButtonFormField<String>(
+                  value: selectedPackage,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: isDark
+                        ? AppColors.darkplceholder
+                        : AppColors.lightbg2,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 16,
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                    BorderSide(color: AppColors.clrPrimary),
-                  ),
-                ),
-                hint: Text(
-                  "Select",
-                  style: TextHelper.max1.copyWith(
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextgrey,
-                  ),
-                ),
-                items: packages.map((e) {
-                  return DropdownMenuItem(
-                    value: e,
-                    child: Text(
-                      e,
-                      style: TextHelper.max4.copyWith(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
                         color: isDark
-                            ? AppColors.textclr
-                            : AppColors.clrTextblack,
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
                       ),
                     ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedPackage = value;
-                  });
-                },
-              ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: AppColors.clrPrimary),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                  ),
+                  hint: Text(
+                    isLoading
+                        ? "Loading..."
+                        : (packages.isEmpty
+                              ? "No packages available"
+                              : "Select"),
+                    style: TextHelper.max1.copyWith(
+                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                    ),
+                  ),
+                  items: isLoading || packages.isEmpty
+                      ? null
+                      : packages.map((e) {
+                          return DropdownMenuItem<String>(
+                            value: e.packageName,
+                            child: Text(
+                              e.packageName ?? '',
+                              style: TextHelper.max4.copyWith(
+                                color: isDark
+                                    ? AppColors.textclr
+                                    : AppColors.clrTextblack,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  onChanged: isLoading || packages.isEmpty
+                      ? null
+                      : (value) {
+                          setState(() {
+                            selectedPackage = value;
+                          });
+                        },
+                );
+              }),
 
               const Spacer(),
 
               Center(
-                child: CommonButton(
-                  title: "Update",
-                  onTap: () {},
-                ),
+                child: CommonButton(title: "Update", onTap: () {}),
               ),
 
               const SizedBox(height: 20),

@@ -1,37 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:maxpay/controller/outstanding_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 
-class OutstandingCard extends StatefulWidget {
-  final int retailerId;
+class OutstandingCard extends StatelessWidget {
   final String retailerName;
   final String mobileNo;
   final String outstandingAmount;
 
   const OutstandingCard({
     super.key,
-    required this.retailerId,
     required this.retailerName,
     required this.mobileNo,
     required this.outstandingAmount,
   });
-
-  @override
-  State<OutstandingCard> createState() => _OutstandingCardState();
-}
-
-class _OutstandingCardState extends State<OutstandingCard> {
-  final TextEditingController amountController = TextEditingController();
-
-  @override
-  void dispose() {
-    amountController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +54,7 @@ class _OutstandingCardState extends State<OutstandingCard> {
                     ),
                     Expanded(
                       child: Text(
-                        widget.retailerName,
+                        retailerName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextHelper.max4.copyWith(
@@ -114,7 +97,7 @@ class _OutstandingCardState extends State<OutstandingCard> {
                     ),
                     Expanded(
                       child: Text(
-                        widget.mobileNo,
+                        mobileNo,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextHelper.max4.copyWith(
@@ -128,7 +111,7 @@ class _OutstandingCardState extends State<OutstandingCard> {
               ),
               SizedBox(width: 16.w),
               Text(
-                widget.outstandingAmount,
+                outstandingAmount,
                 style: TextHelper.max4.copyWith(
                   color: Colors.red,
                   fontWeight: FontWeight.w700,
@@ -150,7 +133,6 @@ class _OutstandingCardState extends State<OutstandingCard> {
           SizedBox(height: 8.h),
 
           TextField(
-            controller: amountController,
             keyboardType: TextInputType.number,
             style: TextHelper.max9(context),
             cursorColor: AppColors.clrPrimary,
@@ -198,12 +180,7 @@ class _OutstandingCardState extends State<OutstandingCard> {
               child: CommonButton(
                 title: "Update",
                 onTap: () {
-                  if (amountController.text.isNotEmpty) {
-                    final controller = Get.find<OutstandingController>();
-                    controller.updateOutstanding(widget.retailerId, amountController.text);
-                  } else {
-                    Get.snackbar("Error", "Please enter received amount");
-                  }
+                  // TODO: Update API
                 },
               ),
             ),
