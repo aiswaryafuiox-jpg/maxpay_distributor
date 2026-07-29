@@ -5,7 +5,6 @@ import 'package:maxpay/controller/transfer_detail_controller.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
-import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/transferDetail/widgets/transfer_detail_card.dart';
@@ -23,7 +22,6 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
   final controller = Get.put(
     TransferDetailController(
       GetTransferDetailsUseCase(TransferDetailRepositoryImpl(ApiService())),
-      GetTransferDetailListUseCase(TransferDetailRepositoryImpl(ApiService())),
     ),
   );
   String selectedTransactionType = "Transfer";
@@ -110,43 +108,32 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               SizedBox(height: 16.h),
 
               /// Header Card
-              Obx(() => TransferDetailHeaderCard(
+              TransferDetailHeaderCard(
                 title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
-                amount: controller.totalAmount.value,
+                amount: "₹ 245005.23",
                 isReverse: isReverse,
-              )),
+              ),
 
               SizedBox(height: 16.h),
 
               /// List
               Expanded(
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (controller.transferDetailList.isEmpty) {
-                    return const Center(child: Text("No transactions found"));
-                  }
-
-                  return ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: controller.transferDetailList.length,
-                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
-                    itemBuilder: (context, index) {
-                      final item = controller.transferDetailList[index];
-                      return TransferDetailCard(
-                        transactionId: item.transactionId ?? "",
-                        dateTime: item.dateTime ?? "",
-                        transactionType: item.transactionType ?? "",
-                        userType: item.userType ?? "",
-                        userName: item.userName ?? "",
-                        regMobNo: item.regMobileNumber ?? "",
-                        amount: "₹ ${item.amount ?? '0.00'}",
-                      );
-                    },
-                  );
-                }),
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 8,
+                  separatorBuilder: (_, _) => SizedBox(height: 12.h),
+                  itemBuilder: (context, index) {
+                    return TransferDetailCard(
+                      transactionId: "TXN6453564",
+                      dateTime: "2026-11-29 14:38:43",
+                      transactionType: isReverse ? "Reverse" : "Transfer",
+                      userType: "Retailer",
+                      userName: "John",
+                      regMobNo: "9087654321",
+                      amount: "₹ 500.00",
+                    );
+                  },
+                ),
               ),
             ],
           ),

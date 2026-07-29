@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
-import 'package:get/get.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
-import 'package:maxpay/controller/auto_transfer_controller.dart';
-import 'package:maxpay/core/di/service_locator.dart';
 
 class AutoTransferScreen extends StatefulWidget {
   const AutoTransferScreen({super.key});
@@ -16,14 +13,17 @@ class AutoTransferScreen extends StatefulWidget {
 }
 
 class _AutoTransferScreenState extends State<AutoTransferScreen> {
-  final AutoTransferController controller = Get.put(sl<AutoTransferController>());
+  final TextEditingController lowWalletController =
+  TextEditingController();
+
+  final TextEditingController transferAmountController =
+  TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAutoTransferDetails("");
-    });
+  void dispose() {
+    lowWalletController.dispose();
+    transferAmountController.dispose();
+    super.dispose();
   }
 
   Widget buildLabel(
@@ -98,95 +98,71 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
         title: "Auto Transfer",
       ),
       body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        child: Padding(
+          padding: EdgeInsets.all(20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+              buildLabel(
+                context,
+                "Low Wallet",
+                isDark,
+              ),
 
-                buildLabel(
+              TextField(
+                controller: lowWalletController,
+                keyboardType: TextInputType.number,
+                style: TextHelper.max9(context).copyWith(
+                  color: isDark
+                      ? AppColors.textclr
+                      : AppColors.clrTextblack,
+                ),
+                decoration: buildDecoration(
                   context,
-                  "Low Wallet",
+                  "Enter Wallet Amount",
                   isDark,
                 ),
+              ),
 
-                TextField(
-                  controller: controller.lowWalletController,
-                  keyboardType: TextInputType.number,
-                  style: TextHelper.max9(context).copyWith(
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
-                  ),
-                  decoration: buildDecoration(
-                    context,
-                    "Enter Wallet Amount",
-                    isDark,
-                  ),
+              SizedBox(height: 22.h),
+
+              buildLabel(
+                context,
+                "Transfer Amount",
+                isDark,
+              ),
+
+              TextField(
+                controller: transferAmountController,
+                keyboardType: TextInputType.number,
+                style: TextHelper.max9(context).copyWith(
+                  color: isDark
+                      ? AppColors.textclr
+                      : AppColors.clrTextblack,
                 ),
-
-                SizedBox(height: 22.h),
-
-                buildLabel(
+                decoration: buildDecoration(
                   context,
-                  "Transfer Amount",
+                  "Enter Transfer Amount",
                   isDark,
                 ),
+              ),
 
-                TextField(
-                  controller: controller.transferAmountController,
-                  keyboardType: TextInputType.number,
-                  style: TextHelper.max9(context).copyWith(
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
-                  ),
-                  decoration: buildDecoration(
-                    context,
-                    "Enter Transfer Amount",
-                    isDark,
-                  ),
+              const Spacer(),
+
+              Center(
+                child: CommonButton(
+                  title: "Update",
+                  onTap: () {
+                    // Update API
+                  },
                 ),
+              ),
 
-                const Spacer(),
-
-                Center(
-                  child: Obx(() {
-                    if (controller.isUpdating.value) {
-                      return const CircularProgressIndicator();
-                    }
-                    return CommonButton(
-                      title: "Update",
-                      onTap: () {
-                        // Pass the fetched auto transfer id if available, otherwise empty
-                        final String id = controller.autoTransferData.value?.id?.toString() ?? "";
-                        controller.updateAutoTransfer(id);
-                      },
-                    );
-                  }),
-                ),
-
-                SizedBox(height: 20.h),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        }),
+              SizedBox(height: 20.h),
+            ],
+          ),
+        ),
       ),
     );
   }
