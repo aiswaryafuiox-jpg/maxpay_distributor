@@ -4,7 +4,6 @@ class ApiRoutes {
 
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
-  static const distributorTransferDetail = "/api/distributor_transfer_detail";
   static const String loginSendOtp = "/api/distributor_login_sendotp";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
   static const String createPin = "/api/distributor_create_pin";
@@ -13,12 +12,6 @@ class ApiRoutes {
   static const String logout = "/api/distributor_logout";
   static const String getProfile = "/api/distributor_get_profile";
   static const String updateProfile = "/api/distributor_update_profile";
-  static const String distributorPendingWalletRequests = "/api/distributor_pending_wallet_requests";
-  static const String distributorPendingWalletRequestDetail = "/api/distributor_pending_wallet_request_detail";
-  static const String distributorApprovePendingWalletRequest = "/api/distributor_approve_pending_wallet_request";
-  static const String distributorOutstandingList = "/api/distributor_outstanding_list";
-  static const String distributorUpdateOutstanding = "/api/distributor_update_outstanding";
-  static const String distributorLowWalletRetailers = "/api/distributor_low_wallet_retailers";
   static const String updateProfileVerifyOtp =
       "/api/distributor_update_profile_verify_otp";
   static const String updateProfileResendOtp =
@@ -36,6 +29,28 @@ class ApiRoutes {
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String getExecutives = "/api/distributor_executives";
+  static const String getExecutiveDetail = "/api/distributor_executive_detail";
+  static const String getExecutiveCommissionPackages = "/api/distributor_executive_commission_packages";
+  static const String updateExecutive = "/api/distributor_update_executive";
+  static const String addExecutiveWalletDetails = "/api/distributor_add_executive_wallet_details";
+  static const String addExecutiveWallet = "/api/distributor_add_executive_wallet";
+  static const String transactionProducts = "/api/distributor_transaction_products";
+  static const String transactionReport = "/api/distributor_transaction_report";
+  static const String transactionDetail = "/api/distributor_transaction_detail";
+
+
+
+
+  static const distributorTransferDetail = "/api/distributor_transfer_detail";
+  
+  static const String distributorPendingWalletRequests = "/api/distributor_pending_wallet_requests";
+  static const String distributorPendingWalletRequestDetail = "/api/distributor_pending_wallet_request_detail";
+  static const String distributorApprovePendingWalletRequest = "/api/distributor_approve_pending_wallet_request";
+  static const String distributorOutstandingList = "/api/distributor_outstanding_list";
+  static const String distributorUpdateOutstanding = "/api/distributor_update_outstanding";
+  static const String distributorLowWalletRetailers = "/api/distributor_low_wallet_retailers";
+  
   static const String distributorWalletCreditList = '/api/distributor_wallet_credit';
   static const String distributorAutoTransferDetails = '/api/distributor_auto_transfer_details';
   static const String distributorUpdateAutoTransfer = '/api/distributor_update_auto_transfer';

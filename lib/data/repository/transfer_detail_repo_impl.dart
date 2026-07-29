@@ -92,4 +92,4 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
-}
+}

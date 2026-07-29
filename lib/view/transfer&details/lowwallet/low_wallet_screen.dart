@@ -20,9 +20,7 @@ class _LowWalletScreenState extends State<LowWalletScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
-      appBar: const CommonAppBar(
-        title: "Low Wallet",
-      ),
+      appBar: const CommonAppBar(title: "Low Wallet"),
 
       body: SafeArea(
         child: Obx(() {

@@ -209,7 +209,7 @@ class _BulkPackageChangeScreenState extends State<BulkPackageChangeScreen> {
     required ValueChanged<T?> onChanged,
   }) {
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
       decoration: _inputDecoration(
         hint: hint,
         isDark: isDark,

@@ -36,7 +36,9 @@ class _CashbackScreenState extends State<CashbackScreen> {
             /// 🔵 Modern Filter Dropdown
             Container(
               decoration: BoxDecoration(
-                color: theme.brightness == Brightness.light ? Colors.white : AppColors.darkplceholder,
+                color: theme.brightness == Brightness.light
+                    ? Colors.white
+                    : AppColors.darkplceholder,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
@@ -46,14 +48,21 @@ class _CashbackScreenState extends State<CashbackScreen> {
                   ),
                 ],
                 border: Border.all(
-                  color: theme.brightness == Brightness.dark ? AppColors.darkFilterBorder : Colors.transparent,
+                  color: theme.brightness == Brightness.dark
+                      ? AppColors.darkFilterBorder
+                      : Colors.transparent,
                 ),
               ),
               child: Obx(() {
                 return DropdownButtonFormField<String>(
-                  value: controller.selectedProductTypeId.value.isEmpty ? null : controller.selectedProductTypeId.value,
+                  value: controller.selectedProductTypeId.value.isEmpty
+                      ? null
+                      : controller.selectedProductTypeId.value,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
                     isDense: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -71,14 +80,18 @@ class _CashbackScreenState extends State<CashbackScreen> {
                   hint: Text(
                     "Select Product Category",
                     style: TextHelper.max1.copyWith(
-                      color: theme.brightness == Brightness.dark ? AppColors.textclr : AppColors.clrTextgrey,
+                      color: theme.brightness == Brightness.dark
+                          ? AppColors.textclr
+                          : AppColors.clrTextgrey,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   icon: Icon(
                     Icons.keyboard_arrow_down_rounded,
                     size: 22,
-                    color: theme.brightness == Brightness.dark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
+                    color: theme.brightness == Brightness.dark
+                        ? AppColors.textclr
+                        : theme.colorScheme.onSurfaceVariant,
                   ),
                   items: controller.productTypes.map((productType) {
                     return DropdownMenuItem<String>(
@@ -86,7 +99,9 @@ class _CashbackScreenState extends State<CashbackScreen> {
                       child: Text(
                         productType.name ?? "Unknown",
                         style: TextHelper.max1.copyWith(
-                          color: theme.brightness == Brightness.dark ? AppColors.textclr : AppColors.darktextclr,
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.textclr
+                              : AppColors.darktextclr,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -116,7 +131,9 @@ class _CashbackScreenState extends State<CashbackScreen> {
                     child: Text(
                       "Data not found",
                       style: TextHelper.max2.copyWith(
-                        color: theme.brightness == Brightness.dark ? AppColors.textclr : AppColors.clrTextgrey,
+                        color: theme.brightness == Brightness.dark
+                            ? AppColors.textclr
+                            : AppColors.clrTextgrey,
                       ),
                     ),
                   );
@@ -124,13 +141,16 @@ class _CashbackScreenState extends State<CashbackScreen> {
 
                 return ListView.separated(
                   itemCount: controller.cashBackList.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = controller.cashBackList[index];
-                    
+
                     final cashbackText = item.cashbackDisplay ?? "0%";
                     final isNegative = item.isNegative == 1;
-                    final cashbackColor = isNegative ? const Color(0xFFFF0000) : const Color(0xFF00C261);
+                    final cashbackColor = isNegative
+                        ? const Color(0xFFFF0000)
+                        : const Color(0xFF00C261);
 
                     return CashbackTile(
                       cashback: cashbackText,
@@ -154,7 +174,7 @@ class CashbackTile extends StatelessWidget {
   final Color cashbackColor;
   final String productName;
   final String productLogo;
-  
+
   const CashbackTile({
     super.key,
     required this.cashback,
@@ -169,8 +189,8 @@ class CashbackTile extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     final bool isNegative = cashbackColor == const Color(0xFFFF0000);
-    final Color badgeBgColor = isNegative 
-        ? const Color(0xFFFF0000).withValues(alpha: 0.1) 
+    final Color badgeBgColor = isNegative
+        ? const Color(0xFFFF0000).withValues(alpha: 0.1)
         : const Color(0xFF00C261).withValues(alpha: 0.1);
 
     return Container(
@@ -178,14 +198,18 @@ class CashbackTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: !isDark ? Colors.white : AppColors.darkplceholder,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: !isDark ? [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ] : [],
-        border: isDark ? Border.all(color: AppColors.darkFilterBorder) : Border.all(color: Colors.grey.withValues(alpha: 0.05), width: 1),
+        boxShadow: !isDark
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [],
+        border: isDark
+            ? Border.all(color: AppColors.darkFilterBorder)
+            : Border.all(color: Colors.grey.withValues(alpha: 0.05), width: 1),
       ),
       child: Row(
         children: [
@@ -199,7 +223,9 @@ class CashbackTile extends StatelessWidget {
             child: CircleAvatar(
               radius: 22,
               backgroundColor: Colors.transparent,
-              backgroundImage: productLogo.isNotEmpty ? NetworkImage(productLogo) : null,
+              backgroundImage: productLogo.isNotEmpty
+                  ? NetworkImage(productLogo)
+                  : null,
               child: productLogo.isEmpty
                   ? Text(
                       productName.isNotEmpty ? productName[0] : "?",
@@ -233,7 +259,9 @@ class CashbackTile extends StatelessWidget {
                   "Cashback",
                   style: TextStyle(
                     fontSize: 12,
-                    color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+                    color: theme.colorScheme.onSurfaceVariant.withValues(
+                      alpha: 0.8,
+                    ),
                   ),
                 ),
               ],

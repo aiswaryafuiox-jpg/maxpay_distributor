@@ -27,9 +27,7 @@ class _DayBookScreenState extends State<DayBookScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Day Book",
-      ),
+      appBar: const CommonAppBar(title: "Day Book"),
       body: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
@@ -38,9 +36,7 @@ class _DayBookScreenState extends State<DayBookScreen> {
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkplceholder
-                    : AppColors.lightbg2,
+                color: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
                   color: isDark
@@ -60,21 +56,32 @@ class _DayBookScreenState extends State<DayBookScreen> {
                       decoration: InputDecoration(
                         hintText: "Select Product",
                         hintStyle: TextHelper.max1.copyWith(
-                          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                          color: isDark
+                              ? AppColors.textclr
+                              : AppColors.clrTextgrey,
                         ),
                         filled: true,
-                        fillColor: isDark ? AppColors.darkplceholder : Colors.white,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+                        fillColor: isDark
+                            ? AppColors.darkplceholder
+                            : Colors.white,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 14.h,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.r),
                           borderSide: BorderSide(
-                            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.totalborde2,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.r),
                           borderSide: BorderSide(
-                            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.totalborde2,
                           ),
                         ),
                       ),
@@ -84,18 +91,24 @@ class _DayBookScreenState extends State<DayBookScreen> {
                           child: Text(
                             product.name ?? "",
                             style: TextHelper.max1.copyWith(
-                              color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+                              color: isDark
+                                  ? AppColors.textclr
+                                  : AppColors.clrTextblack,
                             ),
                           ),
                         );
                       }).toList(),
                       onChanged: (value) {
                         if (value != null) {
-                          final selected = controller.products.firstWhere((p) => p.id == value);
+                          final selected = controller.products.firstWhere(
+                            (p) => p.id == value,
+                          );
                           controller.selectProduct(selected);
                         }
                       },
-                      dropdownColor: isDark ? AppColors.darkplceholder : Colors.white,
+                      dropdownColor: isDark
+                          ? AppColors.darkplceholder
+                          : Colors.white,
                       icon: Icon(
                         Icons.chevron_right,
                         size: 18.sp,
@@ -161,13 +174,15 @@ class _DayBookScreenState extends State<DayBookScreen> {
                 if (controller.isListLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (controller.dayBookList.isEmpty) {
                   return Center(
                     child: Text(
                       "Data not found",
                       style: TextHelper.max2.copyWith(
-                        color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                        color: isDark
+                            ? AppColors.textclr
+                            : AppColors.clrTextgrey,
                       ),
                     ),
                   );
@@ -247,7 +262,8 @@ class _DayBookScreenState extends State<DayBookScreen> {
         );
         if (date != null) {
           // Format as YYYY-MM-DD
-          controller.text = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+          controller.text =
+              "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
           this.controller.fetchDayBookList();
         }
       },
@@ -316,7 +332,9 @@ class _DayBookScreenState extends State<DayBookScreen> {
         suffixIcon: IconButton(
           icon: Icon(
             Icons.search,
-            color: isDark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
+            color: isDark
+                ? AppColors.textclr
+                : theme.colorScheme.onSurfaceVariant,
           ),
           onPressed: onSearch,
         ),

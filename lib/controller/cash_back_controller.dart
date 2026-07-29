@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/cashback/cash_back_model.dart';
 import 'package:maxpay/data/model/cashback/cash_back_product_types_model.dart';
+
 import 'package:maxpay/domain/usecase/cashback/get_cash_back_list_usecase.dart';
 import 'package:maxpay/domain/usecase/cashback/get_cash_back_product_types_usecase.dart';
 
@@ -9,11 +10,14 @@ class CashBackController extends GetxController {
   final GetCashBackProductTypesUseCase getCashBackProductTypesUseCase;
   final GetCashBackListUseCase getCashBackListUseCase;
 
-  CashBackController(this.getCashBackProductTypesUseCase, this.getCashBackListUseCase);
+  CashBackController(
+    this.getCashBackProductTypesUseCase,
+    this.getCashBackListUseCase,
+  );
 
   var isLoadingProductTypes = false.obs;
   var isLoadingList = false.obs;
-  
+
   var productTypes = <CashBackProductType>[].obs;
   var selectedProductTypeId = ''.obs;
 
@@ -23,6 +27,7 @@ class CashBackController extends GetxController {
   void onInit() {
     super.onInit();
     fetchProductTypes();
+    fetchCashBackList();
   }
 
   Future<void> fetchProductTypes() async {
@@ -32,7 +37,9 @@ class CashBackController extends GetxController {
     result.fold(
       (failure) {
         isLoadingProductTypes.value = false;
-        AppLogger.logError("Failed to fetch cashback product types: ${failure.message}");
+        AppLogger.logError(
+          "Failed to fetch cashback product types: ${failure.message}",
+        );
       },
       (data) {
         isLoadingProductTypes.value = false;
@@ -40,7 +47,8 @@ class CashBackController extends GetxController {
           productTypes.value = data.data!;
           // if we want to auto-load the first product type, we could do it here
           if (productTypes.isNotEmpty) {
-            selectedProductTypeId.value = productTypes.first.id?.toString() ?? "";
+            selectedProductTypeId.value =
+                productTypes.first.id?.toString() ?? "";
             fetchCashBackList();
           }
         }
@@ -52,7 +60,9 @@ class CashBackController extends GetxController {
     if (selectedProductTypeId.value.isEmpty) return;
 
     isLoadingList.value = true;
-    final result = await getCashBackListUseCase.call(selectedProductTypeId.value);
+    final result = await getCashBackListUseCase.call(
+      selectedProductTypeId.value,
+    );
 
     result.fold(
       (failure) {

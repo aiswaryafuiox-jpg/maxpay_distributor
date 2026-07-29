@@ -1,15 +1,23 @@
 import 'package:get/get.dart';
+import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
+import 'package:maxpay/controller/transaction_controller.dart';
 import 'package:maxpay/core/bindings/initial_binding.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/domain/usecase/executive/get_executive_commission_packages_usecase.dart';
+import 'package:maxpay/domain/usecase/executive/get_executive_detail_usecase.dart';
+import 'package:maxpay/domain/usecase/executive/get_executives_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/get_profile_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/resend_update_profile_otp_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/update_profile_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/update_status_send_otp_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/verify_update_profile_otp_usecase.dart';
 import 'package:maxpay/domain/usecase/profile/verify_update_status_otp_usecase.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_products_usecase.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_report_usecase.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
@@ -43,6 +51,7 @@ import 'package:maxpay/view/statement/statement.dart';
 import 'package:maxpay/view/support/supoort_screen.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 import 'package:maxpay/view/transaction_screens/view.dart';
+import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/update_pin/update_pin_screen.dart';
 import 'package:maxpay/view/update_pin/verify_pin_screen.dart';
 import 'package:maxpay/view/wallet-credit/wallet_credit_screen.dart';
@@ -153,19 +162,15 @@ class AppPages {
       page: () => const PaymentRequestScreen(),
     ),
 
-    GetPage(
-      name: AppRoutes.withdrawrequest1,
-      page: () =>  WalletCreditScreen(),
-    ),
-    GetPage(
-      name: AppRoutes.withdrawrequest2,
-      page: () =>  WalletCreditScreen(),
-    ),
+    GetPage(name: AppRoutes.withdrawrequest1, page: () => WalletCreditScreen()),
+    GetPage(name: AppRoutes.withdrawrequest2, page: () => WalletCreditScreen()),
     GetPage(
       name: AppRoutes.retailer,
       page: () => const RetailerScreen(),
       binding: BindingsBuilder(() {
-        Get.lazyPut(() => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+        Get.lazyPut(
+          () => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+        );
       }),
     ),
     GetPage(
@@ -180,7 +185,22 @@ class AppPages {
       name: AppRoutes.retviewDetailsScreen,
       page: () => const RetViewDetailsScreen(),
     ),
-    GetPage(name: AppRoutes.executive, page: () => const ExecutiveScreen()),
+    GetPage(
+      name: AppRoutes.executive,
+      page: () => const ExecutiveScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(
+          () => ExecutiveController(
+            sl<GetExecutivesUseCase>(),
+            sl<GetExecutiveDetailUseCase>(),
+            sl<GetExecutiveCommissionPackagesUseCase>(),
+            sl(),
+            sl(),
+            sl(),
+          ),
+        );
+      }),
+    ),
     GetPage(
       name: AppRoutes.createExecutive,
       page: () => const CreateExecutiveScreen(),
@@ -188,6 +208,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.exviewDetails,
       page: () => const ExeViewDetailsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.exeAddWalletScreen,
+      page: () => const ExeAddWalletScreen(),
     ),
 
     GetPage(
@@ -243,6 +267,13 @@ class AppPages {
 
         return TransactionScreen(status: status ?? TransactionStatus.success);
       },
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => TransactionController(
+          sl<GetTransactionProductsUseCase>(),
+          sl<GetTransactionReportUseCase>(),
+          sl<GetTransactionDetailUseCase>(),
+        ));
+      }),
     ),
     GetPage(name: AppRoutes.statement, page: () => const StatementScreen()),
     GetPage(
