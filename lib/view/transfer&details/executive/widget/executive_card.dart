@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/extensions/currency.dart';
-import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailor_cardbutton.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/utils/texthelper.dart';

@@ -214,7 +214,7 @@ class _BulkPackageChargeScreenState extends State<BulkPackageChargeScreen> {
                 child: Column(
                   children: [
                     DropdownButtonFormField<int>(
-                      value: selectedPackageId,
+                      initialValue: selectedPackageId,
                       decoration: InputDecoration(
                         hintText: "Select Package",
                         hintStyle: TextStyle(
@@ -257,7 +257,7 @@ class _BulkPackageChargeScreenState extends State<BulkPackageChargeScreen> {
                     const SizedBox(height: 12),
 
                     DropdownButtonFormField<String>(
-                      value: selectedUserTypeId,
+                      initialValue: selectedUserTypeId,
                       decoration: InputDecoration(
                         hintText: "Select User Type",
                         hintStyle: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:maxpay/core/services/api_service.dart';
+import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
 import 'package:maxpay/data/repository/auto_transfer_details_repo_impl.dart';
@@ -11,6 +12,11 @@ import 'package:maxpay/data/repository/cash_back_repo_impl.dart';
 import 'package:maxpay/data/repository/commission_settings_repo_impl.dart';
 import 'package:maxpay/data/repository/grade_repo_impl.dart';
 import 'package:maxpay/domain/repository/grade_repo.dart';
+import 'package:maxpay/domain/usecase/cashback/get_cash_back_list_usecase.dart';
+import 'package:maxpay/domain/usecase/cashback/get_cash_back_product_types_usecase.dart';
+import 'package:maxpay/domain/usecase/daybook/delete_day_book_usecase.dart';
+import 'package:maxpay/domain/usecase/daybook/get_day_book_list_usecase.dart';
+import 'package:maxpay/domain/usecase/daybook/get_day_book_products_usecase.dart';
 import 'package:maxpay/domain/usecase/grade/get_grade_usecase.dart';
 import 'package:maxpay/controller/grade_controller.dart';
 
@@ -22,6 +28,7 @@ import 'package:maxpay/controller/kyc_controller.dart';
 
 import 'package:maxpay/data/repository/support_repo_impl.dart';
 import 'package:maxpay/domain/repository/support_repo.dart';
+import 'package:maxpay/domain/usecase/my_earnings/get_my_earnings_usecase.dart';
 import 'package:maxpay/domain/usecase/support/get_support_usecase.dart';
 import 'package:maxpay/controller/support_controller.dart';
 
@@ -29,16 +36,13 @@ import 'package:maxpay/data/repository/login_history_repo_impl.dart';
 import 'package:maxpay/domain/repository/login_history_repo.dart';
 import 'package:maxpay/domain/usecase/login_history/get_login_history_usecase.dart';
 import 'package:maxpay/controller/login_history_controller.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_success_report_usecase.dart';
 
 import '../../data/repository/login_sendOtp_repo_impl.dart';
 import '../../domain/repository/login_sendOtp_repo.dart';
 import '../../domain/repository/profile_repo.dart';
 import '../../domain/repository/retailer_repo.dart';
-import '../../domain/repository/wallet_credit_type_repository.dart';
-import '../../domain/repository/pending_wallet_request_repo.dart';
-import '../../domain/repository/outstanding_repo.dart';
 import '../../domain/repository/low_wallet_repo.dart';
-import '../../domain/repository/wallet_credit_list_repo.dart';
 import 'package:maxpay/domain/repository/day_book_repo.dart';
 import 'package:maxpay/domain/repository/my_earnings_repo.dart';
 import 'package:maxpay/domain/repository/transaction_repo.dart';
@@ -49,23 +53,14 @@ import 'package:maxpay/domain/repository/commission_settings_repo.dart';
 import 'package:maxpay/domain/repository/auto_transfer_details_repo.dart';
 import 'package:maxpay/domain/repository/update_auto_transfer_repo.dart';
 
-import '../../data/repository/pending_wallet_request_repo_impl.dart';
-import '../../data/repository/outstanding_repo_impl.dart';
 import '../../data/repository/low_wallet_repo_impl.dart';
-import '../../data/repository/wallet_credit_list_repo_impl.dart';
 
-import '../../domain/usecase/wallet_credit_type_usecase.dart';
-import '../../domain/usecase/retailer/get_low_wallet_retailers_usecase.dart';
-import '../../domain/usecase/retailer/get_wallet_credit_list_usecase.dart';
-import '../../controller/wallet_controller.dart';
-import '../../controller/low_wallet_controller.dart';
 import '../../controller/day_book_controller.dart';
 import '../../controller/my_earnings_controller.dart';
 import '../../controller/transaction_controller.dart';
 import '../../controller/cash_back_controller.dart';
 import '../../controller/commission_settings_controller.dart';
 
-import 'package:maxpay/controller/auto_transfer_controller.dart';
 
 import '../../domain/usecase/login_sendOtp_usecase.dart';
 import '../../domain/usecase/verify_otp_usecase.dart';
@@ -79,9 +74,7 @@ import '../../domain/usecase/profile/verify_update_profile_otp_usecase.dart';
 import '../../domain/usecase/profile/resend_update_profile_otp_usecase.dart';
 import '../../domain/usecase/profile/update_status_send_otp_usecase.dart';
 import '../../domain/usecase/profile/verify_update_status_otp_usecase.dart';
-import '../../domain/repository/profile_repo.dart';
 import '../../data/repository/profile_repo_impl.dart';
-import '../../domain/repository/retailer_repo.dart';
 import '../../domain/repository/executive_repo.dart';
 import '../../data/repository/retailer_repo_impl.dart';
 import '../../data/repository/executive_repo_impl.dart';
@@ -98,23 +91,13 @@ import '../../domain/usecase/executive/get_executive_commission_packages_usecase
 import '../../domain/usecase/executive/update_executive_usecase.dart';
 import '../../domain/usecase/executive/get_executive_add_wallet_details_usecase.dart';
 import '../../domain/usecase/executive/add_executive_wallet_usecase.dart';
-import '../../domain/repository/transaction_repository.dart';
+import '../../domain/repository/transaction_repository.dart' ;
 import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_detail_usecase.dart';
 
 // SharedPreferences
-import 'package:maxpay/domain/usecase/retailer/get_add_wallet_details_usecase.dart';
-import 'package:maxpay/domain/usecase/retailer/add_wallet_usecase.dart';
-import 'package:maxpay/domain/usecase/retailer/get_auto_transfer_details_usecase.dart';
-import 'package:maxpay/domain/usecase/retailer/update_auto_transfer_usecase.dart';
-import 'package:maxpay/domain/usecase/daybook/get_day_book_products_usecase.dart';
-import 'package:maxpay/domain/usecase/daybook/get_day_book_list_usecase.dart';
-import 'package:maxpay/domain/usecase/daybook/delete_day_book_usecase.dart';
-import 'package:maxpay/domain/usecase/my_earnings/get_my_earnings_usecase.dart';
-import 'package:maxpay/domain/usecase/transaction/get_transaction_success_report_usecase.dart';
-import 'package:maxpay/domain/usecase/cashback/get_cash_back_product_types_usecase.dart';
-import 'package:maxpay/domain/usecase/cashback/get_cash_back_list_usecase.dart';
+
 import 'package:maxpay/domain/usecase/settings/get_commission_settings_usecase.dart';
 
 import 'package:maxpay/domain/usecase/settings/update_package_status_usecase.dart';
@@ -319,9 +302,10 @@ Future<void> init() async {
   sl.registerFactory(() => MyEarningsController(sl()));
 
   // Transaction Report
+  sl.registerLazySingleton<TransactionsListRepository>(() => TransactionRepositoryImpl(sl()));
   sl.registerLazySingleton<TransactionRepository>(() => TransactionRepoImpl(sl()));
   sl.registerLazySingleton<GetTransactionSuccessReportUseCase>(() => GetTransactionSuccessReportUseCase(sl()));
-  sl.registerFactory(() => TransactionController(sl(), sl()));
+  sl.registerFactory(() => TransactionController(sl(), sl(),sl()));
 
   // CashBack
   sl.registerLazySingleton<CashBackRepository>(() => CashBackRepoImpl(sl()));

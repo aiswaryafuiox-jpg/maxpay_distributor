@@ -95,7 +95,7 @@ class TransactionCard extends StatelessWidget {
                   ? Image.network(
                       item.productLogo!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                      errorBuilder: (_, _, _) => const Icon(Icons.broken_image),
                     )
                   : const Icon(Icons.category, color: Colors.grey),
               ),
