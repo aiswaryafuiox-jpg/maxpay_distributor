@@ -4,20 +4,29 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:get/get.dart';
-import '../../../controller/retailer_controller.dart';
+import '../../../controller/executive_controller.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
 
-class RetAddWalletScreen extends StatefulWidget {
-  const RetAddWalletScreen({super.key});
+class ExeAddWalletScreen extends StatefulWidget {
+  const ExeAddWalletScreen({super.key});
 
   @override
-  State<RetAddWalletScreen> createState() => _AddWalletScreenState();
+  State<ExeAddWalletScreen> createState() => _ExeAddWalletScreenState();
 }
 
-class _AddWalletScreenState extends State<RetAddWalletScreen> {
-  final RetailerController _controller = Get.find<RetailerController>();
+class _ExeAddWalletScreenState extends State<ExeAddWalletScreen> {
+  final ExecutiveController _controller = Get.find<ExecutiveController>();
   final TextEditingController amountController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch details when the screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.fetchExecutiveAddWalletDetails(Get.arguments.toString());
+    });
+  }
 
   @override
   void dispose() {
@@ -81,7 +90,7 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Obx(() {
-                final details = _controller.addWalletDetails.value;
+                final details = _controller.exeAddWalletDetails.value;
                 if (details == null) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -131,8 +140,8 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     buildLabel("Last Transfer Amount", isDark),
                     SizedBox(height: 8.h),
                     TextFormField(
-                      initialValue: (details.lastTransferDateTime ?? ' 0.00')
-                          .currencyIndian,
+                      initialValue:
+                          (details.lastTransferAmount ?? 0.00).currencyIndian,
                       readOnly: true,
                       decoration: fieldDecoration(context, "", isDark),
                     ),
@@ -152,7 +161,8 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     buildLabel("Outstanding", isDark),
                     SizedBox(height: 8.h),
                     TextFormField(
-                      initialValue: "₹ ${details.outstanding ?? 0.00}",
+                      initialValue:
+                          (details.lastTransferAmount ?? 0.00).currencyIndian,
                       readOnly: true,
                       decoration: fieldDecoration(context, "", isDark),
                     ),
@@ -178,9 +188,8 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     title: "Update",
                     isLoading: _controller.isAddWalletLoading.value,
                     onTap: () {
-                      final id = _controller.addWalletDetails.value?.retailerId
-                          ?.toString();
                       final amount = amountController.text.trim();
+                      final id = Get.arguments?.toString();
                       if (id != null && amount.isNotEmpty) {
                         _controller.submitAddWallet(id, amount);
                       } else if (amount.isEmpty) {

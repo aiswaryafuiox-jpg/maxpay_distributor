@@ -7,7 +7,6 @@ import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/transfer_detail_list_model.dart';
 import 'package:maxpay/data/model/wallet_credit_type_model.dart';
 import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
-import 'package:maxpay/domain/repository/wallet_credit_type_repository.dart';
 
 class TransferDetailRepositoryImpl implements TransferDetailRepository {
   final ApiService apiService;

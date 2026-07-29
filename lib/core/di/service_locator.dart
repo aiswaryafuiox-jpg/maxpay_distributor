@@ -7,6 +7,8 @@ import 'package:maxpay/data/repository/my_earnings_repo_impl.dart';
 import 'package:maxpay/data/repository/transaction_repo_impl.dart';
 import 'package:maxpay/data/repository/cash_back_repo_impl.dart';
 
+import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
+import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
 import '../../data/repository/login_sendOtp_repo_impl.dart';
 import '../../data/repository/profile_repo_impl.dart';
 import '../../data/repository/retailer_repo_impl.dart';
@@ -60,6 +62,11 @@ import '../../domain/usecase/profile/resend_update_profile_otp_usecase.dart';
 import '../../domain/usecase/profile/update_status_send_otp_usecase.dart';
 import '../../domain/usecase/profile/verify_update_status_otp_usecase.dart';
 
+import '../../domain/repository/profile_repo.dart';
+import '../../data/repository/profile_repo_impl.dart';
+import '../../domain/repository/retailer_repo.dart';
+import '../../domain/repository/executive_repo.dart';
+import '../../data/repository/executive_repo_impl.dart';
 import '../../domain/usecase/retailer/get_retailers_usecase.dart';
 import '../../domain/usecase/retailer/get_retailer_detail_usecase.dart';
 import '../../domain/usecase/retailer/get_commission_packages_usecase.dart';
@@ -76,14 +83,26 @@ import 'package:maxpay/domain/usecase/my_earnings/get_my_earnings_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_success_report_usecase.dart';
 import 'package:maxpay/domain/usecase/cashback/get_cash_back_product_types_usecase.dart';
 import 'package:maxpay/domain/usecase/cashback/get_cash_back_list_usecase.dart';
+import '../../domain/usecase/retailer/get_add_wallet_details_usecase.dart';
+import '../../domain/usecase/retailer/add_wallet_usecase.dart';
+import '../../domain/usecase/executive/get_executives_usecase.dart';
+import '../../domain/usecase/executive/get_executive_detail_usecase.dart';
+import '../../domain/usecase/executive/get_executive_commission_packages_usecase.dart';
+import '../../domain/usecase/executive/update_executive_usecase.dart';
+import '../../domain/usecase/executive/get_executive_add_wallet_details_usecase.dart';
+import '../../domain/usecase/executive/add_executive_wallet_usecase.dart';
+import '../../domain/repository/transaction_repository.dart';
+import '../../data/repository/transaction_repository_impl.dart';
+import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
+import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
+
+// SharedPreferences
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   /// Api Service
-  sl.registerLazySingleton<ApiService>(
-    () => ApiService(),
-  );
+  sl.registerLazySingleton<ApiService>(() => ApiService());
 
   /// Login Repository
   sl.registerLazySingleton<LoginRepository>(
@@ -120,9 +139,19 @@ Future<void> init() async {
     () => ProfileRepositoryImpl(sl<ApiService>()),
   );
 
-  /// Retailer Repository
-  sl.registerLazySingleton<RetailerRepository>(
-    () => RetailerRepositoryImpl(sl<ApiService>()),
+  // Transfer Detail Repository
+  sl.registerLazySingleton<TransferDetailRepository>(
+    () => TransferDetailRepositoryImpl(sl<ApiService>()),
+  );
+
+  // Transaction Repository
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(sl<ApiService>()),
+  );
+
+  /// Executive Repository
+  sl.registerLazySingleton<ExecutiveRepository>(
+    () => ExecutiveRepositoryImpl(sl<ApiService>()),
   );
 
   /// Profile UseCases
@@ -267,4 +296,44 @@ Future<void> init() async {
   sl.registerLazySingleton<GetCashBackProductTypesUseCase>(() => GetCashBackProductTypesUseCase(sl()));
   sl.registerLazySingleton<GetCashBackListUseCase>(() => GetCashBackListUseCase(sl()));
   sl.registerFactory(() => CashBackController(sl(), sl()));
+}
+  /// Get Executives UseCase
+  sl.registerLazySingleton<GetExecutivesUseCase>(
+    () => GetExecutivesUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Get Executive Detail UseCase
+  sl.registerLazySingleton<GetExecutiveDetailUseCase>(
+    () => GetExecutiveDetailUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Get Executive Commission Packages UseCase
+  sl.registerLazySingleton<GetExecutiveCommissionPackagesUseCase>(
+    () => GetExecutiveCommissionPackagesUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Update Executive UseCase
+  sl.registerLazySingleton<UpdateExecutiveUseCase>(
+    () => UpdateExecutiveUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Get Executive Add Wallet Details UseCase
+  sl.registerLazySingleton<GetExecutiveAddWalletDetailsUseCase>(
+    () => GetExecutiveAddWalletDetailsUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Add Executive Wallet UseCase
+  sl.registerLazySingleton<AddExecutiveWalletUseCase>(
+    () => AddExecutiveWalletUseCase(sl<ExecutiveRepository>()),
+  );
+
+  /// Get Transaction Products UseCase
+  sl.registerLazySingleton<GetTransactionProductsUseCase>(
+    () => GetTransactionProductsUseCase(sl<TransactionRepository>()),
+  );
+
+  /// Get Transaction Report UseCase
+  sl.registerLazySingleton<GetTransactionReportUseCase>(
+    () => GetTransactionReportUseCase(sl<TransactionRepository>()),
+  );
 }

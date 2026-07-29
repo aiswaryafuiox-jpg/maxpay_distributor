@@ -7,6 +7,7 @@ import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
 import 'package:maxpay/view/transaction_screens/widget/transaction_card.dart';
+import '../../controller/transaction_controller.dart';
 
 import '../../global_widget/custom_app.dart';
 
@@ -26,6 +27,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   bool isFavorite = false;
   final Set<int> _favoriteCards = <int>{};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.fetchTransactionReport(statusOverride: widget.status.name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -380,6 +389,67 @@ class _TransactionScreenState extends State<TransactionScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showProductsBottomSheet(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.5,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Select Product", style: TextHelper.max3.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Expanded(
+              child: Obx(() {
+                if (_controller.isProductsLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (_controller.products.isEmpty) {
+                  return const Center(child: Text("No products found"));
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: _controller.products.length,
+                  separatorBuilder: (context, index) => const Divider(),
+                  itemBuilder: (context, index) {
+                    final product = _controller.products[index];
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: product.logo != null
+                          ? Image.network(
+                              product.logo!,
+                              width: 30,
+                              height: 30,
+                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                            )
+                          : const Icon(Icons.category),
+                      title: Text(product.name ?? "Unknown", style: TextHelper.max1),
+                      trailing: _controller.selectedProduct.value?.id == product.id
+                          ? const Icon(Icons.check_circle, color: AppColors.clrPrimary)
+                          : null,
+                      onTap: () {
+                        _controller.selectedProduct.value = product;
+                        Get.back();
+                        _controller.fetchTransactionReport();
+                      },
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
     );
   }
 }

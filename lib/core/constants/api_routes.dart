@@ -46,4 +46,12 @@ class ApiRoutes {
   static const String distributorTransactionSuccessReport = '/api/distributor_transaction_success_report';
   static const String distributorCashBackProductTypes = '/api/distributor_cash_back_product_types';
   static const String distributorCashBack = '/api/distributor_cash_back';
+  static const String getExecutives = "/api/distributor_executives";
+  static const String getExecutiveDetail = "/api/distributor_executive_detail";
+  static const String getExecutiveCommissionPackages = "/api/distributor_executive_commission_packages";
+  static const String updateExecutive = "/api/distributor_update_executive";
+  static const String addExecutiveWalletDetails = "/api/distributor_add_executive_wallet_details";
+  static const String addExecutiveWallet = "/api/distributor_add_executive_wallet";
+  static const String transactionProducts = "/api/distributor_transaction_products";
+  static const String transactionReport = "/api/distributor_transaction_report";
 }

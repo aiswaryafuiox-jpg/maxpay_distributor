@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
 import 'package:get/get.dart';
@@ -238,7 +239,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               buildField(
                 context,
                 isDigitsOnly: true,
-                "₹${detail.walletBalance ?? 0.00}",
+                (detail.walletBalance ?? 0.00).currencyIndian,
                 readOnly: true,
               ),
 
@@ -247,7 +248,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               buildLabel("Due Amount", isDark, context),
               buildField(
                 context,
-                "₹${detail.dueAmount ?? 0.00}",
+                 (detail.dueAmount ?? 0.00).currencyIndian,
                 valueColor: Colors.red,
                 isDigitsOnly: true,
                 readOnly: true,
