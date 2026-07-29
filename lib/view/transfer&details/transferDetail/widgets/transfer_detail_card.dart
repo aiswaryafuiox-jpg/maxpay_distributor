@@ -11,6 +11,7 @@ class TransferDetailCard extends StatelessWidget {
   final String userName;
   final String regMobNo;
   final String amount;
+  final VoidCallback? onReverseIconTap;
 
   const TransferDetailCard({
     super.key,
@@ -21,6 +22,7 @@ class TransferDetailCard extends StatelessWidget {
     required this.userName,
     required this.regMobNo,
     required this.amount,
+    this.onReverseIconTap,
   });
 
   @override
@@ -103,12 +105,14 @@ class TransferDetailCard extends StatelessWidget {
 
           SizedBox(height: 16.h),
 
-          /// Transaction Type (UNCHANGED)
+          /// Transaction Type
           _row(
             context,
             "Transaction Type",
             transactionType,
             valueColor: statusColor,
+            showReverseIcon: !isReverse,
+            onReverseTap: onReverseIconTap,
           ),
 
           SizedBox(height: 14.h),
@@ -153,13 +157,15 @@ class TransferDetailCard extends StatelessWidget {
     );
   }
 
-  /// TRANSACTION TYPE (UNCHANGED)
+  /// TRANSACTION TYPE
   Widget _row(
       BuildContext context,
       String title,
       String value, {
         Color? valueColor,
         bool isAmount = false,
+        bool showReverseIcon = false,
+        VoidCallback? onReverseTap,
       }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -169,13 +175,28 @@ class TransferDetailCard extends StatelessWidget {
       children: [
         Expanded(
           flex: 5,
-          child: Text(
-            title,
-            style: TextHelper.max4.copyWith(
-              color: isDark
-                  ? Colors.white.withValues(alpha: .70)
-                  : AppColors.darktextclr,
-            ),
+          child: Row(
+            children: [
+              Text(
+                title,
+                style: TextHelper.max4.copyWith(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: .70)
+                      : AppColors.darktextclr,
+                ),
+              ),
+              if (showReverseIcon) ...[
+                SizedBox(width: 6.w),
+                GestureDetector(
+                  onTap: onReverseTap,
+                  child: Icon(
+                    Icons.sync,
+                    color: Colors.red,
+                    size: 18.w,
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
 

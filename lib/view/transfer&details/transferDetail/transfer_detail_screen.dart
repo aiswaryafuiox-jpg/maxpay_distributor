@@ -98,11 +98,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                       .toList(),
                   selectedType: controller.selectedTransactionType.value,
                   onChanged: (value) {
-                    if (value == "Reverse") {
-                      _showReverseDialog();
-                    } else {
-                      controller.changeTransactionType(value);
-                    }
+                    controller.changeTransactionType(value);
                   },
                 ),
               ),
@@ -143,6 +139,9 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                         userName: item.userName ?? "",
                         regMobNo: item.regMobileNumber ?? "",
                         amount: "₹ ${item.amount ?? '0.00'}",
+                        onReverseIconTap: () {
+                          _showReverseDialog();
+                        },
                       );
                     },
                   );

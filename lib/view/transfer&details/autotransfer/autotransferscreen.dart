@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
 import 'package:maxpay/controller/auto_transfer_controller.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 
 class AutoTransferScreen extends StatefulWidget {
@@ -22,7 +23,9 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAutoTransferDetails("");
+      final profileController = Get.find<ProfileController>();
+      final String id = profileController.profileData.value?.id?.toString() ?? "";
+      controller.fetchAutoTransferDetails(id);
     });
   }
 

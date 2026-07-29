@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/commission_settings_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/utils/texthelper.dart';
 import '../../../global_widget/commom_button.dart';
@@ -13,8 +16,20 @@ class BulkPackageChangeScreen extends StatefulWidget {
 }
 
 class _BulkPackageChangeScreenState extends State<BulkPackageChangeScreen> {
-  String? package;
-  String? status;
+  final CommissionSettingsController controller = Get.put(sl<CommissionSettingsController>());
+  
+  int? selectedPackageId;
+  String? selectedUserTypeId;
+  String? selectedStatusId;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch bulk options when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchBulkPackageOptions();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,84 +39,121 @@ class _BulkPackageChangeScreenState extends State<BulkPackageChangeScreen> {
       backgroundColor:
       isDark ? Theme.of(context).scaffoldBackgroundColor : Colors.white,
       appBar: const CommonAppBar(title: "Bulk Package Change"),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _label("No of Retailers"),
+      body: Obx(() {
+        if (controller.isUpdating.value && controller.bulkPackageOptions.value == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            TextField(
-              readOnly: true,
-              decoration: _inputDecoration(
-                hint: "30",
+        final options = controller.bulkPackageOptions.value;
+        if (options == null) {
+          return const Center(child: Text("No options found."));
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _label("No of Retailers"),
+
+              TextField(
+                readOnly: true,
+                decoration: _inputDecoration(
+                  hint: (options.noOfRetailers ?? 0).toString(),
+                  isDark: isDark,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              _label("Package"),
+
+              _buildDropdown<int>(
+                value: selectedPackageId,
+                hint: "Select",
                 isDark: isDark,
+                items: options.packages?.map((pkg) {
+                  return DropdownMenuItem<int>(
+                    value: pkg.id,
+                    child: Text(pkg.packageName ?? ""),
+                  );
+                }).toList() ?? [],
+                onChanged: (value) {
+                  setState(() {
+                    selectedPackageId = value;
+                  });
+                },
               ),
-            ),
+              
+              const SizedBox(height: 15),
 
-            const SizedBox(height: 15),
+              _label("User Type"),
 
-            _label("Package"),
-
-            _buildDropdown<String>(
-              value: package,
-              hint: "Select",
-              isDark: isDark,
-              items: const [
-                DropdownMenuItem(
-                  value: "Package 1",
-                  child: Text("Package 1"),
-                ),
-                DropdownMenuItem(
-                  value: "Package 2",
-                  child: Text("Package 2"),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  package = value;
-                });
-              },
-            ),
-
-            const SizedBox(height: 15),
-
-            _label("Status"),
-
-            _buildDropdown<String>(
-              value: status,
-              hint: "Select",
-              isDark: isDark,
-              items: const [
-                DropdownMenuItem(
-                  value: "Active",
-                  child: Text("Active"),
-                ),
-                DropdownMenuItem(
-                  value: "Inactive",
-                  child: Text("Inactive"),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  status = value;
-                });
-              },
-            ),
-
-            const Spacer(),
-
-            SizedBox(
-              width: 170,
-              child: CommonButton(
-                title: "Update",
-                onTap: () {},
+              _buildDropdown<String>(
+                value: selectedUserTypeId,
+                hint: "Select",
+                isDark: isDark,
+                items: options.userTypes?.map((type) {
+                  return DropdownMenuItem<String>(
+                    value: type.id,
+                    child: Text(type.name ?? ""),
+                  );
+                }).toList() ?? [],
+                onChanged: (value) {
+                  setState(() {
+                    selectedUserTypeId = value;
+                  });
+                },
               ),
-            ),
 
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+              const SizedBox(height: 15),
+
+              _label("Status"),
+
+              _buildDropdown<String>(
+                value: selectedStatusId,
+                hint: "Select",
+                isDark: isDark,
+                items: options.statuses?.map((status) {
+                  return DropdownMenuItem<String>(
+                    value: status.id,
+                    child: Text(status.name ?? ""),
+                  );
+                }).toList() ?? [],
+                onChanged: (value) {
+                  setState(() {
+                    selectedStatusId = value;
+                  });
+                },
+              ),
+
+              const Spacer(),
+
+              SizedBox(
+                width: 170,
+                child: CommonButton(
+                  title: "Update",
+                  onTap: () {
+                    if (selectedPackageId != null && selectedStatusId != null) {
+                      controller.applyBulkPackageChange(
+                        packageId: selectedPackageId!,
+                        status: selectedStatusId!,
+                        onSuccess: () {
+                          // Handle success, optionally navigate back
+                          Get.back();
+                        },
+                      );
+                    } else {
+                      Get.snackbar("Error", "Please select a package and status", backgroundColor: Colors.red, colorText: Colors.white);
+                    }
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -157,7 +209,7 @@ class _BulkPackageChangeScreenState extends State<BulkPackageChangeScreen> {
     required ValueChanged<T?> onChanged,
   }) {
     return DropdownButtonFormField<T>(
-      initialValue: value,
+      value: value,
       decoration: _inputDecoration(
         hint: hint,
         isDark: isDark,
