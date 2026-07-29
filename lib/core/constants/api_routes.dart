@@ -4,6 +4,7 @@ class ApiRoutes {
 
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
+  static const distributorTransferDetail = "/api/distributor_transfer_detail";
   static const String loginSendOtp = "/api/distributor_login_sendotp";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
   static const String createPin = "/api/distributor_create_pin";
@@ -12,6 +13,12 @@ class ApiRoutes {
   static const String logout = "/api/distributor_logout";
   static const String getProfile = "/api/distributor_get_profile";
   static const String updateProfile = "/api/distributor_update_profile";
+  static const String distributorPendingWalletRequests = "/api/distributor_pending_wallet_requests";
+  static const String distributorPendingWalletRequestDetail = "/api/distributor_pending_wallet_request_detail";
+  static const String distributorApprovePendingWalletRequest = "/api/distributor_approve_pending_wallet_request";
+  static const String distributorOutstandingList = "/api/distributor_outstanding_list";
+  static const String distributorUpdateOutstanding = "/api/distributor_update_outstanding";
+  static const String distributorLowWalletRetailers = "/api/distributor_low_wallet_retailers";
   static const String updateProfileVerifyOtp =
       "/api/distributor_update_profile_verify_otp";
   static const String updateProfileResendOtp =
@@ -29,4 +36,14 @@ class ApiRoutes {
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String distributorWalletCreditList = '/api/distributor_wallet_credit';
+  static const String distributorAutoTransferDetails = '/api/distributor_auto_transfer_details';
+  static const String distributorUpdateAutoTransfer = '/api/distributor_update_auto_transfer';
+  static const String distributorDayBookProducts = '/api/distributor_day_book_products';
+  static const String distributorDayBookList = '/api/distributor_day_book';
+  static const String distributorDayBookDelete = '/api/distributor_day_book_delete';
+  static const String distributorMyEarnings = '/api/distributor_my_earnings';
+  static const String distributorTransactionSuccessReport = '/api/distributor_transaction_success_report';
+  static const String distributorCashBackProductTypes = '/api/distributor_cash_back_product_types';
+  static const String distributorCashBack = '/api/distributor_cash_back';
 }
