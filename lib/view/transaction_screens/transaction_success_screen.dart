@@ -352,7 +352,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               product.logo!,
                               width: 30,
                               height: 30,
-                              errorBuilder: (_, __, ___) =>
+                              errorBuilder: (_, _, _) =>
                                   const Icon(Icons.broken_image),
                             )
                           : const Icon(Icons.category),

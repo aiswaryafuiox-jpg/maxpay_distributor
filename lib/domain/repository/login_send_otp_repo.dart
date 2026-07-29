@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:maxpay/core/error/failure.dart';
-import '../../data/model/login_sendOtp_response_model.dart';
-import '../../data/model/login_verifyOtp_response_model.dart';
+import '../../data/model/login_send_otp_response_model.dart';
+import '../../data/model/login_verify_otp_response_model.dart';
 import '../../data/model/create_pin_response_model.dart';
 import '../../data/model/verify_pin_response_model.dart';
 import '../../data/model/update_fingerprint_response_model.dart';

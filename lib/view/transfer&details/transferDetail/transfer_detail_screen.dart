@@ -5,6 +5,7 @@ import 'package:maxpay/controller/transfer_detail_controller.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
+import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/transferDetail/widgets/transfer_detail_card.dart';
@@ -22,6 +23,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
   final controller = Get.put(
     TransferDetailController(
       GetTransferDetailsUseCase(TransferDetailRepositoryImpl(ApiService())),
+      GetTransferDetailListUseCase(TransferDetailRepositoryImpl(ApiService())),
     ),
   );
   String selectedTransactionType = "Transfer";
@@ -104,11 +106,11 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               SizedBox(height: 16.h),
 
               /// Header Card
-              TransferDetailHeaderCard(
+              Obx(() => TransferDetailHeaderCard(
                 title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
-                amount: "₹ 245005.23",
+                amount: controller.totalAmount.value,
                 isReverse: isReverse,
-              ),
+              )),
 
               SizedBox(height: 16.h),
 

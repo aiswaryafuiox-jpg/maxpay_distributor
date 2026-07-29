@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
@@ -7,7 +7,7 @@ import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
 import '../../controller/login_controller.dart';
-import '../../data/model/login_sendOtp_response_model.dart';
+import '../../data/model/login_send_otp_response_model.dart';
 
 class ScreenOtpVerification extends StatefulWidget {
   const ScreenOtpVerification({super.key});
@@ -81,7 +81,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
             ),
             child: Column(
               children: [
-                /// 🔹 HEADER / BACK BUTTON
+                /// ðŸ”¹ HEADER / BACK BUTTON
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
@@ -113,7 +113,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                       children: [
                         SizedBox(height: isTablet ? 40.h : 20.h),
 
-                        /// 🔹 Title
+                        /// ðŸ”¹ Title
                         Text(
                           'Verification code',
                           textAlign: TextAlign.center,
@@ -127,7 +127,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 12.h),
 
-                        /// 🔹 Subtitle
+                        /// ðŸ”¹ Subtitle
                         Text(
                           "Please type the verification code\nsent to your phone number",
                           textAlign: TextAlign.center,
@@ -142,7 +142,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 40.h),
 
-                        /// 🔹 OTP FIELD (Pinput)
+                        /// ðŸ”¹ OTP FIELD (Pinput)
                         Pinput(
                           length: 4,
                           controller: _otpController,
@@ -198,7 +198,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 30.h),
 
-                        /// 🔹 Timer Placeholder
+                        /// ðŸ”¹ Timer Placeholder
                         Text(
                           'Resend code in 00:30',
                           style: TextStyle(
@@ -213,7 +213,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                   ),
                 ),
 
-                /// 🔹 NUMERIC KEYBOARD / VERIFY BUTTON
+                /// ðŸ”¹ NUMERIC KEYBOARD / VERIFY BUTTON
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
                   child: _showVerifyButton

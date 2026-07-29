@@ -8,7 +8,7 @@ import '../model/transaction/transaction_product_response_model.dart';
 import '../model/transaction/transaction_report_response_model.dart';
 import '../model/transaction/transaction_detail_response_model.dart';
 
-class TransactionRepositoryImpl implements TransactionsListRepository {
+class TransactionRepositoryImpl implements TransactionsListRepository  {
   final ApiService _apiService;
 
   TransactionRepositoryImpl(this._apiService);
@@ -66,4 +66,6 @@ class TransactionRepositoryImpl implements TransactionsListRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+
 }

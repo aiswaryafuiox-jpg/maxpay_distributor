@@ -146,7 +146,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 final packages = controller.commissionPackages;
 
                 return DropdownButtonFormField<String>(
-                  value: selectedPackage,
+                  initialValue: selectedPackage,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: isDark

@@ -5,10 +5,20 @@ import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
+import 'package:maxpay/controller/day_book_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:get/get.dart';
 import 'day_book_card.dart';
 
-class DayBookScreen extends StatelessWidget {
+class DayBookScreen extends StatefulWidget {
   const DayBookScreen({super.key});
+
+  @override
+  State<DayBookScreen> createState() => _DayBookScreenState();
+}
+
+class _DayBookScreenState extends State<DayBookScreen> {
+  final DayBookController controller = Get.put(sl<DayBookController>());
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +27,7 @@ class DayBookScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Day Book",
-      ),
+      appBar: const CommonAppBar(title: "Day Book"),
       body: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
@@ -28,9 +36,7 @@ class DayBookScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: isDark
-                    ? AppColors.darkplceholder
-                    : AppColors.lightbg2,
+                color: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
                 borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(
                   color: isDark
@@ -41,42 +47,75 @@ class DayBookScreen extends StatelessWidget {
               child: Column(
                 children: [
                   /// SELECT PRODUCT
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 14.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.darkplceholder
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(8.r),
-                      border: Border.all(
-                        color: isDark
-                            ? AppColors.darkFilterBorder
-                            : AppColors.totalborde2,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Select Product",
-                          style: TextHelper.max1.copyWith(
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return DropdownButtonFormField<int>(
+                      initialValue: controller.selectedProduct.value?.id,
+                      decoration: InputDecoration(
+                        hintText: "Select Product",
+                        hintStyle: TextHelper.max1.copyWith(
+                          color: isDark
+                              ? AppColors.textclr
+                              : AppColors.clrTextgrey,
+                        ),
+                        filled: true,
+                        fillColor: isDark
+                            ? AppColors.darkplceholder
+                            : Colors.white,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 14.h,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                          borderSide: BorderSide(
                             color: isDark
-                                ? AppColors.textclr
-                                : AppColors.clrTextgrey,
+                                ? AppColors.darkFilterBorder
+                                : AppColors.totalborde2,
                           ),
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          size: 18.sp,
-                          color: theme.colorScheme.onSurface,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                          borderSide: BorderSide(
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.totalborde2,
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                      items: controller.products.map((product) {
+                        return DropdownMenuItem<int>(
+                          value: product.id,
+                          child: Text(
+                            product.name ?? "",
+                            style: TextHelper.max1.copyWith(
+                              color: isDark
+                                  ? AppColors.textclr
+                                  : AppColors.clrTextblack,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          final selected = controller.products.firstWhere(
+                            (p) => p.id == value,
+                          );
+                          controller.selectProduct(selected);
+                        }
+                      },
+                      dropdownColor: isDark
+                          ? AppColors.darkplceholder
+                          : Colors.white,
+                      icon: Icon(
+                        Icons.chevron_right,
+                        size: 18.sp,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    );
+                  }),
 
                   SizedBox(height: 10.h),
 
@@ -84,12 +123,13 @@ class DayBookScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _customField(
+                        child: _dateField(
                           context,
-                          hint: "DD.MM.YYYY",
+                          hint: "From Date",
+                          controller: controller.fromDateController,
+                          isDark: isDark,
                         ),
                       ),
-
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.w),
                         child: Icon(
@@ -98,11 +138,12 @@ class DayBookScreen extends StatelessWidget {
                           size: 18.sp,
                         ),
                       ),
-
                       Expanded(
-                        child: _customField(
+                        child: _dateField(
                           context,
-                          hint: "DD.MM.YYYY",
+                          hint: "To Date",
+                          controller: controller.toDateController,
+                          isDark: isDark,
                         ),
                       ),
                     ],
@@ -111,20 +152,15 @@ class DayBookScreen extends StatelessWidget {
                   SizedBox(height: 10.h),
 
                   /// SEARCH
-                  _customField(
+                  /// SEARCH
+                  _searchField(
                     context,
                     hint: "Search",
-                    prefixWidget: SvgPicture.asset(
-                      AssetImages.search,
-                      width: 18.w,
-                      height: 18.w,
-                      colorFilter: ColorFilter.mode(
-                        isDark
-                            ? AppColors.textclr
-                            : theme.colorScheme.onSurfaceVariant,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                    textController: controller.searchController,
+                    isDark: isDark,
+                    onSearch: () {
+                      controller.fetchDayBookList();
+                    },
                   ),
                 ],
               ),
@@ -133,43 +169,74 @@ class DayBookScreen extends StatelessWidget {
             SizedBox(height: 18.h),
 
             /// LIST
-            Column(
-              children: [
-                DayBookCard(
-                  retailerName: "Kumar",
-                  mobileNo: "9876543212",
-                  transactionId: "TXN24321232323",
-                  transactionType: "Wallet Transfer",
-                  receivedAmount: "₹40.00",
-                  dateTime: "29-11-2026 07:38:43PM",
-                ),
+            Expanded(
+              child: Obx(() {
+                if (controller.isListLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                SizedBox(height: 14.h),
-
-                SizedBox(
-                  width: 120.w,
-                  height: 36.h,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFDDE2),
-                      foregroundColor: const Color(0xFFEE0023),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                    ),
+                if (controller.dayBookList.isEmpty) {
+                  return Center(
                     child: Text(
-                      "Delete",
-                      style: TextHelper.max4.copyWith(
-                        color: const Color(0xFFEE0023),
-                        fontWeight: FontWeight.w600,
-
+                      "Data not found",
+                      style: TextHelper.max2.copyWith(
+                        color: isDark
+                            ? AppColors.textclr
+                            : AppColors.clrTextgrey,
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  );
+                }
+
+                return ListView.separated(
+                  itemCount: controller.dayBookList.length,
+                  separatorBuilder: (context, index) => SizedBox(height: 14.h),
+                  itemBuilder: (context, index) {
+                    final item = controller.dayBookList[index];
+                    return Column(
+                      children: [
+                        DayBookCard(
+                          retailerName: item.retailerName ?? "N/A",
+                          mobileNo: item.mobileNo ?? "N/A",
+                          transactionId: item.transactionId ?? "N/A",
+                          transactionType: item.transactionType ?? "N/A",
+                          receivedAmount: item.amount ?? "N/A",
+                          dateTime: item.dateTime ?? "N/A",
+                        ),
+                        SizedBox(height: 14.h),
+                        SizedBox(
+                          width: 120.w,
+                          height: 36.h,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (item.transactionId != null) {
+                                // Assuming transactionId is the correct ID to pass for delete,
+                                // or item.id if available. The json mapper mapped transactionId to json['id'].
+                                controller.deleteDayBook(item.transactionId!);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFFDDE2),
+                              foregroundColor: const Color(0xFFEE0023),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                            ),
+                            child: Text(
+                              "Delete",
+                              style: TextHelper.max4.copyWith(
+                                color: const Color(0xFFEE0023),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -177,49 +244,112 @@ class DayBookScreen extends StatelessWidget {
     );
   }
 
-  Widget _customField(
-      BuildContext context, {
-        required String hint,
-        Widget? prefixWidget,
-      }) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      height: 42.h,
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkplceholder
-            : Colors.white,
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : AppColors.totalborde2,
+  Widget _dateField(
+    BuildContext context, {
+    required String hint,
+    required TextEditingController controller,
+    required bool isDark,
+  }) {
+    return TextFormField(
+      controller: controller,
+      readOnly: true,
+      onTap: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+        );
+        if (date != null) {
+          // Format as YYYY-MM-DD
+          controller.text =
+              "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+          this.controller.fetchDayBookList();
+        }
+      },
+      style: TextHelper.max1.copyWith(
+        color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+      ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextHelper.max1.copyWith(
+          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+        ),
+        filled: true,
+        fillColor: isDark ? AppColors.darkplceholder : Colors.white,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        isDense: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+          ),
         ),
       ),
-      child: Row(
-        children: [
-          if (prefixWidget != null) ...[
-            SizedBox(
-              width: 18.w,
-              height: 18.w,
-              child: prefixWidget,
-            ),
-            SizedBox(width: 8.w),
-          ],
-          Expanded(
-            child: Text(
-              hint,
-              style: TextHelper.max1.copyWith(
-                color: isDark
-                    ? AppColors.textclr
-                    : theme.colorScheme.onSurfaceVariant,
-              ),
+    );
+  }
+
+  Widget _searchField(
+    BuildContext context, {
+    required String hint,
+    required TextEditingController textController,
+    required bool isDark,
+    required VoidCallback onSearch,
+  }) {
+    final theme = Theme.of(context);
+    return TextFormField(
+      controller: textController,
+      textInputAction: TextInputAction.search,
+      onFieldSubmitted: (_) => onSearch(),
+      style: TextHelper.max1.copyWith(
+        color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+      ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextHelper.max1.copyWith(
+          color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+        ),
+        filled: true,
+        fillColor: isDark ? AppColors.darkplceholder : Colors.white,
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        isDense: true,
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(12.w),
+          child: SvgPicture.asset(
+            AssetImages.search,
+            colorFilter: ColorFilter.mode(
+              isDark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
+              BlendMode.srcIn,
             ),
           ),
-        ],
+        ),
+        suffixIcon: IconButton(
+          icon: Icon(
+            Icons.search,
+            color: isDark
+                ? AppColors.textclr
+                : theme.colorScheme.onSurfaceVariant,
+          ),
+          onPressed: onSearch,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.r),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.darkFilterBorder : AppColors.totalborde2,
+          ),
+        ),
       ),
     );
   }

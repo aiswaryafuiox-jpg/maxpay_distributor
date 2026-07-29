@@ -101,7 +101,7 @@ class RetailerCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    (retailer?.dueAmount ?? 0.00).currencyIndian,
+                    (retailer.dueAmount ?? 0.00).currencyIndian,
                     style: TextHelper.max2.copyWith(
                       color: Color(0xFFEE0023),
                       fontSize: 20,

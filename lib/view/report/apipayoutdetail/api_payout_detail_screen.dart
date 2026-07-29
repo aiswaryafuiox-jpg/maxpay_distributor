@@ -48,7 +48,7 @@ class PayoutDetailScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: CommonFilterBox(
-              bottomWidget: const TransactionTypeField(),
+              bottomWidget: TransactionTypeField(value: 'all', onChanged: (val) {}),
             ),
           ),
           const SizedBox(height: 5),

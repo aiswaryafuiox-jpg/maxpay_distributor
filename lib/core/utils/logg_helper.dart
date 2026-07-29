@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
+
 class AppLogger {
   static String _formatValue(dynamic value) {
     if (value is Map || value is List) {
@@ -22,7 +23,7 @@ class AppLogger {
 
   static void debugPrint(dynamic value) {
     if (kDebugMode) {
-      print(_formatValue(value));
+      debugPrint(_formatValue(value));
     }
   }
 
