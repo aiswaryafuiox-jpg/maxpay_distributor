@@ -141,24 +141,7 @@ import 'package:maxpay/core/constants/colors.dart';
 
 
 class EarningsCard extends StatelessWidget {
-  final String transactionNo;
-  final String dateTime;
-  final String productName;
-  final String productType;
-  final String productLogo;
-  final String transactionAmount;
-  final String myEarnings;
-
-  const EarningsCard({
-    super.key,
-    required this.transactionNo,
-    required this.dateTime,
-    required this.productName,
-    required this.productType,
-    required this.productLogo,
-    required this.transactionAmount,
-    required this.myEarnings,
-  });
+  const EarningsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +172,7 @@ class EarningsCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "Transaction No: $transactionNo",
+                  "Transaction No: 9876543212",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -213,7 +196,7 @@ class EarningsCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    dateTime,
+                    "29-11-2026 07:38:43PM",
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       fontSize: 13,
@@ -234,22 +217,17 @@ class EarningsCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               /// Logo
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 22,
-                backgroundColor: Colors.transparent,
-                backgroundImage: productLogo.isNotEmpty 
-                    ? NetworkImage(productLogo) 
-                    : null,
-                child: productLogo.isEmpty
-                    ? Text(
-                        productName.isNotEmpty ? productName[0] : "?",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : null,
+                backgroundColor: Colors.red,
+                child: Text(
+                  "Jio",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
 
               const SizedBox(width: 12),
@@ -260,7 +238,7 @@ class EarningsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      productType,
+                      "Prepaid",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -269,7 +247,7 @@ class EarningsCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Tr.Amount : ₹$transactionAmount",
+                      "Tr.Amount : ₹100.00",
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -293,8 +271,8 @@ class EarningsCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    "₹ $myEarnings",
+                  const Text(
+                    "₹ 5.00",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

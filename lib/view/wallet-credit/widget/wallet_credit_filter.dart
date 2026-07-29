@@ -34,84 +34,54 @@ class WalletCreditFilterWidget extends StatelessWidget {
         children: [
           /// Dropdown
           Obx(() {
-            return DropdownButtonFormField<String>(
-              value: controller.selectedCreditTypeName.value,
-              isExpanded: true,
+  return DropdownButtonFormField<int>(
+    initialValue: controller.selectedCreditTypeId.value,
+    isExpanded: true,
 
-              decoration: InputDecoration(
-                hintText: "Select Credit Type",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+    decoration: InputDecoration(
+      hintText: "Select Credit Type",
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
 
-              items: controller.walletCreditTypes.map((item) {
-                return DropdownMenuItem<String>(
-                  value: item.name,
-                  child: Text(item.name ?? ""),
-                );
-              }).toList(),
+    items: controller.walletCreditTypes.map((item) {
+      return DropdownMenuItem<int>(
+        value: item.id,
+        child: Text(item.name ?? ""),
+      );
+    }).toList(),
 
-              onChanged: (value) {
-                controller.selectedCreditTypeName.value = value;
-                controller.applyFilters();
-              },
-            );
-          }),
+    onChanged: (value) {
+      controller.selectedCreditTypeId.value = value;
+      print(value);
+    },
+  );
+}),
 
           const SizedBox(height: 8),
 
           /// DATE
-          Obx(() => Row(
+          Row(
             children: [
               _DateField(
-                hint: controller.fromDate.value.isEmpty ? "DD.MM.YYYY" : controller.fromDate.value,
+                hint: "DD.MM.YYYY",
                 style: TextHelper.max1,
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null) {
-                    controller.fromDate.value = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-                    controller.applyFilters();
-                  }
-                },
               ),
               const SizedBox(width: 8),
               const Icon(Icons.arrow_forward, size: 16),
               const SizedBox(width: 8),
               _DateField(
-                hint: controller.toDate.value.isEmpty ? "DD.MM.YYYY" : controller.toDate.value,
+                hint: "DD.MM.YYYY",
                 style: TextHelper.max1,
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null) {
-                    controller.toDate.value = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-                    controller.applyFilters();
-                  }
-                },
               ),
             ],
-          )),
+          ),
 
           const SizedBox(height: 8),
 
           /// SEARCH
           TextField(
-            onChanged: (value) {
-              controller.searchQuery.value = value;
-            },
-            onSubmitted: (value) {
-              controller.applyFilters();
-            },
             decoration: InputDecoration(
               hintText: "Search",
               prefixIcon: Padding(
@@ -134,32 +104,27 @@ class WalletCreditFilterWidget extends StatelessWidget {
 class _DateField extends StatelessWidget {
   final String hint;
   final TextStyle? style;
-  final VoidCallback? onTap;
 
   const _DateField({
     required this.hint,
     this.style,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 10,
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            hint,
-            style: style,
-          ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          hint,
+          style: style,
         ),
       ),
     );
