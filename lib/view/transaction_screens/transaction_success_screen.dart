@@ -119,14 +119,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                         children: [
-                          Obx(() => Text(
-                            _controller.selectedProduct.value?.name ?? "Select Product",
-                            style: TextHelper.max1.copyWith(
-                              color: isDark
-                                  ? AppColors.textclr
-                                  : AppColors.clrTextgrey,
+                          Obx(
+                            () => Text(
+                              _controller.selectedProduct.value?.name ??
+                                  "Select Product",
+                              style: TextHelper.max1.copyWith(
+                                color: isDark
+                                    ? AppColors.textclr
+                                    : AppColors.clrTextgrey,
+                              ),
                             ),
-                          )),
+                          ),
 
                           Icon(
                             Icons.chevron_right,
@@ -147,12 +150,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     onTap: () => _controller.selectDateRange(context),
                     child: Row(
                       children: [
-                        Expanded(child: customField(
-                          context, 
-                          hint: "DD/MM/YYYY",
-                          controller: _controller.dateController,
-                          enabled: false,
-                        )),
+                        Expanded(
+                          child: customField(
+                            context,
+                            hint: "DD/MM/YYYY",
+                            controller: _controller.dateController,
+                            enabled: false,
+                          ),
+                        ),
 
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -163,12 +168,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           ),
                         ),
 
-                        Expanded(child: customField(
-                          context, 
-                          hint: "DD/MM/YYYY",
-                          controller: _controller.dateController,
-                          enabled: false,
-                        )),
+                        Expanded(
+                          child: customField(
+                            context,
+                            hint: "DD/MM/YYYY",
+                            controller: _controller.dateController,
+                            enabled: false,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -216,10 +223,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   itemBuilder: (context, index) {
                     final item = _controller.transactions[index];
                     return TransactionCard(
+                      item: item,
                       bgColor: bgColor,
                       status: widget.status,
                       isFavorite: _favoriteCards.contains(index),
-                      // TODO: Map item details to TransactionCard if TransactionCard supports it
                       onFavoriteTap: () {
                         setState(() {
                           if (!_favoriteCards.add(index)) {
@@ -319,7 +326,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Select Product", style: TextHelper.max3.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "Select Product",
+              style: TextHelper.max3.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: Obx(() {
@@ -342,12 +352,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               product.logo!,
                               width: 30,
                               height: 30,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                              errorBuilder: (_, __, ___) =>
+                                  const Icon(Icons.broken_image),
                             )
                           : const Icon(Icons.category),
-                      title: Text(product.name ?? "Unknown", style: TextHelper.max1),
-                      trailing: _controller.selectedProduct.value?.id == product.id
-                          ? const Icon(Icons.check_circle, color: AppColors.clrPrimary)
+                      title: Text(
+                        product.name ?? "Unknown",
+                        style: TextHelper.max1,
+                      ),
+                      trailing:
+                          _controller.selectedProduct.value?.id == product.id
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: AppColors.clrPrimary,
+                            )
                           : null,
                       onTap: () {
                         _controller.selectedProduct.value = product;

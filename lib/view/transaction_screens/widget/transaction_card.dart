@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
+import 'package:maxpay/data/model/transaction/transaction_report_response_model.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/transaction_controller.dart';
 
 class TransactionCard extends StatelessWidget {
   static bool _isDisputeDialogOpen = false;
 
+  final TransactionReportItem item;
   final Color bgColor;
   final TransactionStatus status;
   final bool isFavorite;
@@ -13,6 +17,7 @@ class TransactionCard extends StatelessWidget {
 
   const TransactionCard({
     super.key,
+    required this.item,
     required this.bgColor,
     required this.status,
     this.isFavorite = false,
@@ -41,7 +46,7 @@ class TransactionCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Transaction ID: TXN6453564",
+                "Transaction ID: ${item.transactionId ?? 'N/A'}",
                 style: TextHelper.max1
               ),
               Column(
@@ -52,17 +57,13 @@ class TransactionCard extends StatelessWidget {
                     style: TextHelper.max1.copyWith(
                       fontSize: 11
                     )
-
-
-
                   ),
                   SizedBox(height: 5),
                   Text(
-                    "29-11-2026 07:38:43 PM",
+                    item.dateTime ?? 'N/A',
                     style: TextHelper.max1.copyWith(
                       fontSize: 11
                     )
-
                   ),
                 ],
               ),
@@ -86,18 +87,17 @@ class TransactionCard extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: const BoxDecoration(
-                  color: Colors.red,
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: const Text(
-                  "Jio",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                clipBehavior: Clip.hardEdge,
+                child: item.productLogo != null
+                  ? Image.network(
+                      item.productLogo!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+                    )
+                  : const Icon(Icons.category, color: Colors.grey),
               ),
 
               const SizedBox(width: 10),
@@ -107,7 +107,7 @@ class TransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Jio",
+                      item.productName ?? 'Unknown',
                       style: TextHelper.lato14.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -118,7 +118,7 @@ class TransactionCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      "Number: ******7823",
+                      "Number: ${item.mobile ?? 'N/A'}",
                       style: TextHelper.lato11.copyWith(
                         fontWeight: FontWeight.w600,
 
@@ -137,7 +137,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "₹ 365.00",
+                    "₹ ${item.amount ?? 0}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -194,8 +194,33 @@ class TransactionCard extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.end,
+                children: [
+                  if (item.canDispute == 1)
+                    customButton(
+                      text: "Dispute",
+                      color: Colors.red,
+                      onTap: () {
+                        // _showDisputeDialog(context); // Optional
+                      },
+                      isCompact: true,
+                    ),
+                  customButton(
+                    text: "View Details",
+                    color: AppColors.clrPrimary,
+                    onTap: () {
+                      if (item.id != null) {
+                        Get.find<TransactionController>().fetchTransactionDetail(item.id!);
+                      }
+                    },
+                    isCompact: true,
+                  ),
+                ],
+              ),
+            )
+          ]
+        ],
       ),
-    )]]));
+    );
   }
 
   Widget customButton({

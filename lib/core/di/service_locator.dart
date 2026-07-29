@@ -20,6 +20,7 @@ import '../../domain/repository/profile_repo.dart';
 import '../../data/repository/profile_repo_impl.dart';
 import '../../domain/repository/retailer_repo.dart';
 import '../../domain/repository/executive_repo.dart';
+import '../../data/repository/retailer_repo_impl.dart';
 import '../../data/repository/executive_repo_impl.dart';
 import '../../domain/usecase/retailer/get_retailers_usecase.dart';
 import '../../domain/usecase/retailer/get_retailer_detail_usecase.dart';
@@ -38,6 +39,7 @@ import '../../domain/repository/transaction_repository.dart';
 import '../../data/repository/transaction_repository_impl.dart';
 import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
+import '../../domain/usecase/transaction/get_transaction_detail_usecase.dart';
 
 // SharedPreferences
 
@@ -84,6 +86,11 @@ Future<void> init() async {
   /// Profile Repository
   sl.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(sl<ApiService>()),
+  );
+
+  /// Retailer Repository
+  sl.registerLazySingleton<RetailerRepository>(
+    () => RetailerRepositoryImpl(sl<ApiService>()),
   );
 
   // Transfer Detail Repository
@@ -204,5 +211,10 @@ Future<void> init() async {
   /// Get Transaction Report UseCase
   sl.registerLazySingleton<GetTransactionReportUseCase>(
     () => GetTransactionReportUseCase(sl<TransactionRepository>()),
+  );
+
+  /// Get Transaction Detail UseCase
+  sl.registerLazySingleton<GetTransactionDetailUseCase>(
+    () => GetTransactionDetailUseCase(sl<TransactionRepository>()),
   );
 }

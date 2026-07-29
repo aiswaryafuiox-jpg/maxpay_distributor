@@ -17,6 +17,7 @@ import 'package:maxpay/domain/usecase/profile/verify_update_profile_otp_usecase.
 import 'package:maxpay/domain/usecase/profile/verify_update_status_otp_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_products_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_report_usecase.dart';
+import 'package:maxpay/domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
@@ -270,6 +271,7 @@ class AppPages {
         Get.lazyPut(() => TransactionController(
           sl<GetTransactionProductsUseCase>(),
           sl<GetTransactionReportUseCase>(),
+          sl<GetTransactionDetailUseCase>(),
         ));
       }),
     ),

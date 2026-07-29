@@ -37,4 +37,5 @@ class ApiRoutes {
   static const String addExecutiveWallet = "/api/distributor_add_executive_wallet";
   static const String transactionProducts = "/api/distributor_transaction_products";
   static const String transactionReport = "/api/distributor_transaction_report";
+  static const String transactionDetail = "/api/distributor_transaction_detail";
 }
