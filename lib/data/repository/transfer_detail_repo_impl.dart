@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:flutter/foundation.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
@@ -19,17 +20,17 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
         ApiRoutes.distributorTransferTypes,
       );
 
-      print("API Response => $response");
+      debugPrint("API Response => $response");
 
       final model = TransferDetailModel.fromJson(response);
 
-      print("Success => ${model.success}");
-      print("Data Length => ${model.data?.length}");
-      print("Data => ${model.data}");
+      debugPrint("Success => ${model.success}");
+      debugPrint("Data Length => ${model.data?.length}");
+      debugPrint("Data => ${model.data}");
 
       return Right(model);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
       return Left(ServerFailure( e.toString()));
     }
   }

@@ -72,4 +72,9 @@ class ApiRoutes {
   static const String distributorSubmitKyc = '/api/distributor_submit_kyc';
   static const String distributorGetSupport = '/api/distributor_get_support';
   static const String distributorLoginHistory = '/api/distributor_login_history';
+  static const String distributorStatementDescriptions = '/api/distributor_statement_descriptions';
+  static const String distributorStatement = '/api/distributor_statement';
+  static const String distributorStatementDetail = '/api/distributor_statement_detail';
+  static const String distributorRegChargeDetail = '/api/distributor_reg_charge_detail';
+  static const String distributorOnlineTransactions = '/api/distributor_online_transactions';
 }

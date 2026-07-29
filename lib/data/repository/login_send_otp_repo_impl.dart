@@ -1,12 +1,12 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
 import '../../core/services/api_service.dart';
-import '../../domain/repository/login_sendOtp_repo.dart';
-import '../model/login_sendOtp_response_model.dart';
-import '../model/login_verifyOtp_response_model.dart';
+import '../../domain/repository/login_send_otp_repo.dart';
+import '../model/login_send_otp_response_model.dart';
+import '../model/login_verify_otp_response_model.dart';
 import '../model/create_pin_response_model.dart';
 import '../model/verify_pin_response_model.dart';
 import '../model/update_fingerprint_response_model.dart';

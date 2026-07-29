@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+﻿import 'package:get/get.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
@@ -59,15 +59,15 @@ import 'package:maxpay/view/web_login/web_login_otp_screen.dart';
 import 'package:maxpay/view/web_login/web_login_screen.dart';
 import 'package:maxpay/view/web_login/web_login_success_screen.dart';
 
-import '../../view/report/apipayoutdetail/api_payouta-detail_screen.dart';
+import '../../view/report/apipayoutdetail/api_payout_detail_screen.dart';
 import '../../view/report/onlinetransaction/online_transaction_screen.dart';
 import '../../view/report/paymentrequest/payment_request_screen.dart';
 import '../../view/report/payoutrequest/payout_request_screen.dart';
-import '../../view/report/regChargeCredit/regChargeCreditScreen.dart';
-import '../../view/settings/bulkPackage/BulkPackageChangeScreen.dart';
-import '../../view/settings/bulkPackage/bulkPackageChargeScreen.dart';
+import '../../view/report/regChargeCredit/reg_charge_credit_screen.dart';
+import '../../view/settings/bulkPackage/bulk_package_change_screen.dart';
+import '../../view/settings/bulkPackage/bulk_package_charge_screen.dart';
 import '../../view/settings/profile_set/profile_screen.dart';
-import '../../view/settings/scan/scanwebLoginScreen.dart';
+import '../../view/settings/scan/scan_web_login_screen.dart';
 import '../../view/transfer&details/autotransfer/autotransferscreen.dart';
 import '../../view/transfer&details/daybook/day_book_screen.dart';
 import '../../view/transfer&details/executive/create_executive.dart';
@@ -75,9 +75,9 @@ import '../../view/transfer&details/executive/ex_viewdetails_screen.dart';
 import '../../view/transfer&details/executive/executive_screen.dart';
 import '../../view/transfer&details/lowwallet/low_wallet_screen.dart';
 import '../../view/transfer&details/outstanding/outstanding_screen.dart';
-import '../../view/transfer&details/payoutDetails/payoutDetailScreen.dart';
-import '../../view/transfer&details/payoutStatus/payoutStatusScreen.dart';
-import '../../view/transfer&details/retailers/RetailerScreen.dart';
+import '../../view/transfer&details/payoutDetails/payout_detail_screen.dart';
+import '../../view/transfer&details/payoutStatus/payout_status_screen.dart';
+import '../../view/transfer&details/retailers/retailer_screen.dart';
 import '../../view/transfer&details/retailers/addwalletscreen.dart';
 import '../../view/transfer&details/retailers/create_retailer.dart';
 import '../../view/transfer&details/retailers/viewdetailscreen.dart';
@@ -278,14 +278,7 @@ class AppPages {
     GetPage(name: AppRoutes.statement, page: () => const StatementScreen()),
     GetPage(
       name: AppRoutes.statementReadMore,
-      page: () {
-        final arguments = Get.arguments;
-        final details = arguments is Map
-            ? arguments.map((key, value) => MapEntry('$key', '$value'))
-            : null;
-
-        return StatementReadMoreScreen(details: details);
-      },
+      page: () => StatementReadMoreScreen(),
     ),
     GetPage(name: AppRoutes.outstanding, page: () => const OutstandingScreen()),
     GetPage(name: AppRoutes.dayBook, page: () => const DayBookScreen()),

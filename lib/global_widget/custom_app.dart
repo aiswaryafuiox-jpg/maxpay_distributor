@@ -80,6 +80,8 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
             // Wait for keyboard animation to finish
             await Future.delayed(const Duration(milliseconds: 150));
 
+            if (!context.mounted) return;
+
             if (onBack != null) {
               onBack!();
             } else {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/wallet_credit_type_model.dart';
 import 'package:maxpay/domain/usecase/wallet_credit_type_usecase.dart';
@@ -15,7 +16,7 @@ class WalletController extends GetxController {
   @override
 void onInit() {
   super.onInit();
-  print("WalletController onInit");
+  debugPrint("WalletController onInit");
 
   getWalletTypes();
 }
@@ -27,16 +28,16 @@ void onInit() {
 
   result.fold(
   (failure) {
-    print(failure.message);
+    debugPrint(failure.message);
     Get.snackbar("Error", failure.message);
   },
   (response) {
     walletCreditTypes.assignAll(response.data ?? []);
 
-    print(walletCreditTypes.length);
+    debugPrint(walletCreditTypes.length.toString());
 
     for (var item in walletCreditTypes) {
-      print("${item.id} - ${item.name}");
+      debugPrint("${item.id} - ${item.name}");
     }
   },
 );

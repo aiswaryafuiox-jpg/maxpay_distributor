@@ -1,4 +1,4 @@
-import 'package:get_it/get_it.dart';
+﻿import 'package:get_it/get_it.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
@@ -38,8 +38,24 @@ import 'package:maxpay/domain/usecase/login_history/get_login_history_usecase.da
 import 'package:maxpay/controller/login_history_controller.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_success_report_usecase.dart';
 
-import '../../data/repository/login_sendOtp_repo_impl.dart';
-import '../../domain/repository/login_sendOtp_repo.dart';
+import 'package:maxpay/data/repository/statement_repo_impl.dart';
+import 'package:maxpay/domain/repository/statement_repo.dart';
+import 'package:maxpay/data/repository/reg_charge_repo_impl.dart';
+import 'package:maxpay/domain/repository/reg_charge_repo.dart';
+import 'package:maxpay/data/repository/online_transaction_repo_impl.dart';
+import 'package:maxpay/domain/repository/online_transaction_repo.dart';
+import 'package:maxpay/domain/usecase/statement/get_statement_descriptions_usecase.dart';
+import 'package:maxpay/domain/usecase/statement/get_statement_detail_usecase.dart';
+import 'package:maxpay/domain/usecase/statement/get_statement_list_usecase.dart';
+import 'package:maxpay/domain/usecase/report/get_reg_charge_detail_usecase.dart';
+import 'package:maxpay/domain/usecase/report/get_online_transactions_usecase.dart';
+import 'package:maxpay/controller/statement_controller.dart';
+import 'package:maxpay/controller/statement_read_more_controller.dart';
+import 'package:maxpay/controller/reg_charge_controller.dart';
+import 'package:maxpay/controller/online_transaction_controller.dart';
+
+import '../../data/repository/login_send_otp_repo_impl.dart';
+import '../../domain/repository/login_send_otp_repo.dart';
 import '../../domain/repository/profile_repo.dart';
 import '../../domain/repository/retailer_repo.dart';
 import '../../domain/repository/low_wallet_repo.dart';
@@ -62,7 +78,7 @@ import '../../controller/cash_back_controller.dart';
 import '../../controller/commission_settings_controller.dart';
 
 
-import '../../domain/usecase/login_sendOtp_usecase.dart';
+import '../../domain/usecase/login_send_otp_usecase.dart';
 import '../../domain/usecase/verify_otp_usecase.dart';
 import '../../domain/usecase/create_pin_usecase.dart';
 import '../../domain/usecase/verify_pin_usecase.dart';
@@ -343,4 +359,18 @@ Future<void> init() async {
   sl.registerLazySingleton<LoginHistoryRepository>(() => LoginHistoryRepoImpl(sl()));
   sl.registerLazySingleton<GetLoginHistoryUseCase>(() => GetLoginHistoryUseCase(sl()));
   sl.registerFactory(() => LoginHistoryController(sl()));
+
+  // Statement
+  sl.registerLazySingleton<StatementRepository>(() => StatementRepositoryImpl(sl()));
+  sl.registerLazySingleton<RegChargeRepository>(() => RegChargeRepositoryImpl(sl()));
+  sl.registerLazySingleton<OnlineTransactionRepository>(() => OnlineTransactionRepositoryImpl(sl()));
+  sl.registerLazySingleton<GetStatementDescriptionsUseCase>(() => GetStatementDescriptionsUseCase(sl()));
+  sl.registerLazySingleton<GetStatementListUseCase>(() => GetStatementListUseCase(sl()));
+  sl.registerLazySingleton<GetStatementDetailUseCase>(() => GetStatementDetailUseCase(sl()));
+  sl.registerLazySingleton<GetRegChargeDetailUseCase>(() => GetRegChargeDetailUseCase(sl()));
+  sl.registerLazySingleton<GetOnlineTransactionUseCase>(() => GetOnlineTransactionUseCase(sl()));
+  sl.registerFactory(() => StatementController(sl(), sl()));
+  sl.registerFactory(() => StatementReadMoreController(sl()));
+  sl.registerFactory(() => RegChargeController(sl()));
+  sl.registerFactory(() => OnlineTransactionController(sl()));
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
@@ -7,6 +8,7 @@ class OnlineTransactionCard extends StatelessWidget {
   final String retailerName;
   final String mobileNo;
   final String amount;
+  final String status;
 
   const OnlineTransactionCard({
     super.key,
@@ -14,6 +16,7 @@ class OnlineTransactionCard extends StatelessWidget {
     required this.retailerName,
     required this.mobileNo,
     required this.amount,
+    required this.status,
   });
 
   @override
@@ -103,14 +106,14 @@ class OnlineTransactionCard extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? const Color(0xFF4A3A08)
-                      : AppColors.pendingBg,
+                      ? (status.toLowerCase() == 'success' ? Colors.green.withValues(alpha: 0.2) : status.toLowerCase() == 'failed' ? Colors.red.withValues(alpha: 0.2) : const Color(0xFF4A3A08))
+                      : (status.toLowerCase() == 'success' ? Colors.green.withValues(alpha: 0.1) : status.toLowerCase() == 'failed' ? Colors.red.withValues(alpha: 0.1) : AppColors.pendingBg),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
-                  "Pending",
+                  status.capitalizeFirst ?? status,
                   style: TextHelper.max5.copyWith(
-                    color: AppColors.pendingColor,
+                    color: status.toLowerCase() == 'success' ? Colors.green : status.toLowerCase() == 'failed' ? Colors.red : AppColors.pendingColor,
                     fontSize: 12,
                   ),
                 ),

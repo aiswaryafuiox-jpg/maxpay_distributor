@@ -119,7 +119,7 @@ class SettingsPage extends StatelessWidget {
                                     Get.toNamed(AppRoutes.scanWebLogin);
                                   },
                                   child: Image.asset(
-                                    AssetImages.qr_code,
+                                    AssetImages.qrCode,
                                     width: 50.w,
                                     height: 50.w,
                                   ),

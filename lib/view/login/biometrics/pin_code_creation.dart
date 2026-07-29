@@ -207,7 +207,7 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pin = _pinController.text;
+
     final theme = Theme.of(context);
 
     return Scaffold(

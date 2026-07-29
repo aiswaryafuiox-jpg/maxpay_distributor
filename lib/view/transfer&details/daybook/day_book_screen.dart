@@ -52,7 +52,7 @@ class _DayBookScreenState extends State<DayBookScreen> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     return DropdownButtonFormField<int>(
-                      value: controller.selectedProduct.value?.id,
+                      initialValue: controller.selectedProduct.value?.id,
                       decoration: InputDecoration(
                         hintText: "Select Product",
                         hintStyle: TextHelper.max1.copyWith(
