@@ -1,4 +1,4 @@
-﻿import 'package:get/get.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
@@ -135,8 +135,7 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(),
-
+          () => HomePageController(sl(), sl()),
           fenix: true,
         );
       }),

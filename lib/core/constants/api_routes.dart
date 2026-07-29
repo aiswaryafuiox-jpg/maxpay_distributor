@@ -40,6 +40,8 @@ class ApiRoutes {
   static const String transactionDetail = "/api/distributor_transaction_detail";
 
 
+  static const distributorHomeCard = "/api/distributor_home_card";
+  static const distributorTodayTransactionAmount = "/api/distributor_today_transaction_amount";
 
 
   static const distributorTransferDetail = "/api/distributor_transfer_detail";

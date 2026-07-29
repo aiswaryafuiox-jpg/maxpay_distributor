@@ -1,4 +1,10 @@
-﻿import 'package:get_it/get_it.dart';
+import 'package:get_it/get_it.dart';
+import 'package:maxpay/data/repository/home_card_repo_impl.dart';
+import 'package:maxpay/data/repository/today_transaction_repo_impl.dart';
+import 'package:maxpay/domain/repository/home_card_repo.dart';
+import 'package:maxpay/domain/repository/today_transaction_repo.dart';
+import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
+import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
@@ -127,6 +133,13 @@ Future<void> init() async {
   /// Api Service
   sl.registerLazySingleton<ApiService>(() => ApiService());
 
+  /// Home Card
+  sl.registerLazySingleton<HomeCardRepository>(() => HomeCardRepositoryImpl(sl<ApiService>()));
+  sl.registerLazySingleton<GetHomeCardUseCase>(() => GetHomeCardUseCase(sl<HomeCardRepository>()));
+
+  /// Today Transaction
+  sl.registerLazySingleton<TodayTransactionRepository>(() => TodayTransactionRepositoryImpl(sl<ApiService>()));
+  sl.registerLazySingleton<GetTodayTransactionAmountUseCase>(() => GetTodayTransactionAmountUseCase(sl<TodayTransactionRepository>()));
   /// Login Repository
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRepositoryImpl(sl<ApiService>()),
