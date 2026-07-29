@@ -38,4 +38,27 @@ class ApiRoutes {
   static const String transactionProducts = "/api/distributor_transaction_products";
   static const String transactionReport = "/api/distributor_transaction_report";
   static const String transactionDetail = "/api/distributor_transaction_detail";
+
+
+
+
+  static const distributorTransferDetail = "/api/distributor_transfer_detail";
+  
+  static const String distributorPendingWalletRequests = "/api/distributor_pending_wallet_requests";
+  static const String distributorPendingWalletRequestDetail = "/api/distributor_pending_wallet_request_detail";
+  static const String distributorApprovePendingWalletRequest = "/api/distributor_approve_pending_wallet_request";
+  static const String distributorOutstandingList = "/api/distributor_outstanding_list";
+  static const String distributorUpdateOutstanding = "/api/distributor_update_outstanding";
+  static const String distributorLowWalletRetailers = "/api/distributor_low_wallet_retailers";
+  
+  static const String distributorWalletCreditList = '/api/distributor_wallet_credit';
+  static const String distributorAutoTransferDetails = '/api/distributor_auto_transfer_details';
+  static const String distributorUpdateAutoTransfer = '/api/distributor_update_auto_transfer';
+  static const String distributorDayBookProducts = '/api/distributor_day_book_products';
+  static const String distributorDayBookList = '/api/distributor_day_book';
+  static const String distributorDayBookDelete = '/api/distributor_day_book_delete';
+  static const String distributorMyEarnings = '/api/distributor_my_earnings';
+  static const String distributorTransactionSuccessReport = '/api/distributor_transaction_success_report';
+  static const String distributorCashBackProductTypes = '/api/distributor_cash_back_product_types';
+  static const String distributorCashBack = '/api/distributor_cash_back';
 }

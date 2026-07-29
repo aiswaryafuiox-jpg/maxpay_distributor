@@ -4,7 +4,7 @@ import '../../repository/transaction_repository.dart';
 import '../../../data/model/transaction/transaction_report_response_model.dart';
 
 class GetTransactionReportUseCase {
-  final TransactionRepository repository;
+  final TransactionsListRepository repository;
 
   GetTransactionReportUseCase(this.repository);
 
