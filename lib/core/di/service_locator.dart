@@ -36,7 +36,6 @@ import '../../domain/usecase/executive/update_executive_usecase.dart';
 import '../../domain/usecase/executive/get_executive_add_wallet_details_usecase.dart';
 import '../../domain/usecase/executive/add_executive_wallet_usecase.dart';
 import '../../domain/repository/transaction_repository.dart';
-import '../../data/repository/transaction_repository_impl.dart';
 import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_detail_usecase.dart';
@@ -98,10 +97,7 @@ Future<void> init() async {
     () => TransferDetailRepositoryImpl(sl<ApiService>()),
   );
 
-  // Transaction Repository
-  sl.registerLazySingleton<TransactionRepository>(
-    () => TransactionRepositoryImpl(sl<ApiService>()),
-  );
+
 
   /// Executive Repository
   sl.registerLazySingleton<ExecutiveRepository>(
@@ -205,16 +201,16 @@ Future<void> init() async {
 
   /// Get Transaction Products UseCase
   sl.registerLazySingleton<GetTransactionProductsUseCase>(
-    () => GetTransactionProductsUseCase(sl<TransactionRepository>()),
+    () => GetTransactionProductsUseCase(sl<TransactionsListRepository>()),
   );
 
   /// Get Transaction Report UseCase
   sl.registerLazySingleton<GetTransactionReportUseCase>(
-    () => GetTransactionReportUseCase(sl<TransactionRepository>()),
+    () => GetTransactionReportUseCase(sl<TransactionsListRepository>()),
   );
 
   /// Get Transaction Detail UseCase
   sl.registerLazySingleton<GetTransactionDetailUseCase>(
-    () => GetTransactionDetailUseCase(sl<TransactionRepository>()),
+    () => GetTransactionDetailUseCase(sl<TransactionsListRepository>()),
   );
 }
