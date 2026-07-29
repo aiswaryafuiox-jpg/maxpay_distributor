@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/controller/support_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../nav_page/navbar_provider.dart';
 
@@ -16,6 +18,7 @@ class SupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final supportController = Get.put(sl<SupportController>());
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -28,26 +31,39 @@ class SupportScreen extends StatelessWidget {
       ),
 
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            _supportCard(
-              context,
-              isDark,
-              title: "Customer Support",
-              phone: "+91 0005451152",
-            ),
+        child: Obx(() {
+          if (supportController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            const SizedBox(height: 16),
+          if (supportController.errorMessage.isNotEmpty) {
+            return Center(child: Text(supportController.errorMessage.value));
+          }
 
-            _supportCard(
-              context,
-              isDark,
-              title: "Accounts Support",
-              phone: "+91 0005451152",
-            ),
-          ],
-        ),
+          final list = supportController.supportData.value?.list ?? [];
+
+          if (list.isEmpty) {
+            return const Center(child: Text("No support contacts available."));
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: list.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              final contact = list[index];
+              return _supportCard(
+                context,
+                isDark,
+                title: contact.title ?? "Support",
+                phone: contact.phoneNumber ?? "",
+                whatsappNumber: contact.whatsappNumber ?? "",
+                whatsappEnabled: contact.whatsappEnabled == 1,
+                callEnabled: contact.callEnabled == 1,
+              );
+            },
+          );
+        }),
       ),
     );
   }
@@ -57,6 +73,9 @@ class SupportScreen extends StatelessWidget {
       bool isDark, {
         required String title,
         required String phone,
+        required String whatsappNumber,
+        bool whatsappEnabled = true,
+        bool callEnabled = true,
       }) {
     final theme = Theme.of(context);
 
@@ -130,47 +149,67 @@ class SupportScreen extends StatelessWidget {
           /// Action Buttons
           Column(
             children: [
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: 35,
-                  width: 35,
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: AppColors.clrPrimary,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: SvgPicture.asset(
-                    AssetImages.whatsapp,
-                    // colorFilter: const ColorFilter.mode(
-                    //   Colors.white,
-                    //   BlendMode.srcIn,
-                    // ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  height: 35,
-                  width: 35,
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: AppColors.clrPrimary,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: SvgPicture.asset(
-                    AssetImages.call,
-                    // colorFilter: const ColorFilter.mode(
-                    //   Colors.white,
-                    //   BlendMode.srcIn,
-                    // ),
+              if (whatsappEnabled)
+                GestureDetector(
+                  onTap: () async {
+                    if (whatsappNumber.isEmpty) return;
+                    final cleanPhone = whatsappNumber.replaceAll(RegExp(r'\D'), '');
+                    final formattedPhone = cleanPhone.length == 10 ? '91$cleanPhone' : cleanPhone;
+                    final url = Uri.parse("https://wa.me/$formattedPhone");
+                    try {
+                      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                      if (!launched) {
+                        Get.snackbar("Error", "Could not open WhatsApp");
+                      }
+                    } catch (e) {
+                      Get.snackbar("Error", "Could not open WhatsApp");
+                    }
+                  },
+                  child: Container(
+                    height: 35,
+                    width: 35,
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: AppColors.clrPrimary,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: SvgPicture.asset(
+                      AssetImages.whatsapp,
+                    ),
                   ),
                 ),
-              ),
+
+              if (whatsappEnabled && callEnabled)
+                const SizedBox(height: 8),
+
+              if (callEnabled)
+                GestureDetector(
+                  onTap: () async {
+                    if (phone.isEmpty) return;
+                    final cleanPhone = phone.replaceAll(RegExp(r'[^\d+]'), '');
+                    final url = Uri.parse("tel:$cleanPhone");
+                    try {
+                      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                      if (!launched) {
+                        Get.snackbar("Error", "Could not open phone dialer");
+                      }
+                    } catch (e) {
+                      Get.snackbar("Error", "Could not open phone dialer");
+                    }
+                  },
+                  child: Container(
+                    height: 35,
+                    width: 35,
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: AppColors.clrPrimary,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: SvgPicture.asset(
+                      AssetImages.call,
+                    ),
+                  ),
+                ),
             ],
           ),
         ],

@@ -96,11 +96,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                       .toList(),
                   selectedType: controller.selectedTransactionType.value,
                   onChanged: (value) {
-                    if (value == "Reverse") {
-                      _showReverseDialog();
-                    } else {
-                      controller.changeTransactionType(value);
-                    }
+                    controller.changeTransactionType(value);
                   },
                 ),
               ),
@@ -118,22 +114,36 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
 
               /// List
               Expanded(
-                child: ListView.separated(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 8,
-                  separatorBuilder: (_, _) => SizedBox(height: 12.h),
-                  itemBuilder: (context, index) {
-                    return TransferDetailCard(
-                      transactionId: "TXN6453564",
-                      dateTime: "2026-11-29 14:38:43",
-                      transactionType: isReverse ? "Reverse" : "Transfer",
-                      userType: "Retailer",
-                      userName: "John",
-                      regMobNo: "9087654321",
-                      amount: "₹ 500.00",
-                    );
-                  },
-                ),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (controller.transferDetailList.isEmpty) {
+                    return const Center(child: Text("No transactions found"));
+                  }
+
+                  return ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: controller.transferDetailList.length,
+                    separatorBuilder: (_, _) => SizedBox(height: 12.h),
+                    itemBuilder: (context, index) {
+                      final item = controller.transferDetailList[index];
+                      return TransferDetailCard(
+                        transactionId: item.transactionId ?? "",
+                        dateTime: item.dateTime ?? "",
+                        transactionType: item.transactionType ?? "",
+                        userType: item.userType ?? "",
+                        userName: item.userName ?? "",
+                        regMobNo: item.regMobileNumber ?? "",
+                        amount: "₹ ${item.amount ?? '0.00'}",
+                        onReverseIconTap: () {
+                          _showReverseDialog();
+                        },
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),

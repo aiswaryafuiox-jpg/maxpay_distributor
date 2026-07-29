@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/controller/kyc_controller.dart';
 
 class KycScreen extends StatefulWidget {
   const KycScreen({super.key});
@@ -18,6 +21,32 @@ class _KycScreenState extends State<KycScreen> {
   PlatformFile? _addressProofFile;
   PlatformFile? _gstFile;
   PlatformFile? _panCardFile;
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _whatsappController = TextEditingController();
+  final KycController kycController = Get.put(sl<KycController>());
+
+  @override
+  void initState() {
+    super.initState();
+    if (kycController.kycData.value != null) {
+      _emailController.text = kycController.kycData.value!.email ?? '';
+      _whatsappController.text = kycController.kycData.value!.whatsappNumber ?? '';
+    }
+    ever(kycController.kycData, (data) {
+      if (data != null) {
+        _emailController.text = data.email ?? '';
+        _whatsappController.text = data.whatsappNumber ?? '';
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _whatsappController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickGalleryFile(ValueChanged<PlatformFile> onPicked) async {
     try {
@@ -73,8 +102,12 @@ class _KycScreenState extends State<KycScreen> {
       appBar: const CommonAppBar(title: "KYC"),
 
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+        child: Obx(() {
+          if (kycController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
 
           child: Column(
             children: [
@@ -116,6 +149,7 @@ class _KycScreenState extends State<KycScreen> {
                         ),
 
                         child: TextFormField(
+                          controller: _emailController,
                           style: TextStyle(color: theme.colorScheme.onSurface),
 
                           decoration: InputDecoration(
@@ -172,6 +206,7 @@ class _KycScreenState extends State<KycScreen> {
                         ),
 
                         child: TextFormField(
+                          controller: _whatsappController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -270,10 +305,29 @@ class _KycScreenState extends State<KycScreen> {
               ),
 
               /// SUBMIT BUTTON
-              CommonButton(title: "Submit", onTap: () {}),
+              Obx(() => CommonButton(
+                title: kycController.isSubmitting.value ? "Submitting..." : "Submit", 
+                onTap: () {
+                  if (kycController.isSubmitting.value) return;
+                  
+                  if (_emailController.text.isEmpty || _whatsappController.text.isEmpty) {
+                    Get.snackbar("Error", "Please enter email and WhatsApp number");
+                    return;
+                  }
+
+                  kycController.submitKyc(
+                    email: _emailController.text,
+                    whatsappNumber: _whatsappController.text,
+                    cancelledCheckPath: _addressProofFile?.path,
+                    gstNoPath: _gstFile?.path,
+                    panPath: _panCardFile?.path,
+                  );
+                },
+              )),
             ],
           ),
-        ),
+        );
+        }),
       ),
     );
   }
