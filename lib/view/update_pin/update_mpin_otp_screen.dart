@@ -8,8 +8,8 @@ import 'package:maxpay/view/update_pin/widget/pin_textfield_widget.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 
-class UpdatePinPage extends StatelessWidget {
-  const UpdatePinPage({super.key});
+class UpdateMpinOtpPage extends StatelessWidget {
+  const UpdateMpinOtpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,7 @@ class UpdatePinPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(title: "Update M-Pin"),
-
+      appBar: const CommonAppBar(title: "Verify OTP"),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
@@ -27,38 +26,31 @@ class UpdatePinPage extends StatelessWidget {
           children: [
             SizedBox(height: 30.h),
             Text(
-              "New M-Pin (4 digits only)",
-              style: TextHelper.pin.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              )
-            ),
-            SizedBox(height: 10.h),
-            PinTextFieldWidget(
-              hintText: "Enter M-Pin",
-              controller: controller.newPinController,
+              "Enter the 4-digit OTP sent to your registered mobile number.",
+              style: TextHelper.max1.copyWith(
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             SizedBox(height: 24.h),
             Text(
-              "Confirm M-Pin",
+              "OTP",
               style: TextHelper.pin.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              )
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             SizedBox(height: 10.h),
             PinTextFieldWidget(
-              hintText: "Confirm M-Pin",
-              controller: controller.confirmPinController,
+              hintText: "Enter OTP",
+              controller: controller.otpController,
             ),
             const Spacer(),
             Center(
-              child: Obx(() => CommonButton(
-                title: controller.isLoading.value ? "Updating..." : "Submit",
-                onTap: controller.isLoading.value 
-                  ? () {} 
-                  : () {
-                      controller.updatePin();
-                    },
-              )),
+              child: CommonButton(
+                title: "Verify",
+                onTap: () {
+                  controller.onOtpVerify();
+                },
+              ),
             ),
             SizedBox(height: 30.h),
           ],

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/home/pages/home_page.dart';
 import 'package:maxpay/view/nav_page/navbar.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:maxpay/view/report/report_page.dart';
-import 'package:maxpay/view/request/walletrequestpending/wallet_request_pending_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
 import 'package:maxpay/view/supportscreen/support_screen.dart';
-
-
 
 class NavPageScreen extends StatefulWidget {
   const NavPageScreen({super.key});
@@ -22,7 +20,7 @@ class _ScreenNavBarState extends State<NavPageScreen>
     with WidgetsBindingObserver {
   DateTime? lastBackPressed;
   final NavbarController _navbarController = Get.find<NavbarController>();
- //added
+  //added
 
   @override
   void initState() {
@@ -42,13 +40,12 @@ class _ScreenNavBarState extends State<NavPageScreen>
       const HomePageScreen(),
       const ReportPage(),
 
-      const WalletRequestPendingScreen(),
+      const AddWalletScreen(),
 
       const SupportScreen(),
 
       const SettingsPage(),
     ];
-
 
     return Obx(() {
       final selectedIndex = _navbarController.selectedIndex;

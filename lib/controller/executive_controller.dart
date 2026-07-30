@@ -9,6 +9,7 @@ import '../domain/usecase/executive/get_executive_commission_packages_usecase.da
 import '../domain/usecase/executive/update_executive_usecase.dart';
 import '../domain/usecase/executive/get_executive_add_wallet_details_usecase.dart';
 import '../domain/usecase/executive/add_executive_wallet_usecase.dart';
+import '../domain/usecase/executive/create_executive_usecase.dart';
 import '../data/model/executive/executive_add_wallet_details_response_model.dart';
 import '../core/constants/routes_path.dart';
 
@@ -19,6 +20,7 @@ class ExecutiveController extends GetxController {
   final UpdateExecutiveUseCase updateExecutiveUseCase;
   final GetExecutiveAddWalletDetailsUseCase getExecutiveAddWalletDetailsUseCase;
   final AddExecutiveWalletUseCase addExecutiveWalletUseCase;
+  final CreateExecutiveUseCase createExecutiveUseCase;
 
   ExecutiveController(
     this.getExecutivesUseCase,
@@ -27,6 +29,7 @@ class ExecutiveController extends GetxController {
     this.updateExecutiveUseCase,
     this.getExecutiveAddWalletDetailsUseCase,
     this.addExecutiveWalletUseCase,
+    this.createExecutiveUseCase,
   );
 
   RxBool isLoading = false.obs;
@@ -168,6 +171,24 @@ class ExecutiveController extends GetxController {
         Get.back();
         Get.snackbar("Success", message, snackPosition: SnackPosition.BOTTOM);
         // Refresh executives list to get updated balance
+        fetchExecutives();
+      },
+    );
+  }
+
+  Future<void> createExecutive(Map<String, dynamic> data) async {
+    isUpdatingExecutive.value = true;
+    final result = await createExecutiveUseCase.call(data);
+
+    result.fold(
+      (failure) {
+        isUpdatingExecutive.value = false;
+        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+      },
+      (successMessage) {
+        isUpdatingExecutive.value = false;
+        Get.back();
+        Get.snackbar("Success", successMessage, snackPosition: SnackPosition.BOTTOM);
         fetchExecutives();
       },
     );

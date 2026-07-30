@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
+
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';

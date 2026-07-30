@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:maxpay/core/error/failure.dart';
 import '../../data/model/login_send_otp_response_model.dart';
 import '../../data/model/login_verify_otp_response_model.dart';
@@ -14,4 +14,6 @@ abstract class LoginRepository {
   Future<Either<Failure, VerifyPinResponseModel>> verifyPin(String pin);
   Future<Either<Failure, UpdateFingerprintResponseModel>> updateFingerprint(int isFingerPrint);
   Future<Either<Failure, LogoutResponseModel>> logout();
+  Future<Either<Failure, String>> sendUpdateMpinOtp();
+  Future<Either<Failure, String>> updatePin(String otp, String newPin, String confirmPin);
 }

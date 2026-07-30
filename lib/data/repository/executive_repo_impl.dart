@@ -204,4 +204,28 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> createExecutive(Map<String, dynamic> data) async {
+    try {
+      final formData = FormData.fromMap(data);
+      final response = await _apiService.post(
+        ApiRoutes.distributorCreateExecutive,
+        data: formData,
+      );
+
+      if (response['code'] == 200 || response['status'] == true || response['success'] == true) {
+        return Right(response['message']?.toString() ?? 'Executive created successfully');
+      } else {
+        return Left(ServerFailure(response['message'] ?? 'Failed to create executive'));
+      }
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
+      }
+      return Left(ServerFailure(e.message ?? 'Network error'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

@@ -1,11 +1,27 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:maxpay/controller/web_login_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
-import 'package:maxpay/global_widget/commom_button.dart';
 
-class ScanWebLoginScreen extends StatelessWidget {
+class ScanWebLoginScreen extends StatefulWidget {
   const ScanWebLoginScreen({super.key});
+
+  @override
+  State<ScanWebLoginScreen> createState() => _ScanWebLoginScreenState();
+}
+
+class _ScanWebLoginScreenState extends State<ScanWebLoginScreen> {
+  final WebLoginController controller = Get.put(sl<WebLoginController>());
+  final MobileScannerController cameraController = MobileScannerController();
+
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,35 +93,40 @@ class ScanWebLoginScreen extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                /// Scanner + QR
+                /// Scanner
                 Center(
-                  child: SizedBox(
-                    width: 400,
-                    height: 430,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Image.asset(
-                          AssetImages.scanWeb,
-                          width: 320,
-                          height: 320,
-                          fit: BoxFit.contain,
-                        ),
-                      ],
+                  child: Container(
+                    width: 320,
+                    height: 320,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 4),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: MobileScanner(
+                        controller: cameraController,
+                        onDetect: (capture) {
+                          final List<Barcode> barcodes = capture.barcodes;
+                          if (barcodes.isNotEmpty) {
+                            final String? code = barcodes.first.rawValue;
+                            if (code != null) {
+                              controller.onQrScanned(code);
+                            }
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                Obx(() {
+                  if (controller.isLoading.value) {
+                    return const CircularProgressIndicator(color: Colors.white);
+                  }
+                  return const SizedBox.shrink();
+                }),
                 const Spacer(),
-
-                SizedBox(
-                  width: 160,
-                  child: CommonButton(
-                    title: "Submit",
-                    onTap: () {},
-                  ),
-                ),
-
-                const SizedBox(height: 30),
               ],
             ),
           ),

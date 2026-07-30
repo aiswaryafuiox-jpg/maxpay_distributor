@@ -6,8 +6,9 @@ import 'package:maxpay/data/model/transaction/transaction_report_response_model.
 import 'package:get/get.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
 
-class TransactionCard extends StatelessWidget {
+bool _isDisputeDialogOpen = false;
 
+class TransactionCard extends StatelessWidget {
   final TransactionReportItem item;
   final Color bgColor;
   final TransactionStatus status;
@@ -199,7 +200,9 @@ class TransactionCard extends StatelessWidget {
                       text: "Dispute",
                       color: Colors.red,
                       onTap: () {
-                        // _showDisputeDialog(context); // Optional
+                        if (item.id != null) {
+                          _showDisputeDialog(context, item.id.toString());
+                        }
                       },
                       isCompact: true,
                     ),
@@ -264,4 +267,235 @@ class TransactionCard extends StatelessWidget {
     );
   }
 
+  Future<void> _showDisputeDialog(BuildContext context, String txnId) async {
+    if (_isDisputeDialogOpen || !context.mounted) {
+      return;
+    }
+
+    _isDisputeDialogOpen = true;
+
+    try {
+      await showDialog<void>(
+        context: context,
+        useRootNavigator: true,
+        barrierColor: Colors.black.withValues(alpha: 0.35),
+        builder: (_) => _DisputeDialog(txnId: txnId),
+      );
+    } finally {
+      _isDisputeDialogOpen = false;
+    }
+  }
+}
+
+class _DisputeDialog extends StatefulWidget {
+  final String txnId;
+  const _DisputeDialog({required this.txnId});
+
+  @override
+  State<_DisputeDialog> createState() => _DisputeDialogState();
+}
+
+class _DisputeDialogState extends State<_DisputeDialog> {
+  final TextEditingController _remarksController = TextEditingController();
+  String? _selectedIssue;
+
+  @override
+  void dispose() {
+    _remarksController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 18),
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(30, 24, 30, 24),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Enter Dispute",
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Select Issue",
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.45,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _selectedIssue,
+                  isExpanded: true,
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  hint: Text(
+                    "Select Issue",
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),
+                  ),
+                  items:  [
+                    DropdownMenuItem(
+                      value: "Amount not credited",
+                      child: Text("Amount not credited",  style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),),
+                    ),
+                    DropdownMenuItem(
+                      value: "Wrong number",
+                      child: Text("Wrong number",  style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),),
+                    ),
+                    DropdownMenuItem(
+                      value: "Recharge failed",
+                      child: Text("Recharge failed",  style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),),
+                    ),
+                     DropdownMenuItem(
+                      value: "Other",
+                      child: Text("Other",  style: TextStyle(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 14,
+                    ),),
+                    ),
+                   
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedIssue = value;
+                    });
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Write here",
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _remarksController,
+              minLines: 4,
+              maxLines: 5,
+              cursorColor: theme.colorScheme.onSurface,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.45,
+                ),
+                contentPadding: const EdgeInsets.all(14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.15),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Center(
+              child: GestureDetector(
+                onTap: () {
+                  final subject = _selectedIssue ?? 'Other';
+                  final description = _remarksController.text.trim();
+                  
+                  if (description.isEmpty) {
+                    Get.snackbar(
+                      "Required",
+                      "Please enter a description for the dispute",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  Get.find<TransactionController>().submitDispute(
+                    widget.txnId, 
+                    subject, 
+                    description,
+                  );
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.clrPrimary,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    "Submit",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

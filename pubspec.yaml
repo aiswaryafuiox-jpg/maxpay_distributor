@@ -32,12 +32,12 @@ dependencies:
   animated_text_kit: ^4.3.0
   cached_network_image: ^3.4.1
   country_code_picker: ^3.4.1
-  dio: ^5.11.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   dartz: ^0.10.1
+  dio: ^5.11.0
   file_picker: ^11.0.2
   fl_chart: ^1.2.0
   flutter:
@@ -53,8 +53,10 @@ dependencies:
   intl: ^0.20.3
   local_auth: ^3.0.2
   material_symbols_icons: ^4.2951.0
+  mobile_scanner: ^7.4.0
   permission_handler: ^12.0.3
   pinput: ^6.0.2
+  qr_flutter: ^4.1.0
   shared_preferences: ^2.5.5
   shimmer: ^3.0.0
   sim_card_code: ^0.2.0

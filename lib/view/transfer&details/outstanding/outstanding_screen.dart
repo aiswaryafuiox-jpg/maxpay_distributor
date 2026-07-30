@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/outstanding/widget/outstanding_card.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/controller/outstanding_controller.dart';
+// ... other imports
 
-class OutstandingScreen extends StatelessWidget {
+class OutstandingScreen extends StatefulWidget {
   const OutstandingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  State<OutstandingScreen> createState() => _OutstandingScreenState();
+}
 
+class _OutstandingScreenState extends State<OutstandingScreen> {
+  final controller = Get.put(sl<OutstandingController>());
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Outstanding",
-      ),
+      // ... appBar
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.w),
-          child: ListView.separated(
-            physics: const BouncingScrollPhysics(),
-            itemCount: 8,
-            separatorBuilder: (_, _) => SizedBox(height: 12.h),
-            itemBuilder: (_, index) {
-              return const OutstandingCard(
-                retailerName: "Klein Moriarti",
-                mobileNo: "+91 9782452130",
-                outstandingAmount: "₹30.00",
-              );
-            },
-          ),
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.outstandingList.isEmpty) {
+              return const Center(child: Text("No outstanding retailers"));
+            }
+            return ListView.separated(
+              itemCount: controller.outstandingList.length,
+              separatorBuilder: (_, _) => SizedBox(height: 12.h),
+              itemBuilder: (_, index) {
+                final item = controller.outstandingList[index];
+                return OutstandingCard(
+                  retailerName: item.retailerName ?? "-",
+                  mobileNo: item.regMobileNumber ?? "-",
+                  outstandingAmount:
+                      "₹${item.outstandingAmount ?? '0.00'}",
+                );
+              },
+            );
+          }),
         ),
       ),
     );

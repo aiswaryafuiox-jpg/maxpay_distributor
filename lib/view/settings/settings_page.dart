@@ -2,15 +2,122 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:maxpay/controller/login_controller.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
+import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
-class SettingsPage extends StatelessWidget {
+import 'package:maxpay/controller/update_pin_controller.dart';
+import 'package:maxpay/controller/web_login_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool isActive = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Get.put(ProfileController(sl(), sl(), sl(), sl(), sl(), sl()));
+    isActive = Get.find<ProfileController>().profileData.value?.isActive == 1
+        ? true
+        : false;
+  }
+
+  Future<void> _showStatusDialog() async {
+    final action = isActive ? "inactive" : "active";
+
+    final bool? result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.darkplceholder : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            "Are you sure",
+            textAlign: TextAlign.center,
+            style: TextHelper.max10(context),
+          ),
+          content: Text(
+            "Are you sure you want to $action",
+            textAlign: TextAlign.center,
+            style: TextHelper.max9(context),
+          ),
+          actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 12),
+
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final controller = Get.find<ProfileController>();
+                      controller.updateStatusSendOtp(isActive ? 0 : 1);
+                      Navigator.pop(context, true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.clrPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      setState(() {
+        isActive = !isActive;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+    final updatePinController = Get.put(sl<UpdatePinController>());
+    final authController = Get.find<LoginController>();
     return Obx(() {
       final isDark = themeController.isDarkMode;
       return Container(
@@ -31,7 +138,7 @@ class SettingsPage extends StatelessWidget {
               child: SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 46.h),
                 //child: Column(
-                 // children: [
+                // children: [
                 child: Column(
                   children: [
                     SizedBox(height: 20.h),
@@ -47,7 +154,9 @@ class SettingsPage extends StatelessWidget {
                                 child: Icon(
                                   Icons.arrow_back_ios,
                                   size: 18.sp,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                               ),
                               SizedBox(width: 15.w),
@@ -58,7 +167,9 @@ class SettingsPage extends StatelessWidget {
                                   fontFamily: "Poppins",
                                   fontSize: 18.sp,
                                   fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                 ),
                               ),
                             ],
@@ -144,7 +255,7 @@ class SettingsPage extends StatelessWidget {
                     _buildMenuTile(
                       context,
                       'Cash Back',
-                          () {
+                      () {
                         Get.toNamed(AppRoutes.cashback);
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
@@ -152,7 +263,7 @@ class SettingsPage extends StatelessWidget {
                     _buildMenuTile(
                       context,
                       'Commission Settings',
-                          () {
+                      () {
                         Get.toNamed(AppRoutes.commission);
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
@@ -160,7 +271,7 @@ class SettingsPage extends StatelessWidget {
                     _buildMenuTile(
                       context,
                       'Bulk Package Update',
-                          () {
+                      () {
                         Get.toNamed(AppRoutes.bulkPackageCharge);
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
@@ -168,20 +279,31 @@ class SettingsPage extends StatelessWidget {
                     _buildMenuTile(
                       context,
                       'Account (active/inactive)',
-                          () {
-                        //Get.toNamed(AppRoutes.profile);
+                      () {
+                        _showStatusDialog();
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
                     _buildMenuTile(
                       context,
-                      'Add Fingerprint',
-                          () {
-                        Get.toNamed(AppRoutes.biometricsIntro);
+                      authController.isFingerPrint.value == 1
+                          ? 'Update Fingerprint'
+                          : 'Add Fingerprint',
+                      () {
+                        Get.toNamed(
+                          AppRoutes.biometricsIntro,
+                          arguments: {
+                            'is_update':
+                                authController.isFingerPrint.value == 1,
+                          },
+                        );
                       },
-                      SvgPicture.asset(AssetImages.fingerprint, width: 24.w),
+                      Icon(
+                        Icons.fingerprint,
+                        size: 24.w,
+                        color: AppColors.clrPrimary,
+                      ),
                     ),
-
                     _buildMenuTile(
                       context,
                       'Grade',
@@ -197,9 +319,22 @@ class SettingsPage extends StatelessWidget {
                       context,
                       'Update M-Pin',
                       () {
-                        Get.toNamed(AppRoutes.update);
+                        if (!updatePinController.isOtpLoading.value) {
+                          updatePinController.sendOtp();
+                        }
                       },
-                      SvgPicture.asset(AssetImages.updatePin, width: 24.w),
+                      updatePinController.isOtpLoading.value
+                          ? SizedBox(
+                              width: 24.w,
+                              height: 24.w,
+                              child: const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : SvgPicture.asset(
+                              AssetImages.updatePin,
+                              width: 24.w,
+                            ),
                     ),
 
                     _buildMenuTile(
@@ -211,7 +346,7 @@ class SettingsPage extends StatelessWidget {
                     _buildMenuTile(
                       context,
                       'Rating & Review',
-                          () {
+                      () {
                         //Get.toNamed(AppRoutes.profile);
                       },
                       SvgPicture.asset(AssetImages.rating, width: 24.w),
@@ -238,7 +373,7 @@ class SettingsPage extends StatelessWidget {
                               context,
                               'App Logout',
                               AssetImages.applogout,
-                                  () {},
+                              () {},
                             ),
                           ),
                           SizedBox(width: 15.w),
@@ -247,7 +382,12 @@ class SettingsPage extends StatelessWidget {
                               context,
                               'Web Logout',
                               AssetImages.weblogout,
-                                  () {},
+                              () {
+                                final webLoginController = Get.put(
+                                  sl<WebLoginController>(),
+                                );
+                                webLoginController.webLogout();
+                              },
                               true,
                             ),
                           ),
@@ -327,9 +467,9 @@ class SettingsPage extends StatelessWidget {
     BuildContext context,
     String label,
     //IconData icon,
-      String iconPath,
+    String iconPath,
 
-      VoidCallback onTap, [
+    VoidCallback onTap, [
     bool isRight = false,
   ]) {
     return ElevatedButton.icon(
@@ -344,11 +484,7 @@ class SettingsPage extends StatelessWidget {
       ),
       iconAlignment: isRight ? IconAlignment.end : IconAlignment.start,
 
-      icon: SvgPicture.asset(
-        iconPath,
-        width: 20.w,
-        height: 20.h,
-      ),
+      icon: SvgPicture.asset(iconPath, width: 20.w, height: 20.h),
 
       label: Text(
         label,
