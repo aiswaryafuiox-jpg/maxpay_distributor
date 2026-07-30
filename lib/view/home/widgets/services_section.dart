@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 
 import '../../../core/utils/texthelper.dart';
@@ -27,7 +29,6 @@ class MenuScreen extends StatelessWidget {
               /// HEADER
               const HomeHeaderSection(),
 
-
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Column(
@@ -43,18 +44,16 @@ class MenuScreen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            "Wallet Balance",
-                            style: TextHelper.max16
-
-                          ),
+                          Text("Wallet Balance", style: TextHelper.max16),
 
                           SizedBox(height: 6.h),
 
                           Text(
-                            "₹ 245005.23",
+                            Get.find<AddWalletController>()
+                                .walletBalance
+                                .value
+                                .currencyIndian,
                             style: TextHelper.lato12,
-
                           ),
                         ],
                       ),
@@ -206,9 +205,11 @@ class MenuScreen extends StatelessWidget {
                         _serviceItem(
                           context,
                           "Wallet Request",
+                          onTap: () {
+                            Get.toNamed(AppRoutes.requestWallet);
+                          },
                           AssetImages.water,
                           AppColors.box4,
-
                         ),
 
                         _serviceItem(
@@ -275,7 +276,6 @@ class MenuScreen extends StatelessWidget {
                               onTap: () {
                                 //Get.toNamed(AppRoutes.favorite);
                                 Get.toNamed(AppRoutes.payOutStatus);
-
                               },
                             ),
 
@@ -305,7 +305,6 @@ class MenuScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(),
-
     );
   }
 

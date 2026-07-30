@@ -1,135 +1,8 @@
-// import 'package:flutter/material.dart';
-// import 'package:maxpay/core/constants/asset_images.dart';
-// import 'package:maxpay/core/utils/texthelper.dart';
-// import 'package:maxpay/global_widget/commom_button.dart';
-// import 'package:maxpay/global_widget/custom_app.dart';
-// import 'package:maxpay/view/add_wallet/widge/add_wallet_dialogue.dart';
-// import 'package:maxpay/view/add_wallet/widge/add_wallet_widget.dart';
-//
-// class AddWalletScreen extends StatelessWidget {
-//   const AddWalletScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     final colorScheme = theme.colorScheme;
-//
-//     return Scaffold(
-//       backgroundColor: theme.scaffoldBackgroundColor,
-//       appBar: const CommonAppBar(title: "Add Wallet"),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             /// QR IMAGE CONTAINER
-//             Container(
-//               width: double.infinity,
-//               padding: const EdgeInsets.all(20),
-//               decoration: BoxDecoration(
-//                 color: colorScheme.surface,
-//                 borderRadius: BorderRadius.circular(12),
-//               ),
-//               child: Column(
-//                 children: [
-//                   Image.asset(
-//                     AssetImages.addwallet,
-//                     height: 220,
-//                     fit: BoxFit.contain,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//
-//             const SizedBox(height: 20),
-//
-//             /// AMOUNT TITLE
-//             Text("Amount", style: TextHelper.max9(context)),
-//
-//             const SizedBox(height: 8),
-//
-//             TextFormField(
-//               keyboardType: TextInputType.number,
-//               style: TextStyle(color: colorScheme.onSurface),
-//               decoration: InputDecoration(
-//                 hintText: "Enter Amount",
-//                 hintStyle: TextStyle(
-//                   color: theme.colorScheme.onTertiaryFixedVariant,
-//                 ),
-//                 filled: true,
-//                 fillColor: colorScheme.surface,
-//                 contentPadding: const EdgeInsets.symmetric(
-//                   horizontal: 14,
-//                   vertical: 14,
-//                 ),
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                   borderSide: BorderSide.none,
-//                 ),
-//                 enabledBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                   borderSide: BorderSide(color: colorScheme.outline),
-//                 ),
-//                 focusedBorder: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                   borderSide: BorderSide(color: colorScheme.primary),
-//                 ),
-//               ),
-//             ),
-//
-//             const SizedBox(height: 18),
-//
-//             /// SUBMIT BUTTON
-//             Center(
-//               child: CommonButton(
-//                 title: "Submit",
-//                 onTap: () {
-//                   showDialog(
-//                     context: context,
-//                     builder: (context) => const AddWalletPopup(),
-//                   );
-//                 },
-//               ),
-//             ),
-//
-//             const SizedBox(height: 28),
-//
-//             /// RECENT TRANSACTIONS
-//             Text("Recent Transactions", style: TextHelper.max10(context)),
-//
-//             const SizedBox(height: 14),
-//
-//             transactionCard(
-//               context: context,
-//               status: "Failed",
-//               statusColor: Colors.red,
-//               amount: "₹ 500.00",
-//             ),
-//
-//             const SizedBox(height: 12),
-//
-//             transactionCard(
-//               context: context,
-//               status: "Success",
-//               statusColor: Colors.green,
-//               amount: "₹ 500.00",
-//             ),
-//
-//             const SizedBox(height: 12),
-//
-//             transactionCard(
-//               context: context,
-//               status: "Processing",
-//               statusColor: Colors.orange,
-//               amount: "₹ 500.00",
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 
@@ -143,6 +16,8 @@ class AddWalletScreen extends StatefulWidget {
 }
 
 class _AddWalletScreenState extends State<AddWalletScreen> {
+  final AddWalletController _controller = Get.put(sl<AddWalletController>());
+
   final TextEditingController amountController = TextEditingController();
   final TextEditingController bankController = TextEditingController();
   final TextEditingController utrController = TextEditingController();
@@ -163,39 +38,38 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor:
-      isDark ? Theme.of(context).scaffoldBackgroundColor : Colors.white,
-      appBar: const CommonAppBar(title: "Add Wallet"),
+      backgroundColor: isDark
+          ? Theme.of(context).scaffoldBackgroundColor
+          : Colors.white,
+      appBar: const CommonAppBar(title: "Add Wallet", showBack: false),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             /// Due Amount Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    "Due Amount",
-                    style: TextHelper.max16.copyWith(
-                      fontSize: 16
-                    )
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "₹ 245005.23",
-                    style: TextHelper.lato12.copyWith(
-                      fontSize: 18,
-                    )
-
-
-                  ),
-                ],
+            Obx(
+              () => Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Due Amount",
+                      style: TextHelper.max16.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    _controller.isLoading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            _controller.walletBalance.value.currencyIndian,
+                            style: TextHelper.lato12.copyWith(fontSize: 18),
+                          ),
+                  ],
+                ),
               ),
             ),
 
@@ -210,8 +84,7 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
             DropdownButtonFormField<String>(
               initialValue: paymentType,
               decoration: _decoration("Select"),
-              dropdownColor:
-              isDark ? const Color(0xff2F3349) : Colors.white,
+              dropdownColor: isDark ? const Color(0xff2F3349) : Colors.white,
               items: paymentTypes.map((e) {
                 return DropdownMenuItem(
                   value: e,
@@ -250,16 +123,14 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
             const SizedBox(height: 30),
             SizedBox(
               width: 170,
-              child: CommonButton(
-                title: "Submit",
-                onTap: () {},
-              ),
+              child: CommonButton(title: "Submit", onTap: () {}),
             ),
           ],
         ),
       ),
     );
   }
+
   Widget _label(String text) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -271,10 +142,10 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
   }
 
   Widget _textField(
-      TextEditingController controller,
-      String hint, {
-        int maxLines = 1,
-      }) {
+    TextEditingController controller,
+    String hint, {
+    int maxLines = 1,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
@@ -287,17 +158,10 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
 
     return InputDecoration(
       hintText: hint,
-      hintStyle: TextHelper.max2.copyWith(
-        color: Colors.grey,
-      ),
+      hintStyle: TextHelper.max2.copyWith(color: Colors.grey),
       filled: true,
-      fillColor: isDark
-          ? const Color(0xff2F3349)
-          : const Color(0xffF7F8FA),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 14,
-      ),
+      fillColor: isDark ? const Color(0xff2F3349) : const Color(0xffF7F8FA),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide.none,

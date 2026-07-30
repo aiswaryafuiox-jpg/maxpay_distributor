@@ -8,13 +8,14 @@ import '../model/transaction/transaction_product_response_model.dart';
 import '../model/transaction/transaction_report_response_model.dart';
 import '../model/transaction/transaction_detail_response_model.dart';
 
-class TransactionRepositoryImpl implements TransactionsListRepository  {
+class TransactionRepositoryImpl implements TransactionsListRepository {
   final ApiService _apiService;
 
   TransactionRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, TransactionProductResponseModel>> getTransactionProducts() async {
+  Future<Either<Failure, TransactionProductResponseModel>>
+  getTransactionProducts() async {
     try {
       final response = await _apiService.get(ApiRoutes.transactionProducts);
       return Right(TransactionProductResponseModel.fromJson(response));
@@ -30,7 +31,9 @@ class TransactionRepositoryImpl implements TransactionsListRepository  {
   }
 
   @override
-  Future<Either<Failure, TransactionReportResponseModel>> getTransactionReport(Map<String, dynamic> body) async {
+  Future<Either<Failure, TransactionReportResponseModel>> getTransactionReport(
+    Map<String, dynamic> body,
+  ) async {
     try {
       final response = await _apiService.post(
         ApiRoutes.transactionReport,
@@ -49,7 +52,9 @@ class TransactionRepositoryImpl implements TransactionsListRepository  {
   }
 
   @override
-  Future<Either<Failure, TransactionDetailResponseModel>> getTransactionDetail(int id) async {
+  Future<Either<Failure, TransactionDetailResponseModel>> getTransactionDetail(
+    int id,
+  ) async {
     try {
       final response = await _apiService.post(
         ApiRoutes.transactionDetail,
@@ -67,5 +72,41 @@ class TransactionRepositoryImpl implements TransactionsListRepository  {
     }
   }
 
+  @override
+  Future<Either<Failure, String>> submitTransactionDispute(
+    String id,
+    String subject,
+    String description,
+  ) async {
+    try {
+      final formData = FormData.fromMap({
+        'id': id,
+        'subject': subject,
+        'description': description,
+      });
 
+      final response = await _apiService.post(
+        ApiRoutes.distributorSubmitTransactionDispute,
+        data: formData,
+      );
+
+      if (response['code'] == 200) {
+        return Right(
+          response['message']?.toString() ?? 'Dispute submitted successfully',
+        );
+      } else {
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to submit dispute'),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final message = e.response!.data['message'] ?? 'Server error';
+        return Left(ServerFailure(message));
+      }
+      return Left(ServerFailure(e.message ?? 'Network error'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

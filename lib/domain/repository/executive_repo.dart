@@ -12,4 +12,5 @@ abstract class ExecutiveRepository {
   Future<Either<Failure, String>> updateExecutive(Map<String, dynamic> data);
   Future<Either<Failure, ExecutiveAddWalletDetailsResponseModel>> getExecutiveAddWalletDetails(String id);
   Future<Either<Failure, String>> addExecutiveWallet(String id, String amount);
+  Future<Either<Failure, String>> createExecutive(Map<String, dynamic> data);
 }

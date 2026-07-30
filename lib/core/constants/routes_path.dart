@@ -48,6 +48,8 @@ class AppRoutes {
   static const String menu = '/menu';
   static const String dth = '/dth';
   static const String addwallet = '/addwallet';
+  static const String requestWallet= '/reqWallet';
+  static const String dueAmountAddwallet= '/dueAmountAddwallet';
   static const String transaction = '/transaction';
   static const String veirfypin = '/veirfypin';
   static const String statement = '/statement';
@@ -56,6 +58,7 @@ class AppRoutes {
   static const String favorite = '/favorite';
   static const String walletBalance = '/wallet-balance';
   static const String update = '/update';
+  static const String updateMpinOtp = '/update_mpin_otp';
   static const String lowWallet = "/lowWallet";
   static const String outstanding = '/outstanding';
   static const String dayBook = "/dayBook";
