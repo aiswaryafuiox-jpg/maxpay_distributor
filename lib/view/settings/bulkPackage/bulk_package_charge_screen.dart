@@ -5,7 +5,7 @@
 // import '../../../core/constants/routes_path.dart';
 // import '../../../global_widget/commom_button.dart';
 // import '../../../global_widget/custom_app.dart';
-// import 'BulkPackageChangeScreen.dart';
+// import 'bulk_package_change_screen.dart';
 //
 // class BulkPackageChargeScreen extends StatefulWidget {
 //   const BulkPackageChargeScreen({super.key});
@@ -153,7 +153,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/constants/routes_path.dart';
-import '../../../core/utils/texthelper.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
 import '../../../controller/commission_settings_controller.dart';
@@ -337,51 +336,3 @@ class _BulkPackageChargeScreenState extends State<BulkPackageChargeScreen> {
   }
 }
 
-/// Reusable Selection Field
-class _SelectionField extends StatelessWidget {
-  final String hint;
-  final String? value;
-  final VoidCallback onTap;
-
-  const _SelectionField({
-    required this.hint,
-    required this.value,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-     return TextFormField(
-      readOnly: true,
-      controller: TextEditingController(text: value ?? ""),
-      style: TextHelper.max2,
-      onTap: onTap,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: TextHelper.max2,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
-        suffixIcon: const Icon(
-          Icons.chevron_right,
-          color: Colors.grey,
-          size: 24,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: Color(0xFFD8DFEA),
-            width: 1,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: Color(0xFFD8DFEA),
-            width: 1,
-          ),
-        ),
-      ));
-  }
-}

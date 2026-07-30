@@ -1,43 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
 Widget transactionCard({
   required BuildContext context,
   required String status,
   required Color statusColor,
+
   required String amount,
+  required String txnId,
+  required String dateTime,
 }) {
   final theme = Theme.of(context);
-  final dividerColor = theme.brightness == Brightness.dark
-      ? Colors.white.withValues(alpha: 0.12)
-      : Colors.black.withValues(alpha: 0.12);
 
   return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 2),
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
       color: theme.brightness == Brightness.dark
           ? AppColors.darkplceholder
           : AppColors.background,
       borderRadius: BorderRadius.circular(10),
+      border: .all(color: Colors.grey.shade300),
     ),
     child: Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("UTR NO: 9785121TGV", style: TextHelper.max12(context)),
-            Text(
-              "Date & Time:\n29-11-2026 07:38:43PM",
-              textAlign: TextAlign.end,
-              style: TextHelper.max12(context),
+            Expanded(
+              child: Text(
+                "UTR NO: $txnId",
+                style: TextHelper.max12(context),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                "Date & Time:\n${dateTime.isNotEmpty ? formatTransactionDate(dateTime) : "-"}",
+                textAlign: TextAlign.end,
+                style: TextHelper.max12(context),
+              ),
             ),
           ],
         ),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Divider(height: 1, thickness: 1, color: dividerColor),
+        const SizedBox(height: 1),
+        Divider(
+          color: theme.brightness == Brightness.light
+              ? Colors.black12
+              : Colors.white24,
         ),
 
         Row(
@@ -48,7 +64,6 @@ Widget transactionCard({
               children: [
                 Text("Status", style: TextHelper.max12(context)),
                 const SizedBox(height: 5),
-
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -69,14 +84,12 @@ Widget transactionCard({
                 ),
               ],
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text("Amount", style: TextHelper.max12(context)),
                 const SizedBox(height: 5),
-
-                Text(amount, style: TextHelper.max10(context)),
+                Text(amount.currencyIndian, style: TextHelper.max10(context)),
               ],
             ),
           ],

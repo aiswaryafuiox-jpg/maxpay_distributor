@@ -16,4 +16,9 @@ abstract class TransactionsListRepository {
   Future<Either<Failure, TransactionDetailResponseModel>> getTransactionDetail(
     int id,
   );
+  Future<Either<Failure, String>> submitTransactionDispute(
+    String id,
+    String subject,
+    String description,
+  );
 }

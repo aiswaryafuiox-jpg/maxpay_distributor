@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -54,7 +55,7 @@ class WalletCreditFilterWidget extends StatelessWidget {
 
     onChanged: (value) {
       controller.selectedCreditTypeId.value = value;
-      print(value);
+      debugPrint(value?.toString());
     },
   );
 }),

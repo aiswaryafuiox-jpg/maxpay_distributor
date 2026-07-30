@@ -55,7 +55,7 @@ class _CashbackScreenState extends State<CashbackScreen> {
               ),
               child: Obx(() {
                 return DropdownButtonFormField<String>(
-                  value: controller.selectedProductTypeId.value.isEmpty
+                  initialValue: controller.selectedProductTypeId.value.isEmpty
                       ? null
                       : controller.selectedProductTypeId.value,
                   decoration: InputDecoration(

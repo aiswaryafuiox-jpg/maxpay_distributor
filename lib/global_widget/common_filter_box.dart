@@ -250,15 +250,38 @@ class SearchBox extends StatelessWidget {
 
 /// Extra field for Online Transaction screen
 class TransactionTypeField extends StatelessWidget {
-  const TransactionTypeField({super.key});
+  final String value;
+  final ValueChanged<String?> onChanged;
+
+  const TransactionTypeField({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return TextField(
-      style: TextStyle(color: theme.colorScheme.onSurface),
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      items: const [
+        DropdownMenuItem(value: 'pending', child: Text('Pending')),
+        DropdownMenuItem(value: 'success', child: Text('Success')),
+        DropdownMenuItem(value: 'failed', child: Text('Failed')),
+        DropdownMenuItem(value: 'all', child: Text('All')),
+      ],
+      onChanged: onChanged,
+      style: TextStyle(
+        color: isDark ? AppColors.textclr : theme.colorScheme.onSurface,
+        fontSize: 14,
+      ),
+      dropdownColor: isDark ? AppColors.darkplceholder : theme.colorScheme.surface,
+      icon: Icon(
+        Icons.keyboard_arrow_down,
+        color: isDark ? AppColors.textclr : theme.colorScheme.onSurfaceVariant,
+      ),
       decoration: InputDecoration(
         hintStyle: TextHelper.max1.copyWith(
           color: isDark
@@ -287,7 +310,7 @@ class TransactionTypeField extends StatelessWidget {
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
-          vertical: 14,
+          vertical: 12,
         ),
       ),
     );

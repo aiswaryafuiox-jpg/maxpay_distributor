@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 
@@ -26,7 +27,7 @@ String formatTransactionDate(String isoDateString) {
     final DateFormat formatter = DateFormat('dd-MM-yyyy, hh:mm a');
     return formatter.format(dateTime);
   } catch (e) {
-    print('Error formatting date: $e');
+    debugPrint('Error formatting date: $e');
     return isoDateString;
   }
 }
@@ -50,7 +51,7 @@ extension UrlHelper on String {
 
       return '$formattedBase/$formattedPath';
     } catch (e) {
-      print('Error in addToBase: $e');
+      debugPrint('Error in addToBase: $e');
       return this;
     }
   }

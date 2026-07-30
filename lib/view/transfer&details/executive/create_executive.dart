@@ -215,7 +215,29 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
               const Spacer(),
 
               Center(
-                child: CommonButton(title: "Update", onTap: () {}),
+                child: Obx(() {
+                  final controller = Get.find<ExecutiveController>();
+                  return CommonButton(
+                    title: controller.isUpdatingExecutive.value ? "Creating..." : "Create",
+                    onTap: controller.isUpdatingExecutive.value 
+                        ? () {}
+                        : () {
+                      final name = executiveNameController.text.trim();
+                      final mobile = mobileController.text.trim();
+                      
+                      if (name.isEmpty || mobile.isEmpty || selectedPackage == null) {
+                        Get.snackbar("Required", "All fields are required");
+                        return;
+                      }
+
+                      controller.createExecutive({
+                        "executive_name": name,
+                        "reg_mobile_number": mobile,
+                        "commission_package": selectedPackage,
+                      });
+                    },
+                  );
+                }),
               ),
 
               const SizedBox(height: 20),

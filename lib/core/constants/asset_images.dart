@@ -73,7 +73,7 @@ class AssetImages {
   static const banner1 = "assets/images/banner1.png";
   static const banner2 = "assets/images/banner2.png";
   static const addwallet = "assets/images/add_wallet1.png";
-  static const qr_code = "assets/images/qr_code.png";
+  static const qrCode = "assets/images/qr_code.png";
   static const statements = "assets/images/task_2_regular.svg";
   static const transactions1 = "assets/images/mobile_post.svg";
   static const search = "assets/images/Vector.svg";

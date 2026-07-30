@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
 import '../../core/services/api_service.dart';
-import '../../domain/repository/login_sendOtp_repo.dart';
-import '../model/login_sendOtp_response_model.dart';
-import '../model/login_verifyOtp_response_model.dart';
+import '../../domain/repository/login_send_otp_repo.dart';
+import '../model/login_send_otp_response_model.dart';
+import '../model/login_verify_otp_response_model.dart';
 import '../model/create_pin_response_model.dart';
 import '../model/verify_pin_response_model.dart';
 import '../model/update_fingerprint_response_model.dart';
@@ -126,6 +126,53 @@ class LoginRepositoryImpl implements LoginRepository {
       return Right(LogoutResponseModel.fromJson(response));
     } on DioException catch (e) {
       return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> sendUpdateMpinOtp() async {
+    try {
+      final response = await apiService.post(ApiRoutes.distributorUpdateMpinSendOtp);
+      if (response['code'] == 200 || response['status'] == true) {
+        return Right(response['message']?.toString() ?? 'OTP sent successfully');
+      } else {
+        return Left(ServerFailure(response['message'] ?? 'Failed to send OTP'));
+      }
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
+      }
+      return Left(ServerFailure(e.message ?? 'Network error'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> updatePin(String otp, String newPin, String confirmPin) async {
+    try {
+      final formData = FormData.fromMap({
+        'otp': otp,
+        'new_pin': newPin,
+        'confirm_pin': confirmPin,
+      });
+
+      final response = await apiService.post(
+        ApiRoutes.distributorUpdateMpin,
+        data: formData,
+      );
+      if (response['code'] == 200 || response['status'] == true) {
+        return Right(response['message']?.toString() ?? 'PIN updated successfully');
+      } else {
+        return Left(ServerFailure(response['message'] ?? 'Failed to update PIN'));
+      }
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
+      }
+      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

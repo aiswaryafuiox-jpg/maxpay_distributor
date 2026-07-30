@@ -5,6 +5,7 @@ import 'package:maxpay/core/utils/logg_helper.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_detail_usecase.dart';
+import '../domain/usecase/transaction/submit_transaction_dispute_usecase.dart';
 import '../data/model/transaction/transaction_product_response_model.dart';
 import '../data/model/transaction/transaction_report_response_model.dart';
 import '../data/model/transaction/transaction_detail_response_model.dart';
@@ -13,11 +14,13 @@ class TransactionController extends GetxController {
   final GetTransactionProductsUseCase getTransactionProductsUseCase;
   final GetTransactionReportUseCase getTransactionReportUseCase;
   final GetTransactionDetailUseCase getTransactionDetailUseCase;
+  final SubmitTransactionDisputeUseCase submitTransactionDisputeUseCase;
 
   TransactionController(
     this.getTransactionProductsUseCase,
     this.getTransactionReportUseCase,
     this.getTransactionDetailUseCase,
+    this.submitTransactionDisputeUseCase,
   );
 
   RxBool isProductsLoading = false.obs;
@@ -189,6 +192,31 @@ class TransactionController extends GetxController {
           Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
+    );
+  }
+
+  Future<void> submitDispute(String id, String subject, String description) async {
+    final result = await submitTransactionDisputeUseCase(id, subject, description);
+
+    result.fold(
+      (failure) {
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
+      },
+      (successMessage) {
+        Get.snackbar(
+          "Success",
+          successMessage,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      },
     );
   }
 }

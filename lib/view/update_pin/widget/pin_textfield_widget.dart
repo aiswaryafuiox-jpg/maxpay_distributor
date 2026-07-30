@@ -7,8 +7,9 @@ import '../../../core/utils/texthelper.dart';
 
 class PinTextFieldWidget extends StatelessWidget {
   final String hintText;
+  final TextEditingController? controller;
 
-  const PinTextFieldWidget({super.key, required this.hintText});
+  const PinTextFieldWidget({super.key, required this.hintText, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class PinTextFieldWidget extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return TextFormField(
+      controller: controller,
       keyboardType: TextInputType.number,
       maxLength: 4,
       style: TextHelper.max1,

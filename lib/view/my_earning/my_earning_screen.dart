@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/controller/my_earnings_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/global_widget/common_filter_box.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/my_earning/widget/my_earning_widget.dart';
 
 import '../../core/utils/texthelper.dart';
 
-class MyEarningsScreen extends StatelessWidget {
+class MyEarningsScreen extends StatefulWidget {
   const MyEarningsScreen({super.key});
+  @override
+  State<MyEarningsScreen> createState() => _MyEarningsScreenState();
+}
 
+class _MyEarningsScreenState extends State<MyEarningsScreen> {
+  final controller = Get.put(sl<MyEarningsController>());
   @override
   Widget build(BuildContext context) {
     return Scaffold(

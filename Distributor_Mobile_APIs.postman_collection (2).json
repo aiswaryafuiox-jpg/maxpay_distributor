@@ -1,0 +1,3893 @@
+{
+    "info": {
+        "_postman_id": "distributor-mobile-api-20260722",
+        "name": "PayLink Distributor Mobile APIs",
+        "description": "Distributor mobile app APIs.\n\n**Headers**\n- X-API-KEY: required on all routes\n- Authorization: Bearer {{token}} (after login)\n\n**Auth flow**\n1. distributor_login_sendotp\n2. distributor_login_verifyOtp (OTP: 1234)\n3. Copy token → collection variable `token`\n4. If is_pin=0 → distributor_create_pin\n\n**Notes**\n- OTP hardcoded as 1234 for mobile testing\n- Run `php artisan migrate` for pin / fingerprint / KYC columns\n\n**Body:** All requests use `form-data` (not raw JSON). Phone number is set directly in form fields.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://139.59.91.7/test_paylinkonline.in/public"
+        },
+        {
+            "key": "api_key",
+            "value": "mnbvcxzasdfghjklpoiuytrewqzxcvbnm"
+        },
+        {
+            "key": "token",
+            "value": "722|zZBCXW07DUrcrNxiz73EZLF8SuN17kMBNHTDcZYef9eb9435"
+        },
+        {
+            "key": "phone_number",
+            "value": "8098309905"
+        },
+        {
+            "key": "user_id",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "01. Auth / Login",
+            "item": [
+                {
+                    "name": "Login Send OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_login_sendotp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_login_sendotp"
+                            ]
+                        },
+                        "description": "Login Send OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "country_code",
+                                    "value": "+91",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "phone_number",
+                                    "value": "8098309905",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_login_verifyOtp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_login_verifyOtp"
+                            ]
+                        },
+                        "description": "Login Verify OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "phone_number",
+                                    "value": "8098309905",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "otp",
+                                    "value": "1234",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create M-PIN",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_create_pin",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_create_pin"
+                            ]
+                        },
+                        "description": "Create M-PIN",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "pin",
+                                    "value": "1234",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Verify M-PIN",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_verify_pin",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_verify_pin"
+                            ]
+                        },
+                        "description": "Verify M-PIN",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "pin",
+                                    "value": "1234",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update M-PIN (direct)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_pin",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_pin"
+                            ]
+                        },
+                        "description": "Update M-PIN (direct)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "new_pin",
+                                    "value": "5678",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "confirm_pin",
+                                    "value": "5678",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update M-PIN Send OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_mpin_send_otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_mpin_send_otp"
+                            ]
+                        },
+                        "description": "Update M-PIN Send OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update M-PIN Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_mpin",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_mpin"
+                            ]
+                        },
+                        "description": "Update M-PIN Verify OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "otp",
+                                    "value": "1234",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "new_pin",
+                                    "value": "5678",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "confirm_pin",
+                                    "value": "5678",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Fingerprint",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_fingerprint",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_fingerprint"
+                            ]
+                        },
+                        "description": "Update Fingerprint",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "is_finger_print",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Web Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_web_login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_web_login"
+                            ]
+                        },
+                        "description": "Enable web login via QR.\n\n**Body (form-data) required:**\n- `qr_user_id` = distributors.user_id (same as logged-in user)\n\nSet collection variable `user_id` first, or type the value directly in Body.",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "qr_user_id",
+                                    "value": "{{user_id}}",
+                                    "type": "text",
+                                    "description": "Must match logged-in distributor user_id (not empty)"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Web Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_web_logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_web_logout"
+                            ]
+                        },
+                        "description": "Disable web login. Send is_web_login=0.",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "is_web_login",
+                                    "value": "0",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_logout"
+                            ]
+                        },
+                        "description": "Logout",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Home",
+            "item": [
+                {
+                    "name": "home_card",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_home_card",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_home_card"
+                            ]
+                        },
+                        "description": "Get transaction summary (success/failed/processing amount & count) for distributor's retailers"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "today_transaction_amount",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_today_transaction_amount",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_today_transaction_amount"
+                            ]
+                        },
+                        "description": "Get today's transaction amounts (success/failed/processing) for distributor's retailers"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "02. Profile",
+            "item": [
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_get_profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_get_profile"
+                            ]
+                        },
+                        "description": "Get Profile"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Profile",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_profile"
+                            ]
+                        },
+                        "description": "Update Profile",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "William",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address",
+                                    "value": "Kanyakumari",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "pincode",
+                                    "value": "626144",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "sample@gmail.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "phone_number",
+                                    "value": "9876541302",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "whatsapp_number",
+                                    "value": "9876541302",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "profile_img",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Profile Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_profile_verify_otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_profile_verify_otp"
+                            ]
+                        },
+                        "description": "Update Profile Verify OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "otp",
+                                    "value": "1234",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Profile Resend OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_profile_resend_otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_profile_resend_otp"
+                            ]
+                        },
+                        "description": "Update Profile Resend OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": []
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Status Send OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_status_send_otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_status_send_otp"
+                            ]
+                        },
+                        "description": "Update Status Send OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "is_active",
+                                    "value": "0",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Status Verify OTP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_status_verify_otp",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_status_verify_otp"
+                            ]
+                        },
+                        "description": "Update Status Verify OTP",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "otp",
+                                    "value": "1234",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "03. Wallet Credit",
+            "item": [
+                {
+                    "name": "Wallet Credit Types",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_wallet_credit_types",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_wallet_credit_types"
+                            ]
+                        },
+                        "description": "Wallet Credit Types"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Wallet Credit List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_wallet_credit",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_wallet_credit"
+                            ]
+                        },
+                        "description": "Wallet Credit List",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "type",
+                                    "value": "Request",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "04. Retailers",
+            "item": [
+                {
+                    "name": "Retailers List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_retailers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_retailers"
+                            ]
+                        },
+                        "description": "Retailers List"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Retailer Detail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_retailer_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_retailer_detail"
+                            ]
+                        },
+                        "description": "Retailer Detail",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Commission Packages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_commission_packages",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_commission_packages"
+                            ]
+                        },
+                        "description": "Commission Packages"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Retailer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_create_retailer",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_create_retailer"
+                            ]
+                        },
+                        "description": "Create Retailer",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "retailer_name",
+                                    "value": "Test Retailer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "reg_mobile_number",
+                                    "value": "9876500001",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "commission_package",
+                                    "value": "Silver",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "billing_address",
+                                    "value": "Address",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "pincode",
+                                    "value": "600001",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "registration_charge",
+                                    "value": "0",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Retailer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_retailer",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_retailer"
+                            ]
+                        },
+                        "description": "Update Retailer",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "retailer_name",
+                                    "value": "John Williamson",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "reg_mobile_number",
+                                    "value": "9865375260",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "whatsapp_number",
+                                    "value": "9865375260",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "demountitle@gmail.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address",
+                                    "value": "Trivandrum",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "gst_no",
+                                    "value": "24AAACM0259C1ZP",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "pincode",
+                                    "value": "619256",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "executive_id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "registration_charge",
+                                    "value": "554",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "low_wallet_amount",
+                                    "value": "3000",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "auto_transfer_amount",
+                                    "value": "500",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "package_name",
+                                    "value": "Silver",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "auto_transfer",
+                                    "value": "Auto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Active",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "transaction",
+                                    "value": "Active",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Wallet Details",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_add_wallet_details",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_add_wallet_details"
+                            ]
+                        },
+                        "description": "Add Wallet screen load — wallet balance, last transfer, outstanding (form-data: id = retailer id)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Wallet (Update)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_add_wallet",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_add_wallet"
+                            ]
+                        },
+                        "description": "Figma Add Wallet Update — direct transfer, NO OTP. form-data: id + amount",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "amount",
+                                    "value": "100",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "05. Executives",
+            "item": [
+                {
+                    "name": "Executives List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_executives",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_executives"
+                            ]
+                        },
+                        "description": "Executives List"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Executive Detail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_executive_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_executive_detail"
+                            ]
+                        },
+                        "description": "Executive Detail",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Executive Commission Packages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_executive_commission_packages",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_executive_commission_packages"
+                            ]
+                        },
+                        "description": "Executive Commission Packages"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Executive",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_create_executive",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_create_executive"
+                            ]
+                        },
+                        "description": "Create Executive",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "executive_name",
+                                    "value": "Test Executive",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "reg_mobile_number",
+                                    "value": "9876500002",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "commission_package",
+                                    "value": "Silver",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Executive",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_executive",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_executive"
+                            ]
+                        },
+                        "description": "Update Executive — View Details screen (all editable fields). form-data.",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "executive_name",
+                                    "value": "John Williamson",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "reg_mobile_number",
+                                    "value": "9865375250",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "whatsapp_number",
+                                    "value": "9865375250",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "demountitle@gmail.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "address",
+                                    "value": "Trivandrum",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "pincode",
+                                    "value": "619266",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "package_name",
+                                    "value": "Silver",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "auto_transfer",
+                                    "value": "Auto",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "minimum_amount",
+                                    "value": "1000",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "auto_transfer_amount",
+                                    "value": "500",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Active",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Executive Wallet Details",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_add_executive_wallet_details",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_add_executive_wallet_details"
+                            ]
+                        },
+                        "description": "Executive Add Wallet screen load (form-data: id or executive_id)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Executive Wallet (Update)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_add_executive_wallet",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_add_executive_wallet"
+                            ]
+                        },
+                        "description": "Direct transfer — NO OTP (same as retailer Add Wallet). form-data: id/executive_id + amount",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "amount",
+                                    "value": "100",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "06. Low Wallet / Auto Transfer",
+            "item": [
+                {
+                    "name": "Low Wallet Retailers",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_low_wallet_retailers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_low_wallet_retailers"
+                            ]
+                        },
+                        "description": "Low Wallet Retailers"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Auto Transfer Details",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_auto_transfer_details",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_auto_transfer_details"
+                            ]
+                        },
+                        "description": "Auto Transfer Details",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Auto Transfer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_auto_transfer",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_auto_transfer"
+                            ]
+                        },
+                        "description": "Update Auto Transfer for all current low-wallet retailers — form-data keys: low_wallet, transfer_amount, auto_transfer (no id)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "low_wallet",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "transfer_amount",
+                                    "value": "5",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "auto_transfer",
+                                    "value": "Enable",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "07. Transfer Detail",
+            "item": [
+                {
+                    "name": "Transfer Types",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transfer_types",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transfer_types"
+                            ]
+                        },
+                        "description": "Transfer Types"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transfer Detail List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transfer_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transfer_detail"
+                            ]
+                        },
+                        "description": "Transfer Detail List",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "type",
+                                    "value": "all",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reverse Wallet Transfer",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_reverse_wallet_transfer",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_reverse_wallet_transfer"
+                            ]
+                        },
+                        "description": "Reverse Wallet Transfer",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "08. Wallet Request Pending",
+            "item": [
+                {
+                    "name": "Pending List (to get id)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_pending_wallet_requests",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_pending_wallet_requests"
+                            ]
+                        },
+                        "description": "Optional — get pending request id for testing"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Wallet Request Pending (Detail)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_pending_wallet_request_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_pending_wallet_request_detail"
+                            ]
+                        },
+                        "description": "Figma: Wallet Request Pending — screen load",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Wallet Request Pending (Update)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_approve_pending_wallet_request",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_approve_pending_wallet_request"
+                            ]
+                        },
+                        "description": "Figma Update button — NO OTP. form-data: id + confirm_amount",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "confirm_amount",
+                                    "value": "10000",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "09. Outstanding",
+            "item": [
+                {
+                    "name": "Outstanding List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_outstanding_list",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_outstanding_list"
+                            ]
+                        },
+                        "description": "Outstanding List"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Outstanding",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_outstanding",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_outstanding"
+                            ]
+                        },
+                        "description": "Update Outstanding — form-data: retailer_id + received_amount (from Outstanding list)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "retailer_id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "received_amount",
+                                    "value": "100",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "10. Day Book",
+            "item": [
+                {
+                    "name": "Day Book Products",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_day_book_products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_day_book_products"
+                            ]
+                        },
+                        "description": "Day Book Products"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Day Book List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_day_book",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_day_book"
+                            ]
+                        },
+                        "description": "Day Book List",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "product_id",
+                                    "value": "",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Day Book Delete",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_day_book_delete",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_day_book_delete"
+                            ]
+                        },
+                        "description": "Day Book Delete",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "11. Statement",
+            "item": [
+                {
+                    "name": "Statement Descriptions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_statement_descriptions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_statement_descriptions"
+                            ]
+                        },
+                        "description": "Statement Descriptions"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Statement List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_statement",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_statement"
+                            ]
+                        },
+                        "description": "Statement List",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Statement Detail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_statement_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_statement_detail"
+                            ]
+                        },
+                        "description": "Statement Detail — use `id` from Statement List (e.g. user_wallet_12 / retailer_wallet_45). Or plain record_id + source.",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "user_wallet_12",
+                                    "type": "text",
+                                    "description": "From Statement List response field `id` (user_wallet_X or retailer_wallet_X)"
+                                },
+                                {
+                                    "key": "source",
+                                    "value": "user_wallet",
+                                    "type": "text",
+                                    "description": "Optional if id already has prefix. Values: user_wallet | retailer_wallet",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "12. Add Wallet / Balance / QR",
+            "item": [
+                {
+                    "name": "Wallet Balance",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_wallet_balance",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_wallet_balance"
+                            ]
+                        },
+                        "description": "Wallet Balance"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Add Wallet History",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_add_wallet_history",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_add_wallet_history"
+                            ]
+                        },
+                        "description": "Distributor wallet history from transfer_to_user_wallets (transfer_to = logged-in distributor user_id). No body."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Add Wallet QR",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_create_add_wallet_qr",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_create_add_wallet_qr"
+                            ]
+                        },
+                        "description": "Create Add Wallet QR",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "amount",
+                                    "value": "100",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Check Add Wallet QR Status",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_check_add_wallet_qr_status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_check_add_wallet_qr_status"
+                            ]
+                        },
+                        "description": "Check Add Wallet QR Status",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "txn_id",
+                                    "value": "123456789",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "13. Transaction Success / Pending / Failed",
+            "item": [
+                {
+                    "name": "Transaction Products",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_products"
+                            ]
+                        },
+                        "description": "Transaction Products"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transaction Report (Success)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_report",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_report"
+                            ]
+                        },
+                        "description": "Transaction Report (Success)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "status",
+                                    "value": "success",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "product_id",
+                                    "value": "",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transaction Report (Pending)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_report",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_report"
+                            ]
+                        },
+                        "description": "Transaction Report (Pending)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "status",
+                                    "value": "pending",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transaction Report (Failed)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_report",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_report"
+                            ]
+                        },
+                        "description": "Transaction Report (Failed)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "status",
+                                    "value": "failed",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transaction Detail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_detail"
+                            ]
+                        },
+                        "description": "Transaction Detail",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit Transaction Dispute",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_submit_transaction_dispute",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_submit_transaction_dispute"
+                            ]
+                        },
+                        "description": "Submit Transaction Dispute",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "subject",
+                                    "value": "Wrong amount",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Please check this transaction",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "14. My Earnings / Profit Report",
+            "item": [
+                {
+                    "name": "My Earnings",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_my_earnings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_my_earnings"
+                            ]
+                        },
+                        "description": "My Earnings",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Transaction Success Report (Profit)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_transaction_success_report",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_transaction_success_report"
+                            ]
+                        },
+                        "description": "Transaction Success Report (Profit)",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "product_id",
+                                    "value": "",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "15. Reg Charge / Online Transaction",
+            "item": [
+                {
+                    "name": "Reg Charge Detail",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_reg_charge_detail",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_reg_charge_detail"
+                            ]
+                        },
+                        "description": "Reg Charge Detail",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Online Transactions",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_online_transactions",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_online_transactions"
+                            ]
+                        },
+                        "description": "Online Transactions",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "pending",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "16. Cash Back",
+            "item": [
+                {
+                    "name": "Cash Back Product Types",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_cash_back_product_types",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_cash_back_product_types"
+                            ]
+                        },
+                        "description": "Cash Back Product Types"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Cash Back List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_cash_back",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_cash_back"
+                            ]
+                        },
+                        "description": "Cash Back List",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "product_type_id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "17. Commission Settings / Bulk Package",
+            "item": [
+                {
+                    "name": "Commission Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_commission_settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_commission_settings"
+                            ]
+                        },
+                        "description": "Commission Settings"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Package Status",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_update_package_status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_update_package_status"
+                            ]
+                        },
+                        "description": "Update Package Status",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "retailer",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Active",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Reset Package Commission",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_reset_package_commission",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_reset_package_commission"
+                            ]
+                        },
+                        "description": "Reset Package Commission",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Bulk Package Options",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_bulk_package_options",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_bulk_package_options"
+                            ]
+                        },
+                        "description": "Bulk Package Options"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Bulk Package Charge",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_bulk_package_charge",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_bulk_package_charge"
+                            ]
+                        },
+                        "description": "Bulk Package Charge",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "package_id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "user_type",
+                                    "value": "retailer",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Bulk Package Change",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_bulk_package_change",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_bulk_package_change"
+                            ]
+                        },
+                        "description": "Bulk Package Change",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "package_id",
+                                    "value": "1",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "1",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "18. Grade / KYC / Support / Login History",
+            "item": [
+                {
+                    "name": "Grade",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_grade",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_grade"
+                            ]
+                        },
+                        "description": "Grade — same shape as retailer/customer grade: distributor, wallet_balance, current_month, last_month, display_card, grade_slabs"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get KYC",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_get_kyc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_get_kyc"
+                            ]
+                        },
+                        "description": "Get KYC"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Submit KYC",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_submit_kyc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_submit_kyc"
+                            ]
+                        },
+                        "description": "Submit KYC",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "email",
+                                    "value": "distributor@gmail.com",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "whatsapp_number",
+                                    "value": "8098309905",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "cancelled_check",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "gst_no",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "pan",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Support",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_get_support",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_get_support"
+                            ]
+                        },
+                        "description": "Get Support"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login History",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-API-KEY",
+                                "value": "{{api_key}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/distributor_login_history",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "distributor_login_history"
+                            ]
+                        },
+                        "description": "Login History — optional form-data: from_date, to_date, search. Empty body also OK.",
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "from_date",
+                                    "value": "2026-01-01",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "to_date",
+                                    "value": "2026-12-31",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

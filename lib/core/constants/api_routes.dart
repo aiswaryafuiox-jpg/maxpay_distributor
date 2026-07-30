@@ -33,44 +33,90 @@ class ApiRoutes {
   static const String getExecutiveDetail = "/api/distributor_executive_detail";
   static const String getExecutiveCommissionPackages = "/api/distributor_executive_commission_packages";
   static const String updateExecutive = "/api/distributor_update_executive";
-  static const String addExecutiveWalletDetails = "/api/distributor_add_executive_wallet_details";
-  static const String addExecutiveWallet = "/api/distributor_add_executive_wallet";
-  static const String transactionProducts = "/api/distributor_transaction_products";
+  static const String distributorCreateExecutive = "/api/distributor_create_executive";
+  static const String addExecutiveWalletDetails =
+      "/api/distributor_add_executive_wallet_details";
+  static const String addExecutiveWallet =
+      "/api/distributor_add_executive_wallet";
+  static const String transactionProducts =
+      "/api/distributor_transaction_products";
   static const String transactionReport = "/api/distributor_transaction_report";
   static const String transactionDetail = "/api/distributor_transaction_detail";
 
 
+  static const distributorHomeCard = "/api/distributor_home_card";
+  static const distributorTodayTransactionAmount = "/api/distributor_today_transaction_amount";
 
 
   static const distributorTransferDetail = "/api/distributor_transfer_detail";
-  
-  static const String distributorPendingWalletRequests = "/api/distributor_pending_wallet_requests";
-  static const String distributorPendingWalletRequestDetail = "/api/distributor_pending_wallet_request_detail";
-  static const String distributorApprovePendingWalletRequest = "/api/distributor_approve_pending_wallet_request";
-  static const String distributorOutstandingList = "/api/distributor_outstanding_list";
-  static const String distributorUpdateOutstanding = "/api/distributor_update_outstanding";
-  static const String distributorLowWalletRetailers = "/api/distributor_low_wallet_retailers";
-  
-  static const String distributorWalletCreditList = '/api/distributor_wallet_credit';
-  static const String distributorAutoTransferDetails = '/api/distributor_auto_transfer_details';
-  static const String distributorUpdateAutoTransfer = '/api/distributor_update_auto_transfer';
-  static const String distributorDayBookProducts = '/api/distributor_day_book_products';
+
+  static const String distributorPendingWalletRequests =
+      "/api/distributor_pending_wallet_requests";
+  static const String distributorPendingWalletRequestDetail =
+      "/api/distributor_pending_wallet_request_detail";
+  static const String distributorApprovePendingWalletRequest =
+      "/api/distributor_approve_pending_wallet_request";
+  static const String distributorCreateAddWalletQr =
+      '/api/distributor_create_add_wallet_qr';
+  static const String distributorWebLogin = '/api/distributor_web_login';
+  static const String distributorWebLogout = '/api/distributor_web_logout';
+  static const String distributorCheckAddWalletQrStatus =
+      '/api/distributor_check_add_wallet_qr_status';
+  static const String distributorWalletHistory =
+      '/api/distributor_add_wallet_history';
+  static const String distributorSubmitTransactionDispute =
+      '/api/distributor_submit_transaction_dispute';
+  static const String distributorOutstandingList =
+      "/api/distributor_outstanding_list";
+  static const String distributorUpdateOutstanding =
+      "/api/distributor_update_outstanding";
+  static const String distributorWalletBalance =
+      '/api/distributor_wallet_balance';
+  static const String distributorLowWalletRetailers =
+      "/api/distributor_low_wallet_retailers";
+
+  static const String distributorWalletCreditList =
+      '/api/distributor_wallet_credit';
+  static const String distributorAutoTransferDetails =
+      '/api/distributor_auto_transfer_details';
+  static const String distributorUpdateAutoTransfer =
+      '/api/distributor_update_auto_transfer';
+  static const String distributorDayBookProducts =
+      '/api/distributor_day_book_products';
   static const String distributorDayBookList = '/api/distributor_day_book';
-  static const String distributorDayBookDelete = '/api/distributor_day_book_delete';
+  static const String distributorDayBookDelete =
+      '/api/distributor_day_book_delete';
   static const String distributorMyEarnings = '/api/distributor_my_earnings';
-  static const String distributorTransactionSuccessReport = '/api/distributor_transaction_success_report';
-  static const String distributorCashBackProductTypes = '/api/distributor_cash_back_product_types';
+  static const String distributorTransactionSuccessReport =
+      '/api/distributor_transaction_success_report';
+  static const String distributorCashBackProductTypes =
+      '/api/distributor_cash_back_product_types';
   static const String distributorCashBack = '/api/distributor_cash_back';
-  static const String distributorCommissionSettings = '/api/distributor_commission_settings';
-  static const String distributorUpdatePackageStatus = '/api/distributor_update_package_status';
-  static const String distributorResetPackageCommission = '/api/distributor_reset_package_commission';
-  static const String distributorBulkPackageOptions = '/api/distributor_bulk_package_options';
-  static const String distributorBulkPackageCharge = '/api/distributor_bulk_package_charge';
-  static const String distributorBulkPackageChange = '/api/distributor_bulk_package_change';
+  static const String distributorCommissionSettings =
+      '/api/distributor_commission_settings';
+  static const String distributorUpdatePackageStatus =
+      '/api/distributor_update_package_status';
+  static const String distributorResetPackageCommission =
+      '/api/distributor_reset_package_commission';
+  static const String distributorBulkPackageOptions =
+      '/api/distributor_bulk_package_options';
+  static const String distributorBulkPackageCharge =
+      '/api/distributor_bulk_package_charge';
+  static const String distributorBulkPackageChange =
+      '/api/distributor_bulk_package_change';
   static const String distributorGrade = '/api/distributor_grade';
   static const String distributorGetKyc = '/api/distributor_get_kyc';
   static const String distributorSubmitKyc = '/api/distributor_submit_kyc';
   static const String distributorGetSupport = '/api/distributor_get_support';
   static const String distributorLoginHistory = '/api/distributor_login_history';
   static const String distributorReverseWalletTransfer = '/api/distributor_reverse_wallet_transfer';
+  static const String distributorStatementDescriptions = '/api/distributor_statement_descriptions';
+  static const String distributorStatement = '/api/distributor_statement';
+  static const String distributorStatementDetail = '/api/distributor_statement_detail';
+  static const String distributorRegChargeDetail = '/api/distributor_reg_charge_detail';
+  static const String distributorOnlineTransactions = '/api/distributor_online_transactions';
+
+  static const String distributorUpdatePin = '/api/distributor_update_pin';
+  static const String distributorUpdateMpinSendOtp = '/api/distributor_update_mpin_send_otp';
+  static const String distributorUpdateMpin = '/api/distributor_update_mpin';
 }

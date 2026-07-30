@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/update_pin/widget/pin_textfield_widget.dart';
+import 'package:maxpay/controller/update_pin_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 
 class UpdatePinPage extends StatelessWidget {
   const UpdatePinPage({super.key});
@@ -13,6 +14,7 @@ class UpdatePinPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final controller = Get.put(sl<UpdatePinController>());
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -31,7 +33,10 @@ class UpdatePinPage extends StatelessWidget {
               )
             ),
             SizedBox(height: 10.h),
-            const PinTextFieldWidget(hintText: "Enter M-Pin"),
+            PinTextFieldWidget(
+              hintText: "Enter M-Pin",
+              controller: controller.newPinController,
+            ),
             SizedBox(height: 24.h),
             Text(
               "Confirm M-Pin",
@@ -40,15 +45,20 @@ class UpdatePinPage extends StatelessWidget {
               )
             ),
             SizedBox(height: 10.h),
-            const PinTextFieldWidget(hintText: "Confirm M-Pin"),
+            PinTextFieldWidget(
+              hintText: "Confirm M-Pin",
+              controller: controller.confirmPinController,
+            ),
             const Spacer(),
             Center(
-              child: CommonButton(
-                title: "Submit",
-                onTap: () {
-                  Get.toNamed(AppRoutes.veirfypin);
-                },
-              ),
+              child: Obx(() => CommonButton(
+                title: controller.isLoading.value ? "Updating..." : "Submit",
+                onTap: controller.isLoading.value 
+                  ? () {} 
+                  : () {
+                      controller.updatePin();
+                    },
+              )),
             ),
             SizedBox(height: 30.h),
           ],

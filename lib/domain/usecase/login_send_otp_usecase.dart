@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:maxpay/core/error/failure.dart';
-import '../../data/model/login_sendOtp_response_model.dart';
-import '../repository/login_sendOtp_repo.dart';
+import '../../data/model/login_send_otp_response_model.dart';
+import '../repository/login_send_otp_repo.dart';
 
 class LoginUseCase {
   final LoginRepository repository;

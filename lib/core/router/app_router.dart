@@ -19,6 +19,7 @@ import 'package:maxpay/domain/usecase/transaction/get_transaction_products_useca
 import 'package:maxpay/domain/usecase/transaction/get_transaction_report_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
+import 'package:maxpay/view/add_wallet_home/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
 import 'package:maxpay/view/dth_recharge/dth_recharge_page.dart';
@@ -41,6 +42,7 @@ import 'package:maxpay/view/mobile_recharge/mobile_recharge_page.dart';
 import 'package:maxpay/view/my_earning/my_earning_screen.dart';
 import 'package:maxpay/view/nav_page/nav_page.dart';
 import 'package:maxpay/view/refund/refund_screen.dart';
+import 'package:maxpay/view/report/payoutrequest/payout_request_screen.dart';
 import 'package:maxpay/view/settings/commission_settings/commission_settings_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
 
@@ -53,21 +55,22 @@ import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart'
 import 'package:maxpay/view/transaction_screens/view.dart';
 import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/update_pin/update_pin_screen.dart';
+import 'package:maxpay/view/update_pin/update_mpin_otp_screen.dart';
 import 'package:maxpay/view/update_pin/verify_pin_screen.dart';
 import 'package:maxpay/view/wallet-credit/wallet_credit_screen.dart';
 import 'package:maxpay/view/web_login/web_login_otp_screen.dart';
 import 'package:maxpay/view/web_login/web_login_screen.dart';
 import 'package:maxpay/view/web_login/web_login_success_screen.dart';
 
-import '../../view/report/apipayoutdetail/api_payouta-detail_screen.dart';
+import '../../view/report/apipayoutdetail/api_payout_detail_screen.dart';
 import '../../view/report/onlinetransaction/online_transaction_screen.dart';
 import '../../view/report/paymentrequest/payment_request_screen.dart';
-import '../../view/report/payoutrequest/payout_request_screen.dart';
-import '../../view/report/regChargeCredit/regChargeCreditScreen.dart';
-import '../../view/settings/bulkPackage/BulkPackageChangeScreen.dart';
-import '../../view/settings/bulkPackage/bulkPackageChargeScreen.dart';
+import '../../view/report/regChargeCredit/reg_charge_credit_screen.dart';
+import 'package:maxpay/view/request/walletrequestpending/wallet_request_pending_screen.dart';
+import '../../view/settings/bulkPackage/bulk_package_change_screen.dart';
+import '../../view/settings/bulkPackage/bulk_package_charge_screen.dart';
 import '../../view/settings/profile_set/profile_screen.dart';
-import '../../view/settings/scan/scanwebLoginScreen.dart';
+import '../../view/settings/scan/scan_web_login_screen.dart';
 import '../../view/transfer&details/autotransfer/autotransferscreen.dart';
 import '../../view/transfer&details/daybook/day_book_screen.dart';
 import '../../view/transfer&details/executive/create_executive.dart';
@@ -75,9 +78,9 @@ import '../../view/transfer&details/executive/ex_viewdetails_screen.dart';
 import '../../view/transfer&details/executive/executive_screen.dart';
 import '../../view/transfer&details/lowwallet/low_wallet_screen.dart';
 import '../../view/transfer&details/outstanding/outstanding_screen.dart';
-import '../../view/transfer&details/payoutDetails/payoutDetailScreen.dart';
-import '../../view/transfer&details/payoutStatus/payoutStatusScreen.dart';
-import '../../view/transfer&details/retailers/RetailerScreen.dart';
+import '../../view/transfer&details/payoutDetails/payout_detail_screen.dart';
+import '../../view/transfer&details/payoutStatus/payout_status_screen.dart';
+import '../../view/transfer&details/retailers/retailer_screen.dart';
 import '../../view/transfer&details/retailers/addwalletscreen.dart';
 import '../../view/transfer&details/retailers/create_retailer.dart';
 import '../../view/transfer&details/retailers/viewdetailscreen.dart';
@@ -135,8 +138,7 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(),
-
+          () => HomePageController(sl(), sl()),
           fenix: true,
         );
       }),
@@ -194,6 +196,7 @@ class AppPages {
             sl<GetExecutivesUseCase>(),
             sl<GetExecutiveDetailUseCase>(),
             sl<GetExecutiveCommissionPackagesUseCase>(),
+            sl(),
             sl(),
             sl(),
             sl(),
@@ -258,7 +261,13 @@ class AppPages {
     GetPage(name: AppRoutes.prepaid, page: () => const MobileRechargePage()),
     GetPage(name: AppRoutes.menu, page: () => const MenuScreen()),
     GetPage(name: AppRoutes.dth, page: () => const DTHRechargePage()),
-    GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreen()),
+    GetPage(
+      name: AppRoutes.requestWallet,
+      page: () => const WalletRequestPendingScreen(),
+    ),
+    GetPage(name: AppRoutes.requestWallet, page: () => const AddWalletScreen()),
+
+    GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreenMain()),
     GetPage(name: AppRoutes.veirfypin, page: () => const VerifyPinPage()),
     GetPage(
       name: AppRoutes.transaction,
@@ -268,24 +277,20 @@ class AppPages {
         return TransactionScreen(status: status ?? TransactionStatus.success);
       },
       binding: BindingsBuilder(() {
-        Get.lazyPut(() => TransactionController(
-          sl<GetTransactionProductsUseCase>(),
-          sl<GetTransactionReportUseCase>(),
-          sl<GetTransactionDetailUseCase>(),
-        ));
+        Get.lazyPut(
+          () => TransactionController(
+            sl<GetTransactionProductsUseCase>(),
+            sl<GetTransactionReportUseCase>(),
+            sl<GetTransactionDetailUseCase>(),
+            sl(),
+          ),
+        );
       }),
     ),
     GetPage(name: AppRoutes.statement, page: () => const StatementScreen()),
     GetPage(
       name: AppRoutes.statementReadMore,
-      page: () {
-        final arguments = Get.arguments;
-        final details = arguments is Map
-            ? arguments.map((key, value) => MapEntry('$key', '$value'))
-            : null;
-
-        return StatementReadMoreScreen(details: details);
-      },
+      page: () => StatementReadMoreScreen(),
     ),
     GetPage(name: AppRoutes.outstanding, page: () => const OutstandingScreen()),
     GetPage(name: AppRoutes.dayBook, page: () => const DayBookScreen()),
@@ -300,6 +305,10 @@ class AppPages {
       page: () => const WalletBalanceScreen(),
     ),
     GetPage(name: AppRoutes.update, page: () => const UpdatePinPage()),
+    GetPage(
+      name: AppRoutes.updateMpinOtp,
+      page: () => const UpdateMpinOtpPage(),
+    ),
     //
     GetPage(
       name: AppRoutes.bulkPackageCharge,

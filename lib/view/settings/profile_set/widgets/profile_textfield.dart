@@ -21,8 +21,6 @@ class ProfileTextField extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bool isAddressField =
-    title.toLowerCase().contains('address');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

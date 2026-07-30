@@ -2,32 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
+import 'package:get/get.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/controller/statement_read_more_controller.dart';
 
 class StatementReadMoreScreen extends StatelessWidget {
-  const StatementReadMoreScreen({super.key, this.details});
+  StatementReadMoreScreen({super.key});
 
-  final Map<String, String>? details;
-
-  Map<String, String> get _data {
-    return {
-      'product': 'Jio',
-      'description': 'Cashback',
-      'dateTime': '11.04.2026 14:32:43',
-      'transactionId': 'TNX46468745',
-      'transactionNo': '9876543120',
-      'openingBalance': '\u{20B9}400.00',
-      'credit': '\u{20B9}5.00',
-      'debit': '0',
-      'closingBalance': '\u{20B9}395.00',
-      ...?details,
-    };
-  }
+  final StatementReadMoreController controller = Get.put(sl<StatementReadMoreController>());
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final data = _data;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -45,62 +32,78 @@ class StatementReadMoreScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(31.w, 24.h, 31.w, 24.h),
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 13.h),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkplceholder : AppColors.background,
-              borderRadius: BorderRadius.circular(7.r),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.08),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final data = controller.statementDetail.value;
+          if (data == null) {
+            return Center(
+              child: Text(
+                "Statement detail not found.",
+                style: TextStyle(color: theme.colorScheme.onSurface),
+              ),
+            );
+          }
+
+          return Padding(
+            padding: EdgeInsets.fromLTRB(31.w, 24.h, 31.w, 24.h),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 13.h),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkplceholder : AppColors.background,
+                borderRadius: BorderRadius.circular(7.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.08),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _DetailRow(
+                    label: 'Product',
+                    value: data.product ?? 'N/A',
+                    trailing: _ProductBadge(text: data.product ?? 'N/A'),
+                  ),
+                  _DetailRow(label: 'Description', value: data.description ?? 'N/A'),
+                  _DetailRow(label: 'Date & Time', value: data.dateTime ?? 'N/A'),
+                  _DetailRow(
+                    label: 'Transaction ID',
+                    value: data.transactionId ?? 'N/A',
+                  ),
+                  _DetailRow(
+                    label: 'Transaction no',
+                    value: data.transactionNo ?? 'N/A',
+                  ),
+                  _DetailRow(
+                    label: 'Opening Balance',
+                    value: "\u{20B9}${data.openingBalance ?? '0.00'}",
+                  ),
+                  _DetailRow(
+                    label: 'Credit',
+                    value: "\u{20B9}${data.credit ?? '0.00'}",
+                    valueColor: const Color(0xFF00B050),
+                  ),
+                  _DetailRow(
+                    label: 'Debit',
+                    value: "\u{20B9}${data.debit ?? '0.00'}",
+                    valueColor: Colors.red,
+                  ),
+                  _DetailRow(
+                    label: 'Closing Balance',
+                    value: "\u{20B9}${data.closingBalance ?? '0.00'}",
+                  ),
+                ],
+              ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _DetailRow(
-                  label: 'Product',
-                  value: data['product']!,
-                  trailing: _ProductBadge(text: data['product']!),
-                ),
-                _DetailRow(label: 'Description', value: data['description']!),
-                _DetailRow(label: 'Date & Time', value: data['dateTime']!),
-                _DetailRow(
-                  label: 'Transaction ID',
-                  value: data['transactionId']!,
-                ),
-                _DetailRow(
-                  label: 'Transaction no',
-                  value: data['transactionNo']!,
-                ),
-                _DetailRow(
-                  label: 'Opening Balance',
-                  value: data['openingBalance']!,
-                ),
-                _DetailRow(
-                  label: 'Credit',
-                  value: data['credit']!,
-                  valueColor: const Color(0xFF00B050),
-                ),
-                _DetailRow(
-                  label: 'Debit',
-                  value: data['debit']!,
-                  valueColor: Colors.red,
-                ),
-                _DetailRow(
-                  label: 'Closing Balance',
-                  value: data['closingBalance']!,
-                ),
-              ],
-            ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
@@ -172,7 +175,7 @@ class _ProductBadge extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Text(
-        text,
+        text.isNotEmpty ? text[0].toUpperCase() : '?',
         style: TextHelper.max1.copyWith(
           color: Colors.white,
           fontSize: 12.sp,

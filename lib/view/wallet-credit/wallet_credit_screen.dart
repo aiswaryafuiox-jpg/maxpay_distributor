@@ -85,57 +85,6 @@ class WalletCreditScreen extends StatelessWidget {
 }
 
 /// 🔹 Date Field
-class _DateField extends StatelessWidget {
-  final String hint;
-  final TextStyle? style;
-
-  const _DateField({
-    required this.hint,
-  }) : style = null;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 10,
-        ),
-
-        decoration: BoxDecoration(
-          color: theme.brightness == Brightness.light
-              ? Colors.white
-              : theme.colorScheme.surface,
-
-          borderRadius: BorderRadius.circular(7),
-
-          border: Border.all(
-            color: theme.brightness == Brightness.light
-                ? const Color(0xFFB5D4F4)
-                : theme.colorScheme.outline,
-          ),
-        ),
-
-        child: Text(
-          hint,
-
-          style: style?.copyWith(
-                color:
-                    theme.colorScheme.onSurfaceVariant,
-              ) ??
-              TextStyle(
-                fontSize: 13,
-                color:
-                    theme.colorScheme.onSurfaceVariant,
-              ),
-        ),
-      ),
-    );
-  }
-}
-
 
 /// 🔹 Wallet Credit Card
 class _WalletCreditCard extends StatelessWidget {

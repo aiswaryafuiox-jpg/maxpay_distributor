@@ -6,9 +6,9 @@ import 'package:maxpay/data/model/transaction/transaction_report_response_model.
 import 'package:get/get.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
 
-class TransactionCard extends StatelessWidget {
-  static bool _isDisputeDialogOpen = false;
+bool _isDisputeDialogOpen = false;
 
+class TransactionCard extends StatelessWidget {
   final TransactionReportItem item;
   final Color bgColor;
   final TransactionStatus status;
@@ -200,7 +200,9 @@ class TransactionCard extends StatelessWidget {
                       text: "Dispute",
                       color: Colors.red,
                       onTap: () {
-                        // _showDisputeDialog(context); // Optional
+                        if (item.id != null) {
+                          _showDisputeDialog(context, item.id.toString());
+                        }
                       },
                       isCompact: true,
                     ),
@@ -265,7 +267,7 @@ class TransactionCard extends StatelessWidget {
     );
   }
 
-  Future<void> _showDisputeDialog(BuildContext context) async {
+  Future<void> _showDisputeDialog(BuildContext context, String txnId) async {
     if (_isDisputeDialogOpen || !context.mounted) {
       return;
     }
@@ -277,7 +279,7 @@ class TransactionCard extends StatelessWidget {
         context: context,
         useRootNavigator: true,
         barrierColor: Colors.black.withValues(alpha: 0.35),
-        builder: (_) => const _DisputeDialog(),
+        builder: (_) => _DisputeDialog(txnId: txnId),
       );
     } finally {
       _isDisputeDialogOpen = false;
@@ -286,7 +288,8 @@ class TransactionCard extends StatelessWidget {
 }
 
 class _DisputeDialog extends StatefulWidget {
-  const _DisputeDialog();
+  final String txnId;
+  const _DisputeDialog({required this.txnId});
 
   @override
   State<_DisputeDialog> createState() => _DisputeDialogState();
@@ -449,6 +452,25 @@ class _DisputeDialogState extends State<_DisputeDialog> {
             Center(
               child: GestureDetector(
                 onTap: () {
+                  final subject = _selectedIssue ?? 'Other';
+                  final description = _remarksController.text.trim();
+                  
+                  if (description.isEmpty) {
+                    Get.snackbar(
+                      "Required",
+                      "Please enter a description for the dispute",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.orange,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  Get.find<TransactionController>().submitDispute(
+                    widget.txnId, 
+                    subject, 
+                    description,
+                  );
                   Navigator.of(context, rootNavigator: true).pop();
                 },
                 child: Container(
