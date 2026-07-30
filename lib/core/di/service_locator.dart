@@ -411,7 +411,6 @@ Future<void> init() async {
   );
   sl.registerFactory(() => TransactionController(sl(), sl(), sl(), sl()));
 
-
   // CashBack
   sl.registerLazySingleton<CashBackRepository>(() => CashBackRepoImpl(sl()));
   sl.registerLazySingleton<GetCashBackProductTypesUseCase>(
@@ -501,8 +500,10 @@ Future<void> init() async {
 
   // Login
   sl.registerLazySingleton<UpdatePinUseCase>(() => UpdatePinUseCase(sl()));
-  sl.registerLazySingleton<SendUpdateMpinOtpUseCase>(() => SendUpdateMpinOtpUseCase(sl()));
-  
+  sl.registerLazySingleton<SendUpdateMpinOtpUseCase>(
+    () => SendUpdateMpinOtpUseCase(sl()),
+  );
+
   sl.registerFactory(
     () => LoginController(
       loginUseCase: sl(),
@@ -514,10 +515,12 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => UpdatePinController(
-    updatePinUseCase: sl(),
-    sendUpdateMpinOtpUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => UpdatePinController(
+      updatePinUseCase: sl(),
+      sendUpdateMpinOtpUseCase: sl(),
+    ),
+  );
 
   // Low Wallet
   sl.registerLazySingleton<GetLowWalletRetailersUseCase>(
@@ -569,7 +572,7 @@ Future<void> init() async {
   sl.registerLazySingleton<GetTransferDetailListUseCase>(
     () => GetTransferDetailListUseCase(sl()),
   );
-  sl.registerFactory(() => TransferDetailController(sl(), sl()));
+  sl.registerFactory(() => TransferDetailController(sl(), sl(), sl()));
 
   // Wallet
   sl.registerLazySingleton<WalletCreditListRepository>(
@@ -633,12 +636,9 @@ Future<void> init() async {
   sl.registerLazySingleton<WebLoginRepository>(
     () => WebLoginRepositoryImpl(apiService: sl()),
   );
-  sl.registerLazySingleton<WebLoginUseCase>(
-    () => WebLoginUseCase(sl()),
-  );
-  sl.registerLazySingleton<WebLogoutUseCase>(
-    () => WebLogoutUseCase(sl()),
-  );
+  sl.registerLazySingleton<WebLoginUseCase>(() => WebLoginUseCase(sl()));
+  sl.registerLazySingleton<WebLogoutUseCase>(() => WebLogoutUseCase(sl()));
   sl.registerFactory(
-      () => WebLoginController(webLoginUseCase: sl(), webLogoutUseCase: sl()));
+    () => WebLoginController(webLoginUseCase: sl(), webLogoutUseCase: sl()),
+  );
 }
