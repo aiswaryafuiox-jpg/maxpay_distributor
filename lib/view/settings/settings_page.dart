@@ -11,6 +11,7 @@ import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
+import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -381,7 +382,12 @@ class _SettingsPageState extends State<SettingsPage> {
                               context,
                               'Web Logout',
                               AssetImages.weblogout,
-                              () {},
+                              () {
+                                final webLoginController = Get.put(
+                                  sl<WebLoginController>(),
+                                );
+                                webLoginController.webLogout();
+                              },
                               true,
                             ),
                           ),
