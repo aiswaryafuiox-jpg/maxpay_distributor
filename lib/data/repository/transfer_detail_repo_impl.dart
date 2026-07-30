@@ -6,7 +6,10 @@ import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/transfer_detail_list_model.dart';
+import 'package:maxpay/data/model/wallet_credit_type_model.dart';
+import 'package:maxpay/data/model/reverse_wallet_transfer_model.dart';
 import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
+import 'package:maxpay/domain/repository/wallet_credit_type_repository.dart';
 
 class TransferDetailRepositoryImpl implements TransferDetailRepository {
   final ApiService apiService;
@@ -52,6 +55,40 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
 
       final model = TransferDetailListModel.fromJson(response);
       return Right(model);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReverseWalletTransferModel>> reverseWalletTransfer(String id) async {
+    try {
+      final formData = dio.FormData.fromMap({
+        'id': id,
+      });
+
+      final response = await apiService.post(
+        ApiRoutes.distributorReverseWalletTransfer,
+        data: formData,
+      );
+
+      final model = ReverseWalletTransferModel.fromJson(response);
+      
+      if (model.code == 200 || model.code == 201) {
+        if (model.success == true) {
+          return Right(model);
+        } else {
+          return Left(ServerFailure(model.message ?? 'Unknown server error'));
+        }
+      } else {
+        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+      }
+    } on dio.DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final message = e.response!.data['message'] ?? 'Server error';
+        return Left(ServerFailure(message));
+      }
+      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
