@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/controller/home_controller.dart';
 
 class NewsTicker extends StatefulWidget {
   const NewsTicker({super.key});
@@ -65,9 +67,7 @@ class _NewsTickerState extends State<NewsTicker> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-
-    const newsText =
-        'LOREM IPSUM IS SIMPLY DUMMY TEXT OF THE PRINTING AND TYPESETTING INDUSTRY. STAY TUNED FOR MORE UPDATES!';
+    final controller = Get.find<HomePageController>();
 
     return Container(
       height: 50.h,
@@ -117,29 +117,34 @@ class _NewsTickerState extends State<NewsTicker> {
                 physics: const NeverScrollableScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  child: Row(
-                    children: [
-                      Text(
-                        newsText,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.sp,
-                          color: colorScheme.onSurface,
+                  child: Obx(() {
+                    final newsText = controller.newsText.value.isEmpty 
+                        ? 'Loading news...' 
+                        : controller.newsText.value;
+                    return Row(
+                      children: [
+                        Text(
+                          newsText,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.sp,
+                            color: colorScheme.onSurface,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 50.w), // Gap before repeat
-                      Text(
-                        newsText, // Duplicate for seamless feel
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.sp,
-                          color: colorScheme.onSurface,
+                        SizedBox(width: 50.w), // Gap before repeat
+                        Text(
+                          newsText, // Duplicate for seamless feel
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.sp,
+                            color: colorScheme.onSurface,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                 ),
               ),
             ),

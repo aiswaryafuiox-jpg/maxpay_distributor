@@ -12,12 +12,15 @@ class TodayTransactionRepositoryImpl implements TodayTransactionRepository {
   TodayTransactionRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, TodayTransactionModel>> getTodayTransactionAmount() async {
+  Future<Either<Failure, TodayTransactionModel>>
+  getTodayTransactionAmount() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorTodayTransactionAmount);
-      
+      final response = await _apiService.get(
+        ApiRoutes.distributorTodayTransactionAmount,
+      );
+
       debugPrint("Today Transaction Amount API Response: $response");
-      
+
       final model = TodayTransactionModel.fromJson(response);
       return Right(model);
     } catch (e) {

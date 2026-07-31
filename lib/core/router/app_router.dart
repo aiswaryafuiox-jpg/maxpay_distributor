@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/controller/banner_controller.dart';
+import 'package:maxpay/controller/graph_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
 import 'package:maxpay/core/bindings/initial_binding.dart';
@@ -138,7 +140,15 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(sl(), sl()),
+          () => HomePageController(sl(), sl(), sl()),
+          fenix: true,
+        );
+        Get.lazyPut<BannerController>(
+          () => BannerController(sl()),
+          fenix: true,
+        );
+        Get.lazyPut<GraphController>(
+          () => GraphController(sl()),
           fenix: true,
         );
       }),
@@ -265,10 +275,13 @@ class AppPages {
       name: AppRoutes.requestWallet,
       page: () => const WalletRequestPendingScreen(),
     ),
-    GetPage(name: AppRoutes.requestWallet, page: () => const AddWalletScreen()),
+    GetPage(
+      name: AppRoutes.dueAmountAddwallet,
+      page: () => const AddWalletScreen(),
+    ),
 
     GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreenMain()),
-    GetPage(name: AppRoutes.veirfypin, page: () => const VerifyPinPage()),
+    GetPage(name: AppRoutes.veirfypin, page: () => const PinCodeEnterPage()),
     GetPage(
       name: AppRoutes.transaction,
       page: () {

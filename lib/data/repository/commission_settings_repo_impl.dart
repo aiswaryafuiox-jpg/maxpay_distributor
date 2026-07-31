@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -13,25 +14,34 @@ class CommissionSettingsRepoImpl implements CommissionSettingsRepository {
   CommissionSettingsRepoImpl(this._apiService);
 
   @override
-  Future<Either<Failure, CommissionSettingsModel>> getCommissionSettings() async {
+  Future<Either<Failure, CommissionSettingsModel>>
+  getCommissionSettings() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorCommissionSettings);
+      final response = await _apiService.get(
+        ApiRoutes.distributorCommissionSettings,
+      );
       final model = CommissionSettingsModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch commission settings."));
+        return Left(
+          ServerFailure(
+            model.message ?? "Failed to fetch commission settings.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> updatePackageStatus({required int id, required String type, required String status}) async {
+  Future<Either<Failure, String>> updatePackageStatus({
+    required int id,
+    required String type,
+    required String status,
+  }) async {
     try {
       final formData = FormData.fromMap({
         'id': id,
@@ -45,23 +55,27 @@ class CommissionSettingsRepoImpl implements CommissionSettingsRepository {
       );
 
       if (response['success'] == true) {
-        return Right(response['message'] ?? 'Package status updated successfully');
+        return Right(
+          response['message'] ?? 'Package status updated successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? "Failed to update package status."));
+        return Left(
+          ServerFailure(
+            response['message'] ?? "Failed to update package status.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> resetPackageCommission({required int id}) async {
+  Future<Either<Failure, String>> resetPackageCommission({
+    required int id,
+  }) async {
     try {
-      final formData = FormData.fromMap({
-        'id': id,
-      });
+      final formData = FormData.fromMap({'id': id});
 
       final response = await _apiService.post(
         ApiRoutes.distributorResetPackageCommission,
@@ -69,37 +83,49 @@ class CommissionSettingsRepoImpl implements CommissionSettingsRepository {
       );
 
       if (response['success'] == true) {
-        return Right(response['message'] ?? 'Package commission reset successfully');
+        return Right(
+          response['message'] ?? 'Package commission reset successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? "Failed to reset package commission."));
+        return Left(
+          ServerFailure(
+            response['message'] ?? "Failed to reset package commission.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, BulkPackageOptionsModel>> getBulkPackageOptions() async {
+  Future<Either<Failure, BulkPackageOptionsModel>>
+  getBulkPackageOptions() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorBulkPackageOptions);
+      final response = await _apiService.get(
+        ApiRoutes.distributorBulkPackageOptions,
+      );
       final model = BulkPackageOptionsModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch bulk package options."));
+        return Left(
+          ServerFailure(
+            model.message ?? "Failed to fetch bulk package options.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> bulkPackageCharge({required int packageId, required String userType}) async {
+  Future<Either<Failure, String>> bulkPackageCharge({
+    required int packageId,
+    required String userType,
+  }) async {
     try {
       final formData = FormData.fromMap({
         'package_id': packageId,
@@ -112,19 +138,26 @@ class CommissionSettingsRepoImpl implements CommissionSettingsRepository {
       );
 
       if (response['success'] == true) {
-        return Right(response['message'] ?? 'Bulk package charge applied successfully');
+        return Right(
+          response['message'] ?? 'Bulk package charge applied successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? "Failed to apply bulk package charge."));
+        return Left(
+          ServerFailure(
+            response['message'] ?? "Failed to apply bulk package charge.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> bulkPackageChange({required int packageId, required String status}) async {
+  Future<Either<Failure, String>> bulkPackageChange({
+    required int packageId,
+    required String status,
+  }) async {
     try {
       final formData = FormData.fromMap({
         'package_id': packageId,
@@ -137,14 +170,18 @@ class CommissionSettingsRepoImpl implements CommissionSettingsRepository {
       );
 
       if (response['success'] == true) {
-        return Right(response['message'] ?? 'Bulk package change applied successfully');
+        return Right(
+          response['message'] ?? 'Bulk package change applied successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? "Failed to apply bulk package change."));
+        return Left(
+          ServerFailure(
+            response['message'] ?? "Failed to apply bulk package change.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

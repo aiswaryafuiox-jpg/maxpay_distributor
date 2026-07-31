@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
@@ -15,7 +16,9 @@ class OutstandingRepoImpl implements OutstandingRepository {
   @override
   Future<Either<Failure, OutstandingListModel>> getOutstandingList() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorOutstandingList);
+      final response = await _apiService.get(
+        ApiRoutes.distributorOutstandingList,
+      );
       final model = OutstandingListModel.fromJson(response);
       if (model.code == 200 || model.code == 201) {
         if (model.success == true) {
@@ -24,21 +27,20 @@ class OutstandingRepoImpl implements OutstandingRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, UpdateOutstandingModel>> updateOutstanding(int retailerId, String receivedAmount) async {
+  Future<Either<Failure, UpdateOutstandingModel>> updateOutstanding(
+    int retailerId,
+    String receivedAmount,
+  ) async {
     try {
       final formData = FormData.fromMap({
         "retailer_id": retailerId,
@@ -56,16 +58,12 @@ class OutstandingRepoImpl implements OutstandingRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

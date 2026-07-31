@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/model/executive/executive_add_wallet_details_response_model.dart';
@@ -31,14 +32,8 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -65,14 +60,8 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -96,14 +85,8 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -130,14 +113,8 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
       } else {
         return Left(ServerFailure('Server error: $code - $message'));
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -167,46 +144,41 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
           ServerFailure('Server error: ${result.code} - ${result.message}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> addExecutiveWallet(String id, String amount) async {
+  Future<Either<Failure, String>> addExecutiveWallet(
+    String id,
+    String amount,
+  ) async {
     try {
       final response = await _apiService.post(
         ApiRoutes.addExecutiveWallet,
         data: {'id': id, 'amount': amount},
       );
-      
+
       final success = response['success'] ?? false;
-      final message = response['message'] ?? (success ? 'Wallet added successfully' : 'Failed to add wallet');
-      
+      final message =
+          response['message'] ??
+          (success ? 'Wallet added successfully' : 'Failed to add wallet');
+
       if (success) {
         return Right(message);
       } else {
         return Left(ServerFailure(message));
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> createExecutive(Map<String, dynamic> data) async {
+  Future<Either<Failure, String>> createExecutive(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final formData = FormData.fromMap(data);
       final response = await _apiService.post(
@@ -214,18 +186,19 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
         data: formData,
       );
 
-      if (response['code'] == 200 || response['status'] == true || response['success'] == true) {
-        return Right(response['message']?.toString() ?? 'Executive created successfully');
+      if (response['code'] == 200 ||
+          response['status'] == true ||
+          response['success'] == true) {
+        return Right(
+          response['message']?.toString() ?? 'Executive created successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? 'Failed to create executive'));
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to create executive'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

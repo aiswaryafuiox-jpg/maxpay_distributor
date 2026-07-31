@@ -373,7 +373,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               context,
                               'App Logout',
                               AssetImages.applogout,
-                              () {},
+                              () async {
+                                await Get.find<LoginController>().logout();
+                              },
                             ),
                           ),
                           SizedBox(width: 15.w),

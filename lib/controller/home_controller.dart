@@ -5,24 +5,27 @@ import 'package:maxpay/data/model/home_card_model.dart';
 import 'package:maxpay/data/model/today_transaction_model.dart';
 import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
-
+import 'package:maxpay/domain/usecase/home/get_news_usecase.dart';
 
 class HomePageController extends GetxController {
   final GetHomeCardUseCase getHomeCardUseCase;
   final GetTodayTransactionAmountUseCase getTodayTransactionAmountUseCase;
+  final GetNewsUseCase getNewsUseCase;
 
-  HomePageController(this.getHomeCardUseCase, this.getTodayTransactionAmountUseCase);
+  HomePageController(this.getHomeCardUseCase, this.getTodayTransactionAmountUseCase, this.getNewsUseCase);
 
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
   Rx<HomeCardData?> homeCardData = Rx<HomeCardData?>(null);
   Rx<TodayTransactionData?> todayTransactionData = Rx<TodayTransactionData?>(null);
+  RxString newsText = "".obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchHomeCardData();
     fetchTodayTransactionAmount();
+    fetchNews();
   }
 
   Future<void> fetchHomeCardData() async {
@@ -58,6 +61,33 @@ class HomePageController extends GetxController {
       (data) {
         if (data.data != null) {
           todayTransactionData.value = data.data;
+        }
+      },
+    );
+  }
+
+  Future<void> fetchNews() async {
+    final result = await getNewsUseCase.call();
+    result.fold(
+      (failure) {
+        AppLogger.logError("Failed to fetch news: ${failure.message}");
+        newsText.value = "No news";
+      },
+      (data) {
+        if (data.data != null && data.data!.isNotEmpty) {
+          final List<String> messages = [];
+          for (var item in data.data!) {
+            if (item.message != null && item.message!.isNotEmpty) {
+              messages.add(item.message!);
+            }
+          }
+          if (messages.isNotEmpty) {
+            newsText.value = messages.join(" • ");
+          } else {
+            newsText.value = "No news";
+          }
+        } else {
+          newsText.value = "No news";
         }
       },
     );

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 
 import '../../core/constants/api_routes.dart';
@@ -18,7 +19,9 @@ class LoginRepositoryImpl implements LoginRepository {
   LoginRepositoryImpl(this.apiService);
 
   @override
-  Future<Either<Failure, LoginSendOtpResponseModel>> sendOtp(String mobile) async {
+  Future<Either<Failure, LoginSendOtpResponseModel>> sendOtp(
+    String mobile,
+  ) async {
     try {
       final formData = FormData.fromMap({
         "country_code": "+91",
@@ -31,20 +34,18 @@ class LoginRepositoryImpl implements LoginRepository {
       );
 
       return Right(LoginSendOtpResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, LoginVerifyOtpResponseModel>> verifyOtp(String mobile, String otp) async {
+  Future<Either<Failure, LoginVerifyOtpResponseModel>> verifyOtp(
+    String mobile,
+    String otp,
+  ) async {
     try {
-      final formData = FormData.fromMap({
-        "phone_number": mobile,
-        "otp": otp,
-      });
+      final formData = FormData.fromMap({"phone_number": mobile, "otp": otp});
 
       final response = await apiService.post(
         ApiRoutes.verifyOtp,
@@ -52,19 +53,15 @@ class LoginRepositoryImpl implements LoginRepository {
       );
 
       return Right(LoginVerifyOtpResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
   Future<Either<Failure, CreatePinResponseModel>> createPin(String pin) async {
     try {
-      final formData = FormData.fromMap({
-        "pin": pin,
-      });
+      final formData = FormData.fromMap({"pin": pin});
 
       final response = await apiService.post(
         ApiRoutes.createPin,
@@ -72,19 +69,15 @@ class LoginRepositoryImpl implements LoginRepository {
       );
 
       return Right(CreatePinResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
   Future<Either<Failure, VerifyPinResponseModel>> verifyPin(String pin) async {
     try {
-      final formData = FormData.fromMap({
-        "pin": pin,
-      });
+      final formData = FormData.fromMap({"pin": pin});
 
       final response = await apiService.post(
         ApiRoutes.verifyPin,
@@ -92,15 +85,15 @@ class LoginRepositoryImpl implements LoginRepository {
       );
 
       return Right(VerifyPinResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, UpdateFingerprintResponseModel>> updateFingerprint(int isFingerPrint) async {
+  Future<Either<Failure, UpdateFingerprintResponseModel>> updateFingerprint(
+    int isFingerPrint,
+  ) async {
     try {
       final formData = FormData.fromMap({
         "is_finger_print": isFingerPrint.toString(),
@@ -112,10 +105,8 @@ class LoginRepositoryImpl implements LoginRepository {
       );
 
       return Right(UpdateFingerprintResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -124,34 +115,35 @@ class LoginRepositoryImpl implements LoginRepository {
     try {
       final response = await apiService.post(ApiRoutes.logout);
       return Right(LogoutResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data?['message'] ?? e.message ?? "An error occurred"));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
   Future<Either<Failure, String>> sendUpdateMpinOtp() async {
     try {
-      final response = await apiService.post(ApiRoutes.distributorUpdateMpinSendOtp);
+      final response = await apiService.post(
+        ApiRoutes.distributorUpdateMpinSendOtp,
+      );
       if (response['code'] == 200 || response['status'] == true) {
-        return Right(response['message']?.toString() ?? 'OTP sent successfully');
+        return Right(
+          response['message']?.toString() ?? 'OTP sent successfully',
+        );
       } else {
         return Left(ServerFailure(response['message'] ?? 'Failed to send OTP'));
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, String>> updatePin(String otp, String newPin, String confirmPin) async {
+  Future<Either<Failure, String>> updatePin(
+    String otp,
+    String newPin,
+    String confirmPin,
+  ) async {
     try {
       final formData = FormData.fromMap({
         'otp': otp,
@@ -164,17 +156,16 @@ class LoginRepositoryImpl implements LoginRepository {
         data: formData,
       );
       if (response['code'] == 200 || response['status'] == true) {
-        return Right(response['message']?.toString() ?? 'PIN updated successfully');
+        return Right(
+          response['message']?.toString() ?? 'PIN updated successfully',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? 'Failed to update PIN'));
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to update PIN'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

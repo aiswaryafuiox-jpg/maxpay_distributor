@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -20,12 +21,12 @@ class KycRepoImpl implements KycRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch KYC details."));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch KYC details."),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -44,7 +45,9 @@ class KycRepoImpl implements KycRepository {
       };
 
       if (cancelledCheckPath != null) {
-        formDataMap['cancelled_check'] = await MultipartFile.fromFile(cancelledCheckPath);
+        formDataMap['cancelled_check'] = await MultipartFile.fromFile(
+          cancelledCheckPath,
+        );
       }
       if (gstNoPath != null) {
         formDataMap['gst_no'] = await MultipartFile.fromFile(gstNoPath);
@@ -67,10 +70,8 @@ class KycRepoImpl implements KycRepository {
       } else {
         return Left(ServerFailure(model.message ?? "Failed to submit KYC."));
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

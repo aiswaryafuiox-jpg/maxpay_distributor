@@ -6,6 +6,7 @@ import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/controller/banner_controller.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 
@@ -62,15 +63,42 @@ class MenuScreen extends StatelessWidget {
                     SizedBox(height: 16.h),
 
                     /// TOP BANNER
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16.r),
-                      child: Image.network(
-                        "https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1000",
+                    Obx(() {
+                      final controller = Get.find<BannerController>();
+                      final banners = controller.banners;
+                      if (banners.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+                      return SizedBox(
                         height: 150.h,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                        child: PageView.builder(
+                          controller: controller.pageController,
+                          itemCount: banners.length,
+                          onPageChanged: (index) {
+                            controller.currentIndex.value = index;
+                          },
+                          itemBuilder: (context, index) {
+                            final banner = banners[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 4.w),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16.r),
+                                child: Image.network(
+                                  banner.image ?? '',
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                        color: Colors.grey[300],
+                                        child: const Center(child: Icon(Icons.error)),
+                                      ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }),
 
                     SizedBox(height: 18.h),
 

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -25,17 +26,22 @@ class DayBookRepoImpl implements DayBookRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch day book products."));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch day book products."),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, DayBookListModel>> getDayBookList(String fromDate, String toDate, String productId, String search) async {
+  Future<Either<Failure, DayBookListModel>> getDayBookList(
+    String fromDate,
+    String toDate,
+    String productId,
+    String search,
+  ) async {
     try {
       final formData = FormData.fromMap({
         'from_date': fromDate,
@@ -54,21 +60,19 @@ class DayBookRepoImpl implements DayBookRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch day book list."));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch day book list."),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
   Future<Either<Failure, DayBookDeleteModel>> deleteDayBook(String id) async {
     try {
-      final formData = FormData.fromMap({
-        'id': id,
-      });
+      final formData = FormData.fromMap({'id': id});
 
       final response = await _apiService.post(
         ApiRoutes.distributorDayBookDelete,
@@ -80,12 +84,12 @@ class DayBookRepoImpl implements DayBookRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to delete day book."));
+        return Left(
+          ServerFailure(model.message ?? "Failed to delete day book."),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

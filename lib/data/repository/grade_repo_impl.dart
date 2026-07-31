@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
@@ -22,10 +22,8 @@ class GradeRepoImpl implements GradeRepository {
       } else {
         return Left(ServerFailure(model.message ?? "Failed to fetch grade."));
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

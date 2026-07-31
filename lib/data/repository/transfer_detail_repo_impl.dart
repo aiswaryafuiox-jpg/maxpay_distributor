@@ -10,7 +10,6 @@ import 'package:maxpay/data/model/transfer_detail_list_model.dart';
 import 'package:maxpay/data/model/reverse_wallet_transfer_model.dart';
 import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
 
-
 class TransferDetailRepositoryImpl implements TransferDetailRepository {
   final ApiService apiService;
 
@@ -19,9 +18,7 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
   @override
   Future<Either<Failure, TransferDetailModel>> getTransferDetails() async {
     try {
-      final response = await apiService.get(
-        ApiRoutes.distributorTransferTypes,
-      );
+      final response = await apiService.get(ApiRoutes.distributorTransferTypes);
 
       debugPrint("API Response => $response");
 
@@ -34,12 +31,17 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
       return Right(model);
     } catch (e) {
       debugPrint(e.toString());
-      return Left(ServerFailure( e.toString()));
+      return Left(ServerFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, TransferDetailListModel>> getTransferDetailList(String type, String fromDate, String toDate, String search) async {
+  Future<Either<Failure, TransferDetailListModel>> getTransferDetailList(
+    String type,
+    String fromDate,
+    String toDate,
+    String search,
+  ) async {
     try {
       final formData = dio.FormData.fromMap({
         'type': type,
@@ -61,11 +63,11 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
   }
 
   @override
-  Future<Either<Failure, ReverseWalletTransferModel>> reverseWalletTransfer(String id) async {
+  Future<Either<Failure, ReverseWalletTransferModel>> reverseWalletTransfer(
+    String id,
+  ) async {
     try {
-      final formData = dio.FormData.fromMap({
-        'id': id,
-      });
+      final formData = dio.FormData.fromMap({'id': id});
 
       final response = await apiService.post(
         ApiRoutes.distributorReverseWalletTransfer,
@@ -73,7 +75,7 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
       );
 
       final model = ReverseWalletTransferModel.fromJson(response);
-      
+
       if (model.code == 200 || model.code == 201) {
         if (model.success == true) {
           return Right(model);
@@ -81,7 +83,9 @@ class TransferDetailRepositoryImpl implements TransferDetailRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
     } on dio.DioException catch (e) {
       if (e.response != null && e.response!.data is Map<String, dynamic>) {

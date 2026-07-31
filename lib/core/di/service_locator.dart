@@ -22,6 +22,8 @@ import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
+import '../../controller/banner_controller.dart';
+import '../../controller/graph_controller.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
@@ -150,6 +152,15 @@ import '../../domain/repository/transaction_repository.dart';
 import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_detail_usecase.dart';
+import '../../domain/repository/news_repo.dart';
+import '../../data/repository/news_repo_impl.dart';
+import '../../domain/usecase/home/get_news_usecase.dart';
+import '../../domain/repository/banner_repo.dart';
+import '../../data/repository/banner_repo_impl.dart';
+import '../../domain/usecase/home/get_banner_usecase.dart';
+import '../../domain/repository/graph_repo.dart';
+import '../../data/repository/graph_repo_impl.dart';
+import '../../domain/usecase/home/get_graph_usecase.dart';
 
 // SharedPreferences
 
@@ -238,10 +249,16 @@ Future<void> init() async {
 
   /// Retailer Repository
   sl.registerLazySingleton<RetailerRepository>(
-    () => RetailerRepositoryImpl(sl<ApiService>()),
+    () => RetailerRepositoryImpl(sl()),
   );
 
-  // Transfer Detail Repository
+  sl.registerLazySingleton<NewsRepository>(() => NewsRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<BannerRepository>(() => BannerRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<GraphRepository>(() => GraphRepositoryImpl(sl()));
+
+  /// 🔹 USE CASESTransfer Detail Repository
   sl.registerLazySingleton<TransferDetailRepository>(
     () => TransferDetailRepositoryImpl(sl<ApiService>()),
   );
@@ -454,6 +471,9 @@ Future<void> init() async {
 
   // KYC
   sl.registerLazySingleton<KycRepository>(() => KycRepoImpl(sl()));
+  sl.registerLazySingleton(() => GetNewsUseCase(sl()));
+  sl.registerLazySingleton(() => GetBannerUseCase(sl()));
+  sl.registerLazySingleton(() => GetGraphUseCase(sl()));
   sl.registerLazySingleton<GetKycUseCase>(() => GetKycUseCase(sl()));
   sl.registerLazySingleton<SubmitKycUseCase>(() => SubmitKycUseCase(sl()));
   sl.registerFactory(() => KycController(sl(), sl()));
@@ -496,7 +516,9 @@ Future<void> init() async {
   );
 
   // Home Page
-  sl.registerFactory(() => HomePageController(sl(), sl()));
+  sl.registerFactory(() => HomePageController(sl(), sl(), sl()));
+  sl.registerFactory(() => BannerController(sl()));
+  sl.registerFactory(() => GraphController(sl()));
 
   // Login
   sl.registerLazySingleton<UpdatePinUseCase>(() => UpdatePinUseCase(sl()));

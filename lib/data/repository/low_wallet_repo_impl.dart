@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
 import '../../core/services/api_service.dart';
@@ -12,9 +12,12 @@ class LowWalletRepoImpl implements LowWalletRepository {
   LowWalletRepoImpl(this._apiService);
 
   @override
-  Future<Either<Failure, LowWalletRetailersModel>> getLowWalletRetailers() async {
+  Future<Either<Failure, LowWalletRetailersModel>>
+  getLowWalletRetailers() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorLowWalletRetailers);
+      final response = await _apiService.get(
+        ApiRoutes.distributorLowWalletRetailers,
+      );
       final model = LowWalletRetailersModel.fromJson(response);
       if (model.code == 200 || model.code == 201) {
         if (model.success == true) {
@@ -23,16 +26,12 @@ class LowWalletRepoImpl implements LowWalletRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }
