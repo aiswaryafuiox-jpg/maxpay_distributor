@@ -58,7 +58,7 @@ import 'package:maxpay/view/transaction_screens/view.dart';
 import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/update_pin/update_pin_screen.dart';
 import 'package:maxpay/view/update_pin/update_mpin_otp_screen.dart';
-import 'package:maxpay/view/update_pin/verify_pin_screen.dart';
+
 import 'package:maxpay/view/wallet-credit/wallet_credit_screen.dart';
 import 'package:maxpay/view/web_login/web_login_otp_screen.dart';
 import 'package:maxpay/view/web_login/web_login_screen.dart';

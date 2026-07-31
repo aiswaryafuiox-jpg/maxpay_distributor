@@ -1,7 +1,9 @@
 
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
+import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/data/model/home_card_model.dart';
+import 'package:maxpay/data/model/news_model.dart';
 import 'package:maxpay/data/model/today_transaction_model.dart';
 import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
@@ -16,9 +18,10 @@ class HomePageController extends GetxController {
 
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
+   final Rx<NewsModel?> news = Rx<NewsModel?>(null);
   Rx<HomeCardData?> homeCardData = Rx<HomeCardData?>(null);
   Rx<TodayTransactionData?> todayTransactionData = Rx<TodayTransactionData?>(null);
-  RxString newsText = "".obs;
+
 
   @override
   void onInit() {
@@ -66,31 +69,27 @@ class HomePageController extends GetxController {
     );
   }
 
-  Future<void> fetchNews() async {
-    final result = await getNewsUseCase.call();
-    result.fold(
-      (failure) {
-        AppLogger.logError("Failed to fetch news: ${failure.message}");
-        newsText.value = "No news";
-      },
-      (data) {
-        if (data.data != null && data.data!.isNotEmpty) {
-          final List<String> messages = [];
-          for (var item in data.data!) {
-            if (item.message != null && item.message!.isNotEmpty) {
-              messages.add(item.message!);
-            }
-          }
-          if (messages.isNotEmpty) {
-            newsText.value = messages.join(" • ");
-          } else {
-            newsText.value = "No news";
-          }
-        } else {
-          newsText.value = "No news";
-        }
-      },
-    );
+   Future<void> fetchNews() async {
+    try {
+      AppLogger.debugPrint("🚀 [API CALL START] fetchNews");
+      isLoading.value = true;
+
+      final result = await getNewsUseCase();
+
+      result.fold(
+        (failure) {
+          CustomToast.error(failure.message);
+        },
+        (data) {
+          AppLogger.debugPrint("✅ [API CALL SUCCESS] fetchNews");
+          news.value = data;
+        },
+      );
+    } catch (e) {
+      AppLogger.logError("🔥 [API CALL EXCEPTION] fetchNews error: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// Shared mutex so the FAQ popup and the generic popup message

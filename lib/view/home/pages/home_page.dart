@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/view/home/widgets/earnings_chart.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 import 'package:maxpay/view/home/widgets/news_ticker.dart';
@@ -45,23 +48,28 @@ class HomePageScreen extends StatelessWidget {
                     /// 🔹 DASHBOARD GRID
                     Obx(() {
                       final data = controller.homeCardData.value;
-                      
+
                       final successAmt = data?.success?.amount ?? 0;
                       final successCount = data?.success?.count ?? 0;
-                      final successStr = '₹$successAmt /\n$successCount Nos';
+                      final successStr =
+                          '${(successAmt as num).currencyIndian} /\n$successCount Nos';
 
                       final processingAmt = data?.processing?.amount ?? 0;
                       final processingCount = data?.processing?.count ?? 0;
-                      final processingStr = '₹$processingAmt /\n$processingCount Nos';
+                      final processingStr =
+                          '${(processingAmt as num).currencyIndian} /\n$processingCount Nos';
 
                       final failedAmt = data?.failed?.amount ?? 0;
                       final failedCount = data?.failed?.count ?? 0;
-                      final failedStr = '₹$failedAmt /\n$failedCount Nos';
+                      final failedStr =
+                          '${(failedAmt as num).currencyIndian} /\n$failedCount Nos';
 
                       final todayData = controller.todayTransactionData.value;
                       final todayCredit = todayData?.todaysCredit?.amount ?? 0;
-                      final todayTransfer = todayData?.todaysTransfer?.amount ?? 0;
-                      final todayEarnings = todayData?.todaysReverse?.amount ?? 0;
+                      final todayTransfer =
+                          todayData?.todaysTransfer?.amount ?? 0;
+                      final todayEarnings =
+                          todayData?.todaysReverse?.amount ?? 0;
 
                       return GridView.count(
                         crossAxisCount: 3,
@@ -70,6 +78,7 @@ class HomePageScreen extends StatelessWidget {
                         mainAxisSpacing: 10.h,
                         crossAxisSpacing: 10.w,
                         padding: EdgeInsets.all(4.w),
+                        mainAxisExtent: 110.h,
                         childAspectRatio: 0.9,
                         children: [
                           StatCard(
@@ -90,7 +99,9 @@ class HomePageScreen extends StatelessWidget {
                             },
                             title: 'Wallet Balance',
                             bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                            value: '₹25500.00',
+                            value: Get.put(
+                              AddWalletController(sl(), sl()),
+                            ).walletBalance.value.currencyIndian,
                             textColor: isDark
                                 ? const Color.fromARGB(255, 171, 171, 171)
                                 : AppColors.darktextclr,
@@ -108,6 +119,7 @@ class HomePageScreen extends StatelessWidget {
                               title: 'Transfer & Details',
                               textColor: Colors.white,
                               bgColor: AppColors.clrPrimary,
+                              borderWidth: 2,
                               borderColor: isDark
                                   ? AppColors.white
                                   : AppColors.redClr,
@@ -126,7 +138,7 @@ class HomePageScreen extends StatelessWidget {
                             textColor: isDark
                                 ? const Color.fromARGB(255, 171, 171, 171)
                                 : AppColors.darktextclr,
-                            value: '₹$todayCredit',
+                            value: todayCredit.currencyIndian,
                             bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
                             borderColor: AppColors.card4,
                             imageWidget: SvgPicture.asset(
@@ -136,7 +148,7 @@ class HomePageScreen extends StatelessWidget {
                           ),
                           StatCard(
                             title: "Today's Transfer",
-                            value: '₹$todayTransfer',
+                            value: todayTransfer.currencyIndian,
                             textColor:
                                 Theme.of(context).brightness == Brightness.dark
                                 ? const Color.fromARGB(255, 171, 171, 171)
@@ -157,7 +169,7 @@ class HomePageScreen extends StatelessWidget {
                                 ? const Color.fromARGB(255, 171, 171, 171)
                                 : AppColors.darktextclr,
                             bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                            value: '₹$todayEarnings',
+                            value: todayEarnings.toString().currencyIndian,
                             borderColor: AppColors.card4,
                             imageWidget: SvgPicture.asset(
                               AssetImages.complaints,
@@ -166,6 +178,7 @@ class HomePageScreen extends StatelessWidget {
                           ),
                           StatCard(
                             bgColor: AppColors.card1,
+
                             onTap: () {
                               Get.toNamed(
                                 AppRoutes.transaction,
@@ -174,7 +187,7 @@ class HomePageScreen extends StatelessWidget {
                             },
                             title: 'Success',
                             value: successStr,
-                            borderColor: AppColors.card4,
+                            borderColor: AppColors.clrPrimary,
                             valueColor: AppColors.darkbgBlack,
                             imageWidget: SvgPicture.asset(
                               AssetImages.successIcon,
@@ -192,7 +205,7 @@ class HomePageScreen extends StatelessWidget {
                             },
                             title: 'Processing',
                             value: processingStr,
-                            borderColor: AppColors.card4,
+                            borderColor: AppColors.clrPrimary,
                             valueColor: AppColors.darkbgBlack,
                             imageWidget: SvgPicture.asset(
                               AssetImages.processIcon,
@@ -210,7 +223,7 @@ class HomePageScreen extends StatelessWidget {
                             },
                             title: 'Failed',
                             value: failedStr,
-                            borderColor: AppColors.card4,
+                            borderColor: AppColors.clrPrimary,
                             valueColor: AppColors.darkbgBlack,
                             imageWidget: SvgPicture.asset(
                               AssetImages.failedIcon,

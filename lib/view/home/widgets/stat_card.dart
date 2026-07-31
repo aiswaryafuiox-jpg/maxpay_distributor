@@ -11,6 +11,7 @@ class StatCard extends StatelessWidget {
   final Color? textColor;
   final Color? valueColor;
   final bool needSpacingbwImage;
+  final double borderWidth;
 
   final VoidCallback? onTap;
 
@@ -25,6 +26,7 @@ class StatCard extends StatelessWidget {
     this.valueColor,
     this.onTap,
     this.needSpacingbwImage = true,
+    this.borderWidth = 1.0,
   });
 
   @override
@@ -43,7 +45,7 @@ class StatCard extends StatelessWidget {
 
           border: Border.all(
             color: borderColor ?? AppColors.clrPrimary,
-            width: 0.8,
+            width: borderWidth,
           ),
         ),
 

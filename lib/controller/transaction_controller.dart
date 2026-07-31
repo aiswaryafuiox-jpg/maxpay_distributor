@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
@@ -166,7 +167,7 @@ class TransactionController extends GetxController {
             _buildDetailRow("Product", detail.productName ?? 'N/A'),
             _buildDetailRow("Mobile", detail.mobile ?? 'N/A'),
             _buildDetailRow("Retailer Name", detail.retailerName ?? 'N/A'),
-            _buildDetailRow("Amount", "₹ ${detail.amount ?? 0}"),
+            _buildDetailRow("Amount", (detail.amount ?? 0).currencyIndian),
             _buildDetailRow("Status", detail.status ?? 'N/A'),
             const SizedBox(height: 16),
             SizedBox(

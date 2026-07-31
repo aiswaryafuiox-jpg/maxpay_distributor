@@ -90,7 +90,9 @@ class MenuScreen extends StatelessWidget {
                                   errorBuilder: (context, error, stackTrace) =>
                                       Container(
                                         color: Colors.grey[300],
-                                        child: const Center(child: Icon(Icons.error)),
+                                        child: const Center(
+                                          child: Icon(Icons.error),
+                                        ),
                                       ),
                                 ),
                               ),
@@ -125,206 +127,8 @@ class MenuScreen extends StatelessWidget {
 
                     SizedBox(height: 10.h),
 
-                    /// FIRST ROW
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _serviceItem(
-                          context,
-                          "Wallet Credit",
-                          AssetImages.prepaid,
-                          AppColors.box1,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.withdrawrequest1);
-                          },
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Retailers",
-                          AssetImages.dth,
-                          AppColors.box2,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.retailer);
-                          },
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Low Wallet",
-                          AssetImages.fastag,
-                          AppColors.box3,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.lowWallet);
-                          },
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Auto Transfer",
-                          AssetImages.gas,
-                          AppColors.box4,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.autoTransferScreen);
-                          },
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 10.h),
-
-                    /// SECOND ROW
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// LEFT SIDE
-                        Column(
-                          children: [
-                            _serviceItem(
-                              context,
-                              "Executive",
-                              AssetImages.transactions1,
-                              AppColors.box1,
-                              onTap: () {
-                                //Get.toNamed(AppRoutes.prepaid);
-                                Get.toNamed(AppRoutes.executive);
-                              },
-                            ),
-
-                            SizedBox(height: 10.h),
-
-                            _serviceItem(
-                              context,
-                              "Transfer Detail",
-                              AssetImages.promoFrame,
-                              AppColors.box3,
-                              onTap: () {
-                                //Get.toNamed(AppRoutes.prepaid);
-                                Get.toNamed(AppRoutes.transferDetail);
-                              },
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(width: 12.w),
-
-                        /// CENTER BANNER
-                        Expanded(
-                          child: SizedBox(
-                            height: 170.h,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.r),
-                              child: Image.asset(
-                                AssetImages.banner1,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 10.h),
-
-                    /// THIRD ROW
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _serviceItem(
-                          context,
-                          "Wallet Request",
-                          onTap: () {
-                            Get.toNamed(AppRoutes.requestWallet);
-                          },
-                          AssetImages.water,
-                          AppColors.box4,
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Out Standing",
-                          AssetImages.landline,
-                          AppColors.box3,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.outstanding);
-                          },
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Day Book",
-                          AssetImages.broadband,
-                          AppColors.box2,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.dayBook);
-                          },
-                        ),
-
-                        _serviceItem(
-                          context,
-                          "Payout Details",
-                          AssetImages.statement,
-                          AppColors.box1,
-                          onTap: () {
-                            Get.toNamed(AppRoutes.payOutDetails);
-                          },
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 10.h),
-
-                    /// BOTTOM SECTION
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        /// LEFT BANNER
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16.r),
-                            child: Image.asset(
-                              AssetImages.banner2,
-                              height: 160.h,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(width: 12.w),
-
-                        /// RIGHT SIDE
-                        Column(
-                          children: [
-                            _serviceItem(
-                              context,
-                              "Pay-out Status",
-                              AssetImages.paymentStatus,
-                              AppColors.box2,
-                              onTap: () {
-                                //Get.toNamed(AppRoutes.favorite);
-                                Get.toNamed(AppRoutes.payOutStatus);
-                              },
-                            ),
-
-                            SizedBox(height: 8.h),
-
-                            _serviceItem(
-                              context,
-                              //"DTH\nRefresh",
-                              "Statement",
-                              AssetImages.dthRefresh,
-                              AppColors.box1,
-                              onTap: () {
-                                Get.toNamed(AppRoutes.statement);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 20.h),
+                    /// SMART LAYOUT ADAPTED FROM RETAILER APP
+                    _buildAdaptedLayout(context),
                   ],
                 ),
               ),
@@ -333,6 +137,312 @@ class MenuScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(),
+    );
+  }
+
+  /// ✅ Adapted from retailer app layout logic
+  Widget _buildAdaptedLayout(BuildContext context) {
+    // Define the 12 static services just like productList
+    final List<Map<String, dynamic>> productList = [
+      {
+        'title': 'Wallet Credit',
+        'image': AssetImages.prepaid,
+        'color': AppColors.box1,
+        'route': AppRoutes.withdrawrequest1,
+      },
+      {
+        'title': 'Retailers',
+        'image': AssetImages.dth,
+        'color': AppColors.box2,
+        'route': AppRoutes.retailer,
+      },
+      {
+        'title': 'Low Wallet',
+        'image': AssetImages.fastag,
+        'color': AppColors.box3,
+        'route': AppRoutes.lowWallet,
+      },
+      {
+        'title': 'Auto Transfer',
+        'image': AssetImages.gas,
+        'color': AppColors.box4,
+        'route': AppRoutes.autoTransferScreen,
+      },
+
+      {
+        'title': 'Executive',
+        'image': AssetImages.transactions1,
+        'color': AppColors.box1,
+        'route': AppRoutes.executive,
+      },
+      {
+        'title': 'Transfer Detail',
+        'image': AssetImages.promoFrame,
+        'color': AppColors.box3,
+        'route': AppRoutes.transferDetail,
+      },
+
+      {
+        'title': 'Wallet Request',
+        'image': AssetImages.water,
+        'color': AppColors.box4,
+        'route': AppRoutes.dueAmountAddwallet,
+      },
+      {
+        'title': 'Out Standing',
+        'image': AssetImages.landline,
+        'color': AppColors.box3,
+        'route': AppRoutes.outstanding,
+      },
+      {
+        'title': 'Day Book',
+        'image': AssetImages.broadband,
+        'color': AppColors.box2,
+        'route': AppRoutes.dayBook,
+      },
+      {
+        'title': 'Payout Details',
+        'image': AssetImages.statement,
+        'color': AppColors.box1,
+        'route': AppRoutes.payOutDetails,
+      },
+
+      {
+        'title': 'Statement',
+        'image': AssetImages.dthRefresh,
+        'color': AppColors.box1,
+        'route': AppRoutes.statement,
+      },
+      {
+        'title': 'Pay-out Status',
+        'image': AssetImages.paymentStatus,
+        'color': AppColors.box2,
+        'route': AppRoutes.payOutStatus,
+      },
+    ];
+
+    return Obx(() {
+      final bannerController = Get.find<BannerController>();
+      final advList = bannerController.banners;
+      final hasAdImage =
+          advList.isNotEmpty && (advList.first.image ?? "").isNotEmpty;
+
+      if (hasAdImage) {
+        return _buildLayoutWithAds(context, productList, advList);
+      } else {
+        return _buildCleanGrid(context, productList);
+      }
+    });
+  }
+
+  /// ✅ SAFE URL HELPER — handles both full URLs and relative paths
+  String _toImageUrl(String? path) {
+    if (path == null || path.isEmpty) return "";
+    String formattedPath = path.replaceAll(' ', '%20');
+    if (formattedPath.startsWith("http://") ||
+        formattedPath.startsWith("https://")) {
+      return formattedPath;
+    }
+    // Dummy return for relative paths since we don't have addToBase() here
+    return formattedPath;
+  }
+
+  /// ✅ IMAGE 1 LAYOUT — with ad banners between icons
+  Widget _buildLayoutWithAds(
+    BuildContext context,
+    List<Map<String, dynamic>> productList,
+    List advList,
+  ) {
+    final adImageUrl1 = _toImageUrl(advList.first.image);
+    final adImageUrl2 = _toImageUrl(
+      advList.length > 1 ? advList[1].image : advList.first.image,
+    );
+
+    return Column(
+      children: [
+        /// ROW 1: icons 0,1,2,3
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (productList.isNotEmpty)
+              _dynamicServiceItem(context, productList[0], 0),
+            if (productList.length > 1)
+              _dynamicServiceItem(context, productList[1], 1),
+            if (productList.length > 2)
+              _dynamicServiceItem(context, productList[2], 2),
+            if (productList.length > 3)
+              _dynamicServiceItem(context, productList[3], 3),
+          ],
+        ),
+
+        SizedBox(height: 20.h),
+
+        /// ROW 2: icons 4,5 + CENTER AD
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                if (productList.length > 4)
+                  _dynamicServiceItem(context, productList[4], 4),
+                if (productList.length > 5)
+                  _dynamicServiceItem(context, productList[5], 5),
+              ],
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: SizedBox(
+                height: 160.h,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Image.network(
+                    adImageUrl1,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Container(
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.broken_image),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: 10.h),
+
+        /// ROW 3: icons 6,7,8,9
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (productList.length > 6)
+              _dynamicServiceItem(context, productList[6], 6),
+            if (productList.length > 7)
+              _dynamicServiceItem(context, productList[7], 7),
+            if (productList.length > 8)
+              _dynamicServiceItem(context, productList[8], 8),
+            if (productList.length > 9)
+              _dynamicServiceItem(context, productList[9], 9),
+          ],
+        ),
+
+        SizedBox(height: 18.h),
+
+        /// ROW 4: LEFT AD + icons 11,10
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () => _showFullImage(context, adImageUrl2),
+                child: SizedBox(
+                  height: 160.h,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.r),
+                    child: Image.network(
+                      adImageUrl2,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => Container(
+                        color: Colors.grey.shade300,
+                        child: const Icon(Icons.broken_image),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (productList.length > 11)
+                  _dynamicServiceItem(context, productList[11], 11),
+                if (productList.length > 10)
+                  _dynamicServiceItem(context, productList[10], 10),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// ✅ IMAGE 2 LAYOUT — clean 4-column grid
+  Widget _buildCleanGrid(
+    BuildContext context,
+    List<Map<String, dynamic>> productList,
+  ) {
+    if (productList.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.h),
+          child: Text(
+            "No services found",
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: productList.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 16.h,
+        crossAxisSpacing: 8.w,
+        childAspectRatio: 0.75,
+      ),
+      itemBuilder: (context, index) {
+        return _dynamicServiceItem(context, productList[index], index);
+      },
+    );
+  }
+
+  void _showFullImage(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.9),
+      builder: (_) {
+        return GestureDetector(
+          onTap: () => Get.back(),
+          child: Center(
+            child: Hero(
+              tag: imageUrl,
+              child: InteractiveViewer(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(
+                    Icons.broken_image,
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _dynamicServiceItem(
+    BuildContext context,
+    Map<String, dynamic> item, [
+    int index = 0,
+  ]) {
+    return _serviceItem(
+      context,
+      item['title'],
+      item['image'],
+      item['color'],
+      onTap: () {
+        if (item['route'] != null && item['route'].toString().isNotEmpty) {
+          Get.toNamed(item['route']);
+        }
+      },
     );
   }
 
@@ -356,25 +466,32 @@ class MenuScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 62.w,
-                height: 62.w,
-                padding: EdgeInsets.all(16.w),
+                width: 56.w,
+                height: 56.w,
+                padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(14.r),
                 ),
-                child: SvgPicture.asset(image, fit: BoxFit.contain),
+                child: Center(
+                  child: SvgPicture.asset(image, fit: BoxFit.contain),
+                ),
               ),
 
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
 
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: theme.colorScheme.onSurface,
+              SizedBox(
+                width: 70.w,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
               ),
             ],

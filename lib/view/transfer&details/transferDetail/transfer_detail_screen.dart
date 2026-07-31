@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
@@ -104,11 +105,13 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               SizedBox(height: 16.h),
 
               /// Header Card
-              Obx(() => TransferDetailHeaderCard(
-                title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
-                amount: controller.totalAmount.value,
-                isReverse: isReverse,
-              )),
+              Obx(
+                () => TransferDetailHeaderCard(
+                  title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
+                  amount: controller.totalAmount.value,
+                  isReverse: isReverse,
+                ),
+              ),
 
               SizedBox(height: 16.h),
 
@@ -136,9 +139,13 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                         userType: item.userType ?? "",
                         userName: item.userName ?? "",
                         regMobNo: item.regMobileNumber ?? "",
-                        amount: "₹ ${item.amount ?? '0.00'}",
+                        amount:
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
                         onReverseIconTap: () {
-                          _showReverseDialog(item.id?.toString() ?? "", "₹ ${item.amount ?? '0.00'}");
+                          _showReverseDialog(
+                            item.id?.toString() ?? "",
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
+                          );
                         },
                       );
                     },

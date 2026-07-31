@@ -107,7 +107,9 @@ import 'package:maxpay/domain/repository/update_auto_transfer_repo.dart';
 import '../../data/repository/low_wallet_repo_impl.dart';
 
 import '../../domain/usecase/wallet_credit_type_usecase.dart';
-
+import '../../domain/repository/wallet_credit_type_repository.dart';
+import '../../data/repository/wallet_credit_type_repository_impl.dart';
+import '../../domain/usecase/reverse_wallet_transfer_usecase.dart';
 import '../../controller/wallet_controller.dart';
 import '../../controller/day_book_controller.dart';
 import '../../controller/my_earnings_controller.dart';
@@ -594,11 +596,17 @@ Future<void> init() async {
   sl.registerLazySingleton<GetTransferDetailListUseCase>(
     () => GetTransferDetailListUseCase(sl()),
   );
+  sl.registerLazySingleton<ReverseWalletTransferUseCase>(
+    () => ReverseWalletTransferUseCase(sl()),
+  );
   sl.registerFactory(() => TransferDetailController(sl(), sl(), sl()));
 
   // Wallet
   sl.registerLazySingleton<WalletCreditListRepository>(
     () => WalletCreditListRepoImpl(sl()),
+  );
+  sl.registerLazySingleton<WalletRepository>(
+    () => WalletRepositoryImpl(sl()),
   );
   sl.registerLazySingleton<GetWalletCreditTypeUseCase>(
     () => GetWalletCreditTypeUseCase(sl()),

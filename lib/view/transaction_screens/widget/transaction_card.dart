@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 import 'package:maxpay/data/model/transaction/transaction_report_response_model.dart';
@@ -47,23 +48,19 @@ class TransactionCard extends StatelessWidget {
             children: [
               Text(
                 "Transaction ID: ${item.transactionId ?? 'N/A'}",
-                style: TextHelper.max1
+                style: TextHelper.max1,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     "Date & Time:",
-                    style: TextHelper.max1.copyWith(
-                      fontSize: 11
-                    )
+                    style: TextHelper.max1.copyWith(fontSize: 11),
                   ),
                   SizedBox(height: 5),
                   Text(
                     item.dateTime ?? 'N/A',
-                    style: TextHelper.max1.copyWith(
-                      fontSize: 11
-                    )
+                    style: TextHelper.max1.copyWith(fontSize: 11),
                   ),
                 ],
               ),
@@ -86,18 +83,17 @@ class TransactionCard extends StatelessWidget {
               Container(
                 width: 38,
                 height: 38,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
+                decoration: const BoxDecoration(shape: BoxShape.circle),
                 alignment: Alignment.center,
                 clipBehavior: Clip.hardEdge,
                 child: item.productLogo != null
-                  ? Image.network(
-                      item.productLogo!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Icon(Icons.broken_image),
-                    )
-                  : const Icon(Icons.category, color: Colors.grey),
+                    ? Image.network(
+                        item.productLogo!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) =>
+                            const Icon(Icons.broken_image),
+                      )
+                    : const Icon(Icons.category, color: Colors.grey),
               ),
 
               const SizedBox(width: 10),
@@ -112,8 +108,8 @@ class TransactionCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                         color: theme.brightness == Brightness.dark
-                          ? Colors.black
-                          : theme.colorScheme.onSurface,
+                            ? Colors.black
+                            : theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -126,7 +122,6 @@ class TransactionCard extends StatelessWidget {
                         color: theme.brightness == Brightness.dark
                             ? Colors.black
                             : theme.colorScheme.onSurface,
-
                       ),
                     ),
                   ],
@@ -137,7 +132,7 @@ class TransactionCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    "₹ ${item.amount ?? 0}",
+                    (item.amount ?? 0).currencyIndian,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
@@ -169,7 +164,9 @@ class TransactionCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: isPending ? Color(0xFFD98200) :Color(0xFF00A954),
+                        color: isPending
+                            ? Color(0xFFD98200)
+                            : Color(0xFF00A954),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -211,15 +208,16 @@ class TransactionCard extends StatelessWidget {
                     color: AppColors.clrPrimary,
                     onTap: () {
                       if (item.id != null) {
-                        Get.find<TransactionController>().fetchTransactionDetail(item.id!);
+                        Get.find<TransactionController>()
+                            .fetchTransactionDetail(item.id!);
                       }
                     },
                     isCompact: true,
                   ),
                 ],
               ),
-            )
-          ]
+            ),
+          ],
         ],
       ),
     );
@@ -368,36 +366,47 @@ class _DisputeDialogState extends State<_DisputeDialog> {
                       fontSize: 14,
                     ),
                   ),
-                  items:  [
+                  items: [
                     DropdownMenuItem(
                       value: "Amount not credited",
-                      child: Text("Amount not credited",  style: TextStyle(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 14,
-                    ),),
+                      child: Text(
+                        "Amount not credited",
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                     DropdownMenuItem(
                       value: "Wrong number",
-                      child: Text("Wrong number",  style: TextStyle(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 14,
-                    ),),
+                      child: Text(
+                        "Wrong number",
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                     DropdownMenuItem(
                       value: "Recharge failed",
-                      child: Text("Recharge failed",  style: TextStyle(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 14,
-                    ),),
+                      child: Text(
+                        "Recharge failed",
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                     DropdownMenuItem(
+                    DropdownMenuItem(
                       value: "Other",
-                      child: Text("Other",  style: TextStyle(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 14,
-                    ),),
+                      child: Text(
+                        "Other",
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
-                   
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -454,7 +463,7 @@ class _DisputeDialogState extends State<_DisputeDialog> {
                 onTap: () {
                   final subject = _selectedIssue ?? 'Other';
                   final description = _remarksController.text.trim();
-                  
+
                   if (description.isEmpty) {
                     Get.snackbar(
                       "Required",
@@ -467,8 +476,8 @@ class _DisputeDialogState extends State<_DisputeDialog> {
                   }
 
                   Get.find<TransactionController>().submitDispute(
-                    widget.txnId, 
-                    subject, 
+                    widget.txnId,
+                    subject,
                     description,
                   );
                   Navigator.of(context, rootNavigator: true).pop();
