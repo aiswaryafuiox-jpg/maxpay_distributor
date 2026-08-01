@@ -48,7 +48,7 @@ class AppRoutes {
   static const String menu = '/menu';
   static const String dth = '/dth';
   static const String addwallet = '/addwallet';
-  static const String requestWallet= '/reqWallet';
+  static const String requestWalletpending= '/reqWalletpending';
   static const String dueAmountAddwallet= '/dueAmountAddwallet';
   static const String transaction = '/transaction';
   static const String veirfypin = '/veirfypin';

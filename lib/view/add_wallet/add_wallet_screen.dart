@@ -41,7 +41,7 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
       backgroundColor: isDark
           ? Theme.of(context).scaffoldBackgroundColor
           : Colors.white,
-      appBar: const CommonAppBar(title: "Add Wallet", showBack: false),
+      appBar: const CommonAppBar(title: "Wallet Request", showBack: false),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

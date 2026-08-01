@@ -163,6 +163,10 @@ import '../../domain/usecase/home/get_banner_usecase.dart';
 import '../../domain/repository/graph_repo.dart';
 import '../../data/repository/graph_repo_impl.dart';
 import '../../domain/usecase/home/get_graph_usecase.dart';
+import '../../domain/repository/ip_address_repo.dart';
+import '../../data/repository/ip_address_repo_impl.dart';
+import '../../domain/usecase/ip_address_usecase.dart';
+import '../../controller/ip_address_controller.dart';
 
 // SharedPreferences
 
@@ -479,6 +483,15 @@ Future<void> init() async {
   sl.registerLazySingleton<GetKycUseCase>(() => GetKycUseCase(sl()));
   sl.registerLazySingleton<SubmitKycUseCase>(() => SubmitKycUseCase(sl()));
   sl.registerFactory(() => KycController(sl(), sl()));
+
+  // IP Address
+  sl.registerLazySingleton<IpAddressRepository>(
+    () => IpAddressRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<IpAddressUseCase>(
+    () => IpAddressUseCase(sl()),
+  );
+  sl.registerFactory(() => IpAddressController(ipAddressUseCase: sl()));
 
   // Support
   sl.registerLazySingleton<SupportRepository>(() => SupportRepoImpl(sl()));

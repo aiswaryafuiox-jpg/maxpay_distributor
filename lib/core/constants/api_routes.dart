@@ -8,6 +8,7 @@ class ApiRoutes {
   static const String getNews = "/api/distributor_get_news";
   static const String getBanners = "/api/distributor_get_banner";
   static const String getGraph = "/api/distributor_graph";
+  static const String distributorGetIp = "/api/distributor_get_ip";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
   static const String createPin = "/api/distributor_create_pin";
   static const String verifyPin = "/api/distributor_verify_pin";

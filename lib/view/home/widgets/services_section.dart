@@ -183,10 +183,10 @@ class MenuScreen extends StatelessWidget {
       },
 
       {
-        'title': 'Wallet Request',
+        'title': 'Request Pending',
         'image': AssetImages.water,
         'color': AppColors.box4,
-        'route': AppRoutes.dueAmountAddwallet,
+        'route': AppRoutes.requestWalletpending,
       },
       {
         'title': 'Out Standing',

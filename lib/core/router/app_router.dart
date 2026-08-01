@@ -147,10 +147,7 @@ class AppPages {
           () => BannerController(sl()),
           fenix: true,
         );
-        Get.lazyPut<GraphController>(
-          () => GraphController(sl()),
-          fenix: true,
-        );
+        Get.lazyPut<GraphController>(() => GraphController(sl()), fenix: true);
       }),
     ),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
@@ -272,7 +269,7 @@ class AppPages {
     GetPage(name: AppRoutes.menu, page: () => const MenuScreen()),
     GetPage(name: AppRoutes.dth, page: () => const DTHRechargePage()),
     GetPage(
-      name: AppRoutes.requestWallet,
+      name: AppRoutes.requestWalletpending,
       page: () => const WalletRequestPendingScreen(),
     ),
     GetPage(
