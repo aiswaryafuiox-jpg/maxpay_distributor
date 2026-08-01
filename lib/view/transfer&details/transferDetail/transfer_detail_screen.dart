@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
 import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
+import 'package:maxpay/domain/usecase/reverse_wallet_transfer_usecase.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/transferDetail/widgets/transfer_detail_card.dart';
@@ -24,12 +26,13 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
     TransferDetailController(
       GetTransferDetailsUseCase(TransferDetailRepositoryImpl(ApiService())),
       GetTransferDetailListUseCase(TransferDetailRepositoryImpl(ApiService())),
+      ReverseWalletTransferUseCase(TransferDetailRepositoryImpl(ApiService())),
     ),
   );
   String selectedTransactionType = "Transfer";
   bool isReverse = false;
 
-  void _showReverseDialog() {
+  void _showReverseDialog(String transactionId, String amount) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -51,9 +54,9 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "₹ 500.00",
-                style: TextStyle(
+              Text(
+                amount,
+                style: const TextStyle(
                   color: Colors.red,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -64,11 +67,7 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                 title: "Submit",
                 onTap: () {
                   Navigator.pop(context);
-
-                  setState(() {
-                    selectedTransactionType = "Reverse";
-                    isReverse = true;
-                  });
+                  controller.reverseWalletTransfer(transactionId);
                 },
               ),
             ],
@@ -106,11 +105,13 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               SizedBox(height: 16.h),
 
               /// Header Card
-              Obx(() => TransferDetailHeaderCard(
-                title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
-                amount: controller.totalAmount.value,
-                isReverse: isReverse,
-              )),
+              Obx(
+                () => TransferDetailHeaderCard(
+                  title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
+                  amount: controller.totalAmount.value,
+                  isReverse: isReverse,
+                ),
+              ),
 
               SizedBox(height: 16.h),
 
@@ -138,9 +139,13 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                         userType: item.userType ?? "",
                         userName: item.userName ?? "",
                         regMobNo: item.regMobileNumber ?? "",
-                        amount: "₹ ${item.amount ?? '0.00'}",
+                        amount:
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
                         onReverseIconTap: () {
-                          _showReverseDialog();
+                          _showReverseDialog(
+                            item.id?.toString() ?? "",
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
+                          );
                         },
                       );
                     },

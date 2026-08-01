@@ -22,3 +22,23 @@ extension CurrencyNumHelper on num {
     ).format(this);
   }
 }
+
+extension CurrencyIntHelper on int {
+  String get currencyIndian {
+    return NumberFormat.currency(
+      locale: "en_IN",
+      symbol: "\u20B9 ",
+      decimalDigits: 2,
+    ).format(this);
+  }
+}
+
+extension CurrencyDoubleHelper on double {
+  String get currencyIndian {
+    return NumberFormat.currency(
+      locale: "en_IN",
+      symbol: "\u20B9 ",
+      decimalDigits: 2,
+    ).format(this);
+  }
+}

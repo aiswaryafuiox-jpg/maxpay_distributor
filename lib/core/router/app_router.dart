@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/controller/banner_controller.dart';
+import 'package:maxpay/controller/graph_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
 import 'package:maxpay/core/bindings/initial_binding.dart';
@@ -56,7 +58,7 @@ import 'package:maxpay/view/transaction_screens/view.dart';
 import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/update_pin/update_pin_screen.dart';
 import 'package:maxpay/view/update_pin/update_mpin_otp_screen.dart';
-import 'package:maxpay/view/update_pin/verify_pin_screen.dart';
+
 import 'package:maxpay/view/wallet-credit/wallet_credit_screen.dart';
 import 'package:maxpay/view/web_login/web_login_otp_screen.dart';
 import 'package:maxpay/view/web_login/web_login_screen.dart';
@@ -138,9 +140,14 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(sl(), sl()),
+          () => HomePageController(sl(), sl(), sl()),
           fenix: true,
         );
+        Get.lazyPut<BannerController>(
+          () => BannerController(sl()),
+          fenix: true,
+        );
+        Get.lazyPut<GraphController>(() => GraphController(sl()), fenix: true);
       }),
     ),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
@@ -262,13 +269,16 @@ class AppPages {
     GetPage(name: AppRoutes.menu, page: () => const MenuScreen()),
     GetPage(name: AppRoutes.dth, page: () => const DTHRechargePage()),
     GetPage(
-      name: AppRoutes.requestWallet,
+      name: AppRoutes.requestWalletpending,
       page: () => const WalletRequestPendingScreen(),
     ),
-    GetPage(name: AppRoutes.requestWallet, page: () => const AddWalletScreen()),
+    GetPage(
+      name: AppRoutes.dueAmountAddwallet,
+      page: () => const AddWalletScreen(),
+    ),
 
     GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreenMain()),
-    GetPage(name: AppRoutes.veirfypin, page: () => const VerifyPinPage()),
+    GetPage(name: AppRoutes.veirfypin, page: () => const PinCodeEnterPage()),
     GetPage(
       name: AppRoutes.transaction,
       page: () {

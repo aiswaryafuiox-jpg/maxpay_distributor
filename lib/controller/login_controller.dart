@@ -1,5 +1,6 @@
-﻿import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
@@ -162,6 +163,7 @@ class LoginController extends GetxController {
             "last_active_time",
             DateTime.now().toIso8601String(),
           );
+          await Get.find<ProfileController>().fetchProfile();
           Get.offAllNamed(AppRoutes.main);
           return true;
         } else {
@@ -210,6 +212,7 @@ class LoginController extends GetxController {
           'last_active_time',
           DateTime.now().toIso8601String(),
         );
+        await Get.find<ProfileController>().fetchProfile();
         Get.offAllNamed(AppRoutes.main);
       }
     } catch (e) {

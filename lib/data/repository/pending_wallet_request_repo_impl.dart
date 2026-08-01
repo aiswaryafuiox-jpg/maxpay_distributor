@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
@@ -14,9 +15,12 @@ class PendingWalletRequestRepoImpl implements PendingWalletRequestRepository {
   PendingWalletRequestRepoImpl(this._apiService);
 
   @override
-  Future<Either<Failure, PendingWalletRequestModel>> getPendingWalletRequests() async {
+  Future<Either<Failure, PendingWalletRequestModel>>
+  getPendingWalletRequests() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorPendingWalletRequests);
+      final response = await _apiService.get(
+        ApiRoutes.distributorPendingWalletRequests,
+      );
       final model = PendingWalletRequestModel.fromJson(response);
       if (model.code == 200 || model.code == 201) {
         if (model.success == true) {
@@ -25,21 +29,18 @@ class PendingWalletRequestRepoImpl implements PendingWalletRequestRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, PendingWalletRequestDetailModel>> getPendingWalletRequestDetail(int id) async {
+  Future<Either<Failure, PendingWalletRequestDetailModel>>
+  getPendingWalletRequestDetail(int id) async {
     try {
       final formData = FormData.fromMap({"id": id});
       final response = await _apiService.post(
@@ -54,21 +55,18 @@ class PendingWalletRequestRepoImpl implements PendingWalletRequestRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, ApproveWalletRequestModel>> approvePendingWalletRequest(int id, String confirmAmount) async {
+  Future<Either<Failure, ApproveWalletRequestModel>>
+  approvePendingWalletRequest(int id, String confirmAmount) async {
     try {
       final formData = FormData.fromMap({
         "id": id,
@@ -86,16 +84,12 @@ class PendingWalletRequestRepoImpl implements PendingWalletRequestRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

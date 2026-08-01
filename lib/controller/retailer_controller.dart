@@ -144,7 +144,7 @@ class RetailerController extends GetxController {
         );
         AppLogger.logError("Failed to create retailer: ${failure.message}");
       },
-      (data) {
+      (data) async {
         isCreatingRetailer.value = false;
         Get.back(); // Navigate back
         Get.snackbar(
@@ -153,7 +153,7 @@ class RetailerController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
         AppLogger.debugPrint("Retailer created successfully");
-        fetchRetailers(); // Refresh the list
+        await fetchRetailers(); // Refresh the list
       },
     );
   }
@@ -172,7 +172,7 @@ class RetailerController extends GetxController {
         );
         AppLogger.logError("Failed to update retailer: ${failure.message}");
       },
-      (data) {
+      (data) async {
         isUpdatingRetailer.value = false;
         Get.back(); // Navigate back
         Get.snackbar(
@@ -181,7 +181,7 @@ class RetailerController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
         AppLogger.debugPrint("Retailer updated successfully");
-        fetchRetailers(); // Refresh the list
+        await fetchRetailers(); // Refresh the list
       },
     );
   }

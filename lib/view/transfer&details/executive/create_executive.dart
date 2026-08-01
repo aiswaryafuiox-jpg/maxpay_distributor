@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
@@ -104,8 +105,13 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 style: TextHelper.max4.copyWith(
                   color: isDark ? AppColors.textclr : AppColors.clrTextblack,
                 ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
                 decoration: InputDecoration(
                   filled: true,
+
                   fillColor: isDark
                       ? AppColors.darkplceholder
                       : AppColors.lightbg2,
@@ -218,24 +224,31 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 child: Obx(() {
                   final controller = Get.find<ExecutiveController>();
                   return CommonButton(
-                    title: controller.isUpdatingExecutive.value ? "Creating..." : "Create",
-                    onTap: controller.isUpdatingExecutive.value 
+                    title: controller.isUpdatingExecutive.value
+                        ? "Creating..."
+                        : "Create",
+                    onTap: controller.isUpdatingExecutive.value
                         ? () {}
                         : () {
-                      final name = executiveNameController.text.trim();
-                      final mobile = mobileController.text.trim();
-                      
-                      if (name.isEmpty || mobile.isEmpty || selectedPackage == null) {
-                        Get.snackbar("Required", "All fields are required");
-                        return;
-                      }
+                            final name = executiveNameController.text.trim();
+                            final mobile = mobileController.text.trim();
 
-                      controller.createExecutive({
-                        "executive_name": name,
-                        "reg_mobile_number": mobile,
-                        "commission_package": selectedPackage,
-                      });
-                    },
+                            if (name.isEmpty ||
+                                mobile.isEmpty ||
+                                selectedPackage == null) {
+                              Get.snackbar(
+                                "Required",
+                                "All fields are required",
+                              );
+                              return;
+                            }
+
+                            controller.createExecutive({
+                              "executive_name": name,
+                              "reg_mobile_number": mobile,
+                              "commission_package": selectedPackage,
+                            });
+                          },
                   );
                 }),
               ),

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
@@ -36,14 +37,8 @@ class RetailerRepositoryImpl implements RetailerRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -69,14 +64,8 @@ class RetailerRepositoryImpl implements RetailerRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -97,19 +86,15 @@ class RetailerRepositoryImpl implements RetailerRepository {
           ServerFailure(model.message ?? 'Server error: ${model.code}'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, CreateRetailerResponseModel>> createRetailer(CreateRetailerParams params) async {
+  Future<Either<Failure, CreateRetailerResponseModel>> createRetailer(
+    CreateRetailerParams params,
+  ) async {
     try {
       final formData = FormData.fromMap(params.toJson());
       final response = await _apiService.post(
@@ -124,21 +109,19 @@ class RetailerRepositoryImpl implements RetailerRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, UpdateRetailerResponseModel>> updateRetailer(UpdateRetailerParams params) async {
+  Future<Either<Failure, UpdateRetailerResponseModel>> updateRetailer(
+    UpdateRetailerParams params,
+  ) async {
     try {
       final formData = FormData.fromMap(params.toJson());
       final response = await _apiService.post(
@@ -153,21 +136,19 @@ class RetailerRepositoryImpl implements RetailerRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(String id) async {
+  Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
+    String id,
+  ) async {
     try {
       final formData = FormData.fromMap({'id': id});
       final response = await _apiService.post(
@@ -182,21 +163,19 @@ class RetailerRepositoryImpl implements RetailerRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, AddWalletResponseModel>> addWallet(AddWalletParams params) async {
+  Future<Either<Failure, AddWalletResponseModel>> addWallet(
+    AddWalletParams params,
+  ) async {
     try {
       final formData = FormData.fromMap(params.toJson());
       final response = await _apiService.post(
@@ -211,16 +190,12 @@ class RetailerRepositoryImpl implements RetailerRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

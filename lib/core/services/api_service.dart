@@ -63,11 +63,6 @@ class ApiService {
 
           if (e.response?.statusCode == 401) {
             _handleUnauthorized();
-          } else {
-            g.Get.snackbar(
-              "Error",
-              e.response?.data?["message"] ?? "Something went wrong",
-            );
           }
 
           return handler.next(e);

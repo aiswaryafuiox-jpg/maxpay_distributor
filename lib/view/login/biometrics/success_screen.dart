@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/route_manager.dart';
+import 'package:maxpay/controller/ip_address_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
@@ -75,8 +77,13 @@ class SuccessScreen extends StatelessWidget {
                 CustomElevatedButton(
                   text: 'Go to Home',
                   height: isTablet ? 70.h : 56.h,
-                  onPressed: () {
+                  onPressed: () async {
                     Get.find<ProfileController>().fetchProfile();
+                    final controller = Get.put(
+                      IpAddressController(ipAddressUseCase: sl()),
+                    );
+
+                    await controller.saveIpAddress();
                     Get.toNamed(AppRoutes.main);
                   },
                 ),

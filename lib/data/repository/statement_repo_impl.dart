@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -14,58 +15,73 @@ class StatementRepositoryImpl implements StatementRepository {
   StatementRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, StatementDescriptionsModel>> getStatementDescriptions() async {
+  Future<Either<Failure, StatementDescriptionsModel>>
+  getStatementDescriptions() async {
     try {
-      final response = await _apiService.get(ApiRoutes.distributorStatementDescriptions);
+      final response = await _apiService.get(
+        ApiRoutes.distributorStatementDescriptions,
+      );
       final model = StatementDescriptionsModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch statement descriptions"));
+        return Left(
+          ServerFailure(
+            model.message ?? "Failed to fetch statement descriptions",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, StatementListModel>> getStatementList(StatementListParams params) async {
+  Future<Either<Failure, StatementListModel>> getStatementList(
+    StatementListParams params,
+  ) async {
     try {
       final formData = FormData.fromMap(params.toJson());
-      final response = await _apiService.post(ApiRoutes.distributorStatement, data: formData);
+      final response = await _apiService.post(
+        ApiRoutes.distributorStatement,
+        data: formData,
+      );
       final model = StatementListModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch statement list"));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch statement list"),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
-  Future<Either<Failure, StatementDetailModel>> getStatementDetail(String id) async {
+  Future<Either<Failure, StatementDetailModel>> getStatementDetail(
+    String id,
+  ) async {
     try {
       final formData = FormData.fromMap({"id": id});
-      final response = await _apiService.post(ApiRoutes.distributorStatementDetail, data: formData);
+      final response = await _apiService.post(
+        ApiRoutes.distributorStatementDetail,
+        data: formData,
+      );
       final model = StatementDetailModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch statement detail"));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch statement detail"),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

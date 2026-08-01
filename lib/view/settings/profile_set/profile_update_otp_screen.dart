@@ -6,6 +6,7 @@ import 'package:maxpay/core/utils/responsive.dart';
 import '../../login/widgets/custom_numeric_keyboard.dart';
 import '../../login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
+import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
 import '../../../../controller/profile_controller.dart';
 import '../../../../data/model/profile/update_profile_response_model.dart';
 
@@ -198,21 +199,12 @@ class _ProfileUpdateOtpScreenState extends State<ProfileUpdateOtpScreen> {
 
                         SizedBox(height: 30.h),
 
-                        /// 🔹 Timer Placeholder
-                        GestureDetector(
-                          onTap: () {
+                        /// 🔹 Timer
+                        ResendTimerWidget(
+                          onResend: () {
                             final controller = Get.find<ProfileController>();
                             controller.resendOtp();
                           },
-                          child: Text(
-                            'Resend code',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                              fontSize: isTablet ? 16.sp : 14.sp,
-                              color: AppColors.fav2,
-                            ),
-                          ),
                         ),
                       ],
                     ),

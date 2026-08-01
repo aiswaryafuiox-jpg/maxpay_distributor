@@ -5,6 +5,10 @@ class ApiRoutes {
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
   static const String loginSendOtp = "/api/distributor_login_sendotp";
+  static const String getNews = "/api/distributor_get_news";
+  static const String getBanners = "/api/distributor_get_banner";
+  static const String getGraph = "/api/distributor_graph";
+  static const String distributorGetIp = "/api/distributor_get_ip";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
   static const String createPin = "/api/distributor_create_pin";
   static const String verifyPin = "/api/distributor_verify_pin";
@@ -109,6 +113,7 @@ class ApiRoutes {
   static const String distributorSubmitKyc = '/api/distributor_submit_kyc';
   static const String distributorGetSupport = '/api/distributor_get_support';
   static const String distributorLoginHistory = '/api/distributor_login_history';
+  static const String distributorReverseWalletTransfer = '/api/distributor_reverse_wallet_transfer';
   static const String distributorStatementDescriptions = '/api/distributor_statement_descriptions';
   static const String distributorStatement = '/api/distributor_statement';
   static const String distributorStatementDetail = '/api/distributor_statement_detail';

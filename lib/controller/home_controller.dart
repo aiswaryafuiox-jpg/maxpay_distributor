@@ -1,28 +1,34 @@
 
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
+import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/data/model/home_card_model.dart';
+import 'package:maxpay/data/model/news_model.dart';
 import 'package:maxpay/data/model/today_transaction_model.dart';
 import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
-
+import 'package:maxpay/domain/usecase/home/get_news_usecase.dart';
 
 class HomePageController extends GetxController {
   final GetHomeCardUseCase getHomeCardUseCase;
   final GetTodayTransactionAmountUseCase getTodayTransactionAmountUseCase;
+  final GetNewsUseCase getNewsUseCase;
 
-  HomePageController(this.getHomeCardUseCase, this.getTodayTransactionAmountUseCase);
+  HomePageController(this.getHomeCardUseCase, this.getTodayTransactionAmountUseCase, this.getNewsUseCase);
 
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
+   final Rx<NewsModel?> news = Rx<NewsModel?>(null);
   Rx<HomeCardData?> homeCardData = Rx<HomeCardData?>(null);
   Rx<TodayTransactionData?> todayTransactionData = Rx<TodayTransactionData?>(null);
+
 
   @override
   void onInit() {
     super.onInit();
     fetchHomeCardData();
     fetchTodayTransactionAmount();
+    fetchNews();
   }
 
   Future<void> fetchHomeCardData() async {
@@ -61,6 +67,29 @@ class HomePageController extends GetxController {
         }
       },
     );
+  }
+
+   Future<void> fetchNews() async {
+    try {
+      AppLogger.debugPrint("🚀 [API CALL START] fetchNews");
+      isLoading.value = true;
+
+      final result = await getNewsUseCase();
+
+      result.fold(
+        (failure) {
+          CustomToast.error(failure.message);
+        },
+        (data) {
+          AppLogger.debugPrint("✅ [API CALL SUCCESS] fetchNews");
+          news.value = data;
+        },
+      );
+    } catch (e) {
+      AppLogger.logError("🔥 [API CALL EXCEPTION] fetchNews error: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// Shared mutex so the FAQ popup and the generic popup message

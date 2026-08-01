@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/model/create_qr_response_model.dart';
 import 'package:maxpay/data/model/wallet_qr_history_model.dart';
 import 'package:maxpay/domain/repository/create_qr_repo.dart';
-import 'package:dio/dio.dart';
 
 class CreateQrRepoImpl implements CreateQrRepository {
   final ApiService _apiService;
@@ -29,10 +29,8 @@ class CreateQrRepoImpl implements CreateQrRepository {
           ServerFailure(modelResponse.message ?? 'Failed to create QR'),
         );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data['message'] ?? e.message));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -54,10 +52,8 @@ class CreateQrRepoImpl implements CreateQrRepository {
           ServerFailure(response['message'] ?? 'Failed to check status'),
         );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data['message'] ?? e.message));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -74,10 +70,8 @@ class CreateQrRepoImpl implements CreateQrRepository {
           ServerFailure(response['message'] ?? 'Failed to fetch history'),
         );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data['message'] ?? e.message));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

@@ -60,8 +60,8 @@ class TodayTransactionData {
 }
 
 class TransactionSummary {
-  dynamic amount;
-  dynamic count;
+  num? amount;
+  num? count;
 
   TransactionSummary({this.amount, this.count});
 

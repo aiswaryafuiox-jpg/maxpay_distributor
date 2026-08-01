@@ -2,11 +2,15 @@
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sim_card_code/sim_card_code.dart';
+// import 'package:sim_card_code/sim_card_code.dart';
+import 'package:flutter/services.dart';
 
 class SimUtil {
   /// Test numbers exception list
-  static const List<String> testNumbers = ['9999999999', '8098309901'];
+  static const List<String> testNumbers = [
+    '9999999999',
+    '8098309905',
+  ];
 
   /// Helper function to normalize and match
   static bool _matches(String entered, String? sim) {
@@ -42,6 +46,10 @@ class SimUtil {
   /// 3. The phone number doesn't match any of the readable SIMs.
   ///
   /// Set [showToasts] to true to display error messages via CustomToast (e.g. during login).
+  static const _simChannel = MethodChannel('sim_verification');
+
+  /// Verifies if the [registeredPhone] is currently present in the device's SIM slots.
+  /// Uses the new custom MethodChannel 'sim_verification' implemented in MainActivity.kt
   static Future<bool> verifySimPresent(
     String registeredPhone, {
     bool showToasts = false,
@@ -67,50 +75,128 @@ class SimUtil {
       return false;
     }
 
-    // 2. Fetch SIM info
-    final sims = await SimCardManager.allSimInfo;
-    AppLogger.logError("Detected SIM cards: ${sims.length}");
-
-    if (sims.isEmpty) {
-      if (showToasts) {
-        CustomToast.error("No SIM card detected in this device");
-      }
-      return false;
-    }
-
-    bool numberExists = false;
-
-    for (var sim in sims) {
-      AppLogger.logError(
-        "SIM slot=${sim.slotIndex}, carrier=${sim.carrierName}, number=${sim.phoneNumber}",
+    // 2. Fetch SIM info using MethodChannel
+    try {
+      final List<dynamic> simList = await _simChannel.invokeMethod(
+        'getSimList',
       );
-      if (sim.phoneNumber != null && sim.phoneNumber!.isNotEmpty) {
-        if (_matches(enteredPhone, sim.phoneNumber)) {
-          numberExists = true;
-          break;
+      AppLogger.logError("Detected SIM cards via channel: ${simList.length}");
+
+      if (simList.isEmpty) {
+        if (showToasts) {
+          CustomToast.error("No SIM card detected in this device");
+        }
+        return false;
+      }
+
+      bool numberExists = false;
+
+      for (var sim in simList) {
+        final Map<dynamic, dynamic> simData = sim as Map<dynamic, dynamic>;
+        final String? phoneNumber = simData['number']?.toString();
+
+        AppLogger.logError(
+          "SIM slot=${simData['slotIndex']}, carrier=${simData['carrierName']}, number=$phoneNumber",
+        );
+
+        if (phoneNumber != null && phoneNumber.isNotEmpty) {
+          if (_matches(enteredPhone, phoneNumber)) {
+            numberExists = true;
+            break;
+          }
         }
       }
-    }
 
-    // Also check the default phoneNumber getter
-    final defaultNumber = await SimCardManager.phoneNumber;
-    AppLogger.logError("Default SIM phone number: $defaultNumber");
-    if (defaultNumber != null && defaultNumber.isNotEmpty) {
-      if (_matches(enteredPhone, defaultNumber)) {
-        numberExists = true;
+      if (!numberExists) {
+        if (showToasts) {
+          CustomToast.error(
+            "The entered mobile number does not exist on this device",
+          );
+        }
+        return false;
       }
-    }
 
-    // Strictly block if a number isn't found
-    if (!numberExists) {
+      return true;
+    } catch (e) {
+      AppLogger.logError("Failed to get SIM list via channel: $e");
       if (showToasts) {
-        CustomToast.error(
-          "The entered mobile number does not exist on this device",
-        );
+        CustomToast.error("Failed to verify SIM card");
       }
       return false;
     }
-
-    return true;
   }
+
+  // /// Old implementation of verifySimPresent using sim_card_code package.
+  // /// Kept here for easy reversion.
+  // static Future<bool> verifySimPresentOld(
+  //   String registeredPhone, {
+  //   bool showToasts = false,
+  // }) async {
+  //   final enteredPhone = registeredPhone.trim();
+
+  //   if (testNumbers.contains(enteredPhone)) {
+  //     return true; // Bypass for test numbers
+  //   }
+
+  //   // 1. Request phone permission
+  //   var status = await Permission.phone.status;
+  //   if (!status.isGranted) {
+  //     status = await Permission.phone.request();
+  //   }
+
+  //   if (!status.isGranted) {
+  //     if (showToasts) {
+  //       CustomToast.error(
+  //         "Phone permission is required to verify the SIM card",
+  //       );
+  //     }
+  //     return false;
+  //   }
+
+  //   // 2. Fetch SIM info
+  //   final sims = await SimCardManager.allSimInfo;
+  //   AppLogger.logError("Detected SIM cards: ${sims.length}");
+
+  //   if (sims.isEmpty) {
+  //     if (showToasts) {
+  //       CustomToast.error("No SIM card detected in this device");
+  //     }
+  //     return false;
+  //   }
+
+  //   bool numberExists = false;
+
+  //   for (var sim in sims) {
+  //     AppLogger.logError(
+  //       "SIM slot=${sim.slotIndex}, carrier=${sim.carrierName}, number=${sim.phoneNumber}",
+  //     );
+  //     if (sim.phoneNumber != null && sim.phoneNumber!.isNotEmpty) {
+  //       if (_matches(enteredPhone, sim.phoneNumber)) {
+  //         numberExists = true;
+  //         break;
+  //       }
+  //     }
+  //   }
+
+  //   // Also check the default phoneNumber getter
+  //   final defaultNumber = await SimCardManager.phoneNumber;
+  //   AppLogger.logError("Default SIM phone number: $defaultNumber");
+  //   if (defaultNumber != null && defaultNumber.isNotEmpty) {
+  //     if (_matches(enteredPhone, defaultNumber)) {
+  //       numberExists = true;
+  //     }
+  //   }
+
+  //   // Strictly block if a number isn't found
+  //   if (!numberExists) {
+  //     if (showToasts) {
+  //       CustomToast.error(
+  //         "The entered mobile number does not exist on this device",
+  //       );
+  //     }
+  //     return false;
+  //   }
+
+  //   return true;
+  // }
 }

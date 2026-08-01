@@ -152,7 +152,8 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     buildLabel("Outstanding", isDark),
                     SizedBox(height: 8.h),
                     TextFormField(
-                      initialValue: "₹ ${details.outstanding ?? 0.00}",
+                      initialValue:
+                          (details.outstanding ?? 0.00).currencyIndian,
                       readOnly: true,
                       decoration: fieldDecoration(context, "", isDark),
                     ),

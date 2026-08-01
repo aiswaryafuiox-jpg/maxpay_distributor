@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/model/add_wallet_balance_model.dart';
 import 'package:maxpay/domain/repository/add_wallet_balance_repo.dart';
-import 'package:dio/dio.dart';
 
 class AddWalletBalanceRepoImpl implements AddWalletBalanceRepository {
   final ApiService _apiService;
@@ -28,10 +28,8 @@ class AddWalletBalanceRepoImpl implements AddWalletBalanceRepository {
           ),
         );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.response?.data['message'] ?? e.message));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

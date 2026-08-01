@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -12,7 +13,9 @@ class OnlineTransactionRepositoryImpl implements OnlineTransactionRepository {
   OnlineTransactionRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, OnlineTransactionModel>> getOnlineTransactions(OnlineTransactionParams params) async {
+  Future<Either<Failure, OnlineTransactionModel>> getOnlineTransactions(
+    OnlineTransactionParams params,
+  ) async {
     try {
       final formData = FormData.fromMap({
         'from_date': params.fromDate,
@@ -21,18 +24,21 @@ class OnlineTransactionRepositoryImpl implements OnlineTransactionRepository {
         'status': params.status,
       });
 
-      final response = await _apiService.post(ApiRoutes.distributorOnlineTransactions, data: formData);
+      final response = await _apiService.post(
+        ApiRoutes.distributorOnlineTransactions,
+        data: formData,
+      );
       final model = OnlineTransactionModel.fromJson(response);
 
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? 'Failed to load transactions'));
+        return Left(
+          ServerFailure(model.message ?? 'Failed to load transactions'),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

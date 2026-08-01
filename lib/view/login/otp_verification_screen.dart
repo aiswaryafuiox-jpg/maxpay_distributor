@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
@@ -6,6 +6,7 @@ import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
+import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
 import '../../controller/login_controller.dart';
 import '../../data/model/login_send_otp_response_model.dart';
 
@@ -198,15 +199,12 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 30.h),
 
-                        /// ðŸ”¹ Timer Placeholder
-                        Text(
-                          'Resend code in 00:30',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            fontSize: isTablet ? 16.sp : 14.sp,
-                            color: AppColors.fav2,
-                          ),
+                        /// 🔹 Timer
+                        ResendTimerWidget(
+                          onResend: () {
+                            final controller = Get.find<LoginController>();
+                            controller.sendOtp();
+                          },
                         ),
                       ],
                     ),
