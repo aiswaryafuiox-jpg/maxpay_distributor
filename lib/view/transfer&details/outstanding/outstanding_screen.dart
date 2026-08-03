@@ -19,7 +19,7 @@ class _OutstandingScreenState extends State<OutstandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ... appBar
+      appBar: AppBar(title: Text("Outstandings")),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.w),
@@ -38,8 +38,7 @@ class _OutstandingScreenState extends State<OutstandingScreen> {
                 return OutstandingCard(
                   retailerName: item.retailerName ?? "-",
                   mobileNo: item.regMobileNumber ?? "-",
-                  outstandingAmount:
-                      "₹${item.outstandingAmount ?? '0.00'}",
+                  outstandingAmount: "₹${item.outstandingAmount ?? '0.00'}",
                 );
               },
             );

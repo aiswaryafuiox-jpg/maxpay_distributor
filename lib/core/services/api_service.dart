@@ -57,7 +57,9 @@ class ApiService {
               e.requestOptions.path.contains(ApiRoutes.updateStatusVerifyOtp) ||
               e.requestOptions.path.contains(
                 ApiRoutes.updateProfileVerifyOtp,
-              )) {
+              ) ||
+              e.requestOptions.path.contains(ApiRoutes.distributorUpdateMpin) ||
+              e.requestOptions.path.contains(ApiRoutes.distributorUpdatePin)) {
             return handler.next(e);
           }
 

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/controller/banner_controller.dart';
-import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/global_widget/wallet_balance_card.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 
-import '../../../core/utils/texthelper.dart';
 import '../../nav_page/navbar.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -36,29 +34,7 @@ class MenuScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     /// WALLET CARD
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 18.h),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF11B4B6),
-                        borderRadius: BorderRadius.circular(14.r),
-                      ),
-                      child: Column(
-                        children: [
-                          Text("Wallet Balance", style: TextHelper.max16),
-
-                          SizedBox(height: 6.h),
-
-                          Text(
-                            Get.find<AddWalletController>()
-                                .walletBalance
-                                .value
-                                .currencyIndian,
-                            style: TextHelper.lato12,
-                          ),
-                        ],
-                      ),
-                    ),
+                    const WalletBalanceCard(),
 
                     SizedBox(height: 16.h),
 
@@ -112,7 +88,7 @@ class MenuScreen extends StatelessWidget {
                         vertical: 12.h,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF11B4B6),
+                        color: AppColors.clrPrimary,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Text(

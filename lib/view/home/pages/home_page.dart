@@ -93,24 +93,30 @@ class HomePageScreen extends StatelessWidget {
                               height: 32.h,
                             ),
                           ),
-                          StatCard(
-                            onTap: () {
-                              Get.toNamed(AppRoutes.walletBalance);
-                            },
-                            title: 'Wallet Balance',
-                            bgColor: AppColors.darkBlue.withValues(alpha: 0.04),
-                            value: Get.put(
-                              AddWalletController(sl(), sl()),
-                            ).walletBalance.value.currencyIndian,
-                            textColor: isDark
-                                ? const Color.fromARGB(255, 171, 171, 171)
-                                : AppColors.darktextclr,
-                            borderColor: AppColors.card4,
-                            imageWidget: SvgPicture.asset(
-                              AssetImages.walletBalance,
-                              height: 32.h,
-                            ),
-                          ),
+                          Obx(() {
+                            final walletCtrl =
+                                Get.isRegistered<AddWalletController>()
+                                    ? Get.find<AddWalletController>()
+                                    : Get.put(AddWalletController(sl(), sl()));
+                            return StatCard(
+                              onTap: () {
+                                Get.toNamed(AppRoutes.walletBalance);
+                              },
+                              title: 'Wallet Balance',
+                              bgColor:
+                                  AppColors.darkBlue.withValues(alpha: 0.04),
+                              value:
+                                  walletCtrl.walletBalance.value.currencyIndian,
+                              textColor: isDark
+                                  ? const Color.fromARGB(255, 171, 171, 171)
+                                  : AppColors.darktextclr,
+                              borderColor: AppColors.card4,
+                              imageWidget: SvgPicture.asset(
+                                AssetImages.walletBalance,
+                                height: 32.h,
+                              ),
+                            );
+                          }),
                           BlinkingZoomCard(
                             child: StatCard(
                               onTap: () {

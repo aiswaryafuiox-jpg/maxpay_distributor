@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:maxpay/controller/wallet_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
@@ -14,6 +14,34 @@ class WalletCreditFilterWidget extends StatelessWidget {
     super.key,
     required this.controller,
   });
+
+  Future<void> _selectDate(BuildContext context, bool isFromDate) async {
+    final DateTime now = DateTime.now();
+    DateTime initial = now;
+    try {
+      final currentStr =
+          isFromDate ? controller.fromDate.value : controller.toDate.value;
+      if (currentStr.isNotEmpty) {
+        initial = DateFormat('yyyy-MM-dd').parse(currentStr);
+      }
+    } catch (_) {}
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (picked != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      if (isFromDate) {
+        controller.updateDateRange(formattedDate, controller.toDate.value);
+      } else {
+        controller.updateDateRange(controller.fromDate.value, formattedDate);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,46 +63,66 @@ class WalletCreditFilterWidget extends StatelessWidget {
         children: [
           /// Dropdown
           Obx(() {
-  return DropdownButtonFormField<int>(
-    initialValue: controller.selectedCreditTypeId.value,
-    isExpanded: true,
-
-    decoration: InputDecoration(
-      hintText: "Select Credit Type",
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-    ),
-
-    items: controller.walletCreditTypes.map((item) {
-      return DropdownMenuItem<int>(
-        value: item.id,
-        child: Text(item.name ?? ""),
-      );
-    }).toList(),
-
-    onChanged: (value) {
-      controller.selectedCreditTypeId.value = value;
-      debugPrint(value?.toString());
-    },
-  );
-}),
+            return DropdownButtonFormField<int?>(
+              initialValue: controller.selectedCreditTypeId.value,
+              isExpanded: true,
+              decoration: InputDecoration(
+                hintText: "Select Credit Type",
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              items: [
+                const DropdownMenuItem<int?>(
+                  value: null,
+                  child: Text("All Credit Types"),
+                ),
+                ...controller.walletCreditTypes.map((item) {
+                  return DropdownMenuItem<int?>(
+                    value: item.id,
+                    child: Text(item.name ?? ""),
+                  );
+                }),
+              ],
+              onChanged: (value) {
+                controller.updateSelectedType(value);
+              },
+            );
+          }),
 
           const SizedBox(height: 8),
 
           /// DATE
           Row(
             children: [
-              _DateField(
-                hint: "DD.MM.YYYY",
-                style: TextHelper.max1,
+              Expanded(
+                child: Obx(
+                  () => _DateField(
+                    text: controller.fromDate.value.isEmpty
+                        ? "DD.MM.YYYY"
+                        : controller.fromDate.value,
+                    style: TextHelper.max1,
+                    onTap: () => _selectDate(context, true),
+                  ),
+                ),
               ),
               const SizedBox(width: 8),
               const Icon(Icons.arrow_forward, size: 16),
               const SizedBox(width: 8),
-              _DateField(
-                hint: "DD.MM.YYYY",
-                style: TextHelper.max1,
+              Expanded(
+                child: Obx(
+                  () => _DateField(
+                    text: controller.toDate.value.isEmpty
+                        ? "DD.MM.YYYY"
+                        : controller.toDate.value,
+                    style: TextHelper.max1,
+                    onTap: () => _selectDate(context, false),
+                  ),
+                ),
               ),
             ],
           ),
@@ -83,8 +131,14 @@ class WalletCreditFilterWidget extends StatelessWidget {
 
           /// SEARCH
           TextField(
+            controller: controller.searchController,
+            onChanged: controller.onSearchChanged,
             decoration: InputDecoration(
               hintText: "Search",
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
               prefixIcon: Padding(
                 padding: const EdgeInsets.all(12),
                 child: SvgPicture.asset(
@@ -103,29 +157,42 @@ class WalletCreditFilterWidget extends StatelessWidget {
 }
 
 class _DateField extends StatelessWidget {
-  final String hint;
+  final String text;
   final TextStyle? style;
+  final VoidCallback onTap;
 
   const _DateField({
-    required this.hint,
+    required this.text,
     this.style,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return GestureDetector(
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 10,
+          vertical: 12,
         ),
         decoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.darkFilterBorder
+                : Colors.grey.withValues(alpha: 0.4),
+          ),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(
-          hint,
-          style: style,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              text,
+              style: style,
+            ),
+            const Icon(Icons.calendar_today, size: 14),
+          ],
         ),
       ),
     );

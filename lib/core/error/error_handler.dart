@@ -22,9 +22,7 @@ class DioErrorHandler {
             "Connection timed out. Please check your internet connection.";
         return NetworkFailure(message);
       } else if (error.type == DioExceptionType.badResponse) {
-        if (error.response?.statusCode == 404) {
-          message = "The requested resource could not be found (404).";
-        } else if (error.response?.data != null) {
+        if (error.response?.data != null) {
           if (error.response?.data is Map) {
             final data = error.response?.data as Map;
             if (data["errors"] != null && data["errors"] is Map) {

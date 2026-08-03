@@ -1,147 +1,11 @@
-// import 'package:flutter/material.dart';
-// import 'package:maxpay/core/constants/colors.dart';
-//
-// class EarningsCard extends StatelessWidget {
-//   const EarningsCard({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     final isDark = theme.brightness == Brightness.dark;
-//
-//     return Container(
-//       margin: const EdgeInsets.only(bottom: 12),
-//       padding: const EdgeInsets.all(14),
-//       decoration: BoxDecoration(
-//         color: theme.brightness == Brightness.light
-//             ? AppColors.background
-//             : const Color(0xFF2F3349),
-//
-//         borderRadius: BorderRadius.circular(12),
-//
-//         border: Border.all(color: Colors.grey.withValues(alpha: 0.1), width: 1),
-//       ),
-//
-//       child: Column(
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Text(
-//                 "Date & Time:",
-//                 style: TextStyle(
-//                   fontSize: 12,
-//                   color: isDark
-//                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-//                       : AppColors.darktextclr,
-//                   fontWeight: FontWeight.w500,
-//                 ),
-//               ),
-//
-//               Text(
-//                 "2026-11-29 14:38:43",
-//                 style: TextStyle(
-//                   fontSize: 12,
-//                  color: isDark
-//                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-//                       : AppColors.darktextclr,
-//                   fontWeight: FontWeight.w500,
-//                 ),
-//               ),
-//             ],
-//           ),
-//
-//           const SizedBox(height: 8),
-//
-//           /// 🔹 Divider
-//           Divider(color: AppColors.darktextclr),
-//
-//           const SizedBox(height: 8),
-//
-//           /// 🔹 Bottom Row
-//           Row(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               /// Avatar
-//               Row(
-//                 children: const [
-//                   CircleAvatar(
-//                     radius: 18,
-//                     backgroundColor: Colors.red,
-//                     child: Text("J", style: TextStyle(color: Colors.white)),
-//                   ),
-//
-//                   SizedBox(width: 10),
-//                 ],
-//               ),
-//
-//               /// Name + Amount
-//               Expanded(
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Text(
-//                       "Jio",
-//                       style: TextStyle(
-//                         fontSize: 14,
-//                         fontFamily: 'Poppins',
-//                         fontWeight: FontWeight.w500,
-//                         color: theme.colorScheme.onSurface,
-//                       ),
-//                     ),
-//
-//                     const SizedBox(height: 4),
-//
-//                     Text(
-//                       "Total Amount : ₹100",
-//                       style: TextStyle(
-//                         fontWeight: FontWeight.w600,
-//                         color: theme.colorScheme.onSurface,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//
-//               /// Earnings
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.end,
-//                 children: [
-//                   Text(
-//                     "My Earnings",
-//                     style: TextStyle(
-//                       fontSize: 11,
-//                         color: isDark
-//                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-//                       : AppColors.darktextclr,
-//                     ),
-//                   ),
-//
-//                   const SizedBox(height: 4),
-//
-//                   const Text(
-//                     "₹ 5",
-//                     style: TextStyle(
-//                       color: Colors.green,
-//                       fontWeight: FontWeight.bold,
-//                       fontSize: 16,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:maxpay/core/constants/colors.dart';
-
+import 'package:maxpay/data/model/my_earnings/my_earnings_model.dart';
 
 class EarningsCard extends StatelessWidget {
-  const EarningsCard({super.key});
+  final MyEarningsItem item;
+
+  const EarningsCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +15,14 @@ class EarningsCard extends StatelessWidget {
     final secondaryTextColor = isDark
         ? Colors.white.withValues(alpha: 0.7)
         : AppColors.darktextclr;
+
+    final title = item.productName?.isNotEmpty == true
+        ? item.productName!
+        : (item.productType?.isNotEmpty == true
+              ? item.productType!
+              : "Recharge");
+
+    final firstLetter = title.isNotEmpty ? title[0].toUpperCase() : "R";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -172,7 +44,7 @@ class EarningsCard extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "Transaction No: 9876543212",
+                  "Transaction No: ${item.transactionNo ?? 'N/A'}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -196,7 +68,7 @@ class EarningsCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    "29-11-2026 07:38:43PM",
+                    item.dateTime ?? 'N/A',
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       fontSize: 13,
@@ -216,18 +88,31 @@ class EarningsCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// Logo
-              const CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.red,
-                child: Text(
-                  "Jio",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              /// Logo / Avatar
+              CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.clrPrimary,
+                backgroundImage:
+                    (item.productLogo != null &&
+                        item.productLogo!.isNotEmpty &&
+                        (item.productLogo!.startsWith("http://") ||
+                            item.productLogo!.startsWith("https://")))
+                    ? NetworkImage(item.productLogo!)
+                    : null,
+                child:
+                    (item.productLogo == null ||
+                        item.productLogo!.isEmpty ||
+                        (!item.productLogo!.startsWith("http://") &&
+                            !item.productLogo!.startsWith("https://")))
+                    ? Text(
+                        firstLetter,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : null,
               ),
 
               const SizedBox(width: 12),
@@ -238,7 +123,7 @@ class EarningsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Prepaid",
+                      title,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -247,9 +132,9 @@ class EarningsCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Tr.Amount : ₹100.00",
+                      "Tr.Amount : ₹${item.transactionAmount ?? '0.00'}",
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: theme.colorScheme.onSurface,
                       ),
@@ -265,16 +150,16 @@ class EarningsCard extends StatelessWidget {
                   Text(
                     "My Earnings",
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: secondaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "₹ 5.00",
-                    style: TextStyle(
-                      fontSize: 18,
+                  Text(
+                    "₹ ${item.myEarnings ?? '0.00'}",
+                    style: const TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),

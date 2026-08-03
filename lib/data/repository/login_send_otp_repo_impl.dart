@@ -126,7 +126,7 @@ class LoginRepositoryImpl implements LoginRepository {
       final response = await apiService.post(
         ApiRoutes.distributorUpdateMpinSendOtp,
       );
-      if (response['code'] == 200 || response['status'] == true) {
+      if (response['code'] == 200 || response['status'] == true || response['success'] == true) {
         return Right(
           response['message']?.toString() ?? 'OTP sent successfully',
         );
@@ -139,23 +139,46 @@ class LoginRepositoryImpl implements LoginRepository {
   }
 
   @override
-  Future<Either<Failure, String>> updatePin(
-    String otp,
-    String newPin,
-    String confirmPin,
-  ) async {
+  Future<Either<Failure, String>> verifyUpdateMpinOtp(String otp) async {
     try {
       final formData = FormData.fromMap({
         'otp': otp,
-        'new_pin': newPin,
-        'confirm_pin': confirmPin,
       });
 
       final response = await apiService.post(
         ApiRoutes.distributorUpdateMpin,
         data: formData,
       );
-      if (response['code'] == 200 || response['status'] == true) {
+      if (response['code'] == 200 || response['status'] == true || response['success'] == true) {
+        return Right(
+          response['message']?.toString() ?? 'OTP verified successfully',
+        );
+      } else {
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to verify OTP'),
+        );
+      }
+    } catch (e) {
+      return Left(DioErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> updatePin(
+    String newPin,
+    String confirmPin,
+  ) async {
+    try {
+      final formData = FormData.fromMap({
+        'new_pin': newPin,
+        'confirm_pin': confirmPin,
+      });
+
+      final response = await apiService.post(
+        ApiRoutes.distributorUpdatePin,
+        data: formData,
+      );
+      if (response['code'] == 200 || response['status'] == true || response['success'] == true) {
         return Right(
           response['message']?.toString() ?? 'PIN updated successfully',
         );

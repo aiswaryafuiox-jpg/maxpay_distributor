@@ -10,6 +10,7 @@ class ExecutiveTopTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final conttr = Get.find<ExecutiveController>();
     Widget buildTab(
       String text,
       Color color, {
@@ -41,12 +42,14 @@ class ExecutiveTopTabs extends StatelessWidget {
         children: [
           Expanded(
             flex: 4,
-            child: buildTab(
-              "Total Executive: ${Get.find<ExecutiveController>().executives.length}",
-              AppColors.clrPrimary,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(4),
-                bottomLeft: Radius.circular(4),
+            child: Obx(
+              () => buildTab(
+                "Total Executive: ${conttr.executiveCount}",
+                AppColors.clrPrimary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  bottomLeft: Radius.circular(4),
+                ),
               ),
             ),
           ),

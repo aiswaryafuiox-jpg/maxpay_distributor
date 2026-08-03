@@ -122,6 +122,7 @@ import '../../domain/usecase/create_pin_usecase.dart';
 import '../../domain/usecase/verify_pin_usecase.dart';
 import '../../domain/usecase/update_pin_usecase.dart';
 import '../../domain/usecase/send_update_mpin_otp_usecase.dart';
+import '../../domain/usecase/verify_update_mpin_otp_usecase.dart';
 import '../../domain/usecase/update_fingerprint_usecase.dart';
 import '../../domain/usecase/logout_usecase.dart';
 import '../../controller/login_controller.dart';
@@ -540,6 +541,9 @@ Future<void> init() async {
   sl.registerLazySingleton<SendUpdateMpinOtpUseCase>(
     () => SendUpdateMpinOtpUseCase(sl()),
   );
+  sl.registerLazySingleton<VerifyUpdateMpinOtpUseCase>(
+    () => VerifyUpdateMpinOtpUseCase(sl()),
+  );
 
   sl.registerFactory(
     () => LoginController(
@@ -556,6 +560,7 @@ Future<void> init() async {
     () => UpdatePinController(
       updatePinUseCase: sl(),
       sendUpdateMpinOtpUseCase: sl(),
+      verifyUpdateMpinOtpUseCase: sl(),
     ),
   );
 
@@ -627,7 +632,12 @@ Future<void> init() async {
   sl.registerLazySingleton<GetWalletCreditListUseCase>(
     () => GetWalletCreditListUseCase(sl()),
   );
-  sl.registerFactory(() => WalletController(getWalletCreditTypeUseCase: sl()));
+  sl.registerFactory(
+    () => WalletController(
+      getWalletCreditTypeUseCase: sl(),
+      getWalletCreditListUseCase: sl(),
+    ),
+  );
 
   // App Lifecycle
   sl.registerFactory(() => AppLifecycleController());

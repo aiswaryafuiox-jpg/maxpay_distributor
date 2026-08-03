@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
+import 'package:maxpay/global_widget/wallet_balance_card.dart';
 import 'package:maxpay/view/recharge/confirm_transaction_page.dart';
 
 class MobileRechargePage extends StatefulWidget {
@@ -127,37 +128,7 @@ class _MobileRechargePageState extends State<MobileRechargePage>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// 🔹 WALLET BALANCE CARD
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 15.h),
-                decoration: BoxDecoration(
-                  color: AppColors.clrPrimary,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Wallet Balance',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      '₹ 245005.23',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const WalletBalanceCard(),
               SizedBox(height: 20.h),
 
               /// 🔹 MOBILE NUMBER INPUT

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/my_earnings/my_earnings_model.dart';
 import 'package:maxpay/domain/usecase/my_earnings/get_my_earnings_usecase.dart';
@@ -11,15 +13,21 @@ class MyEarningsController extends GetxController {
 
   var isLoading = false.obs;
   var earningsList = <MyEarningsItem>[].obs;
-  var totalEarnings = '0'.obs;
+  var totalEarnings = '0.00'.obs;
+
+  var fromDate = ''.obs;
+  var toDate = ''.obs;
+  var searchQuery = ''.obs;
 
   final fromDateController = TextEditingController();
   final toDateController = TextEditingController();
   final searchController = TextEditingController();
+  Timer? _debounceTimer;
 
   @override
   void onInit() {
     super.onInit();
+    _initializeDates();
     fetchMyEarnings();
   }
 
@@ -28,28 +36,59 @@ class MyEarningsController extends GetxController {
     fromDateController.dispose();
     toDateController.dispose();
     searchController.dispose();
+    _debounceTimer?.cancel();
     super.onClose();
+  }
+
+  void _initializeDates() {
+    final now = DateTime.now();
+    final firstDay = DateTime(now.year, now.month, 1);
+    fromDate.value = DateFormat('yyyy-MM-dd').format(firstDay);
+    toDate.value = DateFormat('yyyy-MM-dd').format(now);
+    fromDateController.text = fromDate.value;
+    toDateController.text = toDate.value;
+  }
+
+  void updateDateRange(String from, String to) {
+    fromDate.value = from;
+    toDate.value = to;
+    fromDateController.text = from;
+    toDateController.text = to;
+    fetchMyEarnings();
+  }
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query;
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchMyEarnings();
+    });
   }
 
   Future<void> fetchMyEarnings() async {
     isLoading.value = true;
     final result = await getMyEarningsUseCase.call(
-      fromDateController.text,
-      toDateController.text,
-      searchController.text,
+      fromDate.value,
+      toDate.value,
+      searchQuery.value,
     );
+
+    isLoading.value = false;
 
     result.fold(
       (failure) {
-        isLoading.value = false;
+        earningsList.clear();
+        totalEarnings.value = "0.00";
         AppLogger.logError("Failed to fetch my earnings: ${failure.message}");
         Get.snackbar("Error", failure.message);
       },
       (data) {
-        isLoading.value = false;
         if (data.data != null) {
-          totalEarnings.value = data.data!.totalEarnings ?? "0";
-          earningsList.value = data.data!.list ?? [];
+          totalEarnings.value = data.data!.totalEarnings ?? "0.00";
+          earningsList.assignAll(data.data!.list ?? []);
+        } else {
+          totalEarnings.value = "0.00";
+          earningsList.clear();
         }
       },
     );

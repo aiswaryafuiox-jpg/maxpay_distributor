@@ -16,7 +16,8 @@ import '../core/constants/routes_path.dart';
 class ExecutiveController extends GetxController {
   final GetExecutivesUseCase getExecutivesUseCase;
   final GetExecutiveDetailUseCase getExecutiveDetailUseCase;
-  final GetExecutiveCommissionPackagesUseCase getExecutiveCommissionPackagesUseCase;
+  final GetExecutiveCommissionPackagesUseCase
+  getExecutiveCommissionPackagesUseCase;
   final UpdateExecutiveUseCase updateExecutiveUseCase;
   final GetExecutiveAddWalletDetailsUseCase getExecutiveAddWalletDetailsUseCase;
   final AddExecutiveWalletUseCase addExecutiveWalletUseCase;
@@ -34,6 +35,7 @@ class ExecutiveController extends GetxController {
 
   RxBool isLoading = false.obs;
   RxList<Executive> executives = <Executive>[].obs;
+  RxInt executiveCount = 0.obs;
 
   RxBool isDetailLoading = false.obs;
   Rx<ExecutiveDetailData?> executiveDetail = Rx<ExecutiveDetailData?>(null);
@@ -41,11 +43,13 @@ class ExecutiveController extends GetxController {
   RxBool isUpdatingExecutive = false.obs;
 
   RxBool isCommissionPackagesLoading = false.obs;
-  RxList<ExecutiveCommissionPackage> commissionPackages = <ExecutiveCommissionPackage>[].obs;
+  RxList<ExecutiveCommissionPackage> commissionPackages =
+      <ExecutiveCommissionPackage>[].obs;
 
   RxBool isAddWalletDetailsLoading = false.obs;
   RxBool isAddWalletLoading = false.obs;
-  Rx<ExecutiveAddWalletDetailsData?> exeAddWalletDetails = Rx<ExecutiveAddWalletDetailsData?>(null);
+  Rx<ExecutiveAddWalletDetailsData?> exeAddWalletDetails =
+      Rx<ExecutiveAddWalletDetailsData?>(null);
 
   @override
   void onInit() {
@@ -71,26 +75,38 @@ class ExecutiveController extends GetxController {
       (data) {
         isLoading.value = false;
         executives.value = data.data?.list ?? [];
-        AppLogger.debugPrint("Executives fetched successfully: ${executives.length}");
+        executiveCount.value = data.data?.totalExecutive ?? 0;
+        AppLogger.debugPrint(
+          "Executives fetched successfully: ${executives.length}",
+        );
       },
     );
   }
 
-  Future<void> fetchExecutiveDetail(String id, {bool routeToScreen = true}) async {
+  Future<void> fetchExecutiveDetail(
+    String id, {
+    bool routeToScreen = true,
+  }) async {
     isDetailLoading.value = true;
     final result = await getExecutiveDetailUseCase.call(id);
 
     result.fold(
       (failure) {
         isDetailLoading.value = false;
-        AppLogger.logError("Failed to fetch executive detail: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        AppLogger.logError(
+          "Failed to fetch executive detail: ${failure.message}",
+        );
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (data) {
         isDetailLoading.value = false;
         executiveDetail.value = data.data;
         isDirty.value = false; // Reset dirty flag when new data is fetched
-        
+
         if (routeToScreen) {
           Get.toNamed(AppRoutes.exviewDetails);
         }
@@ -105,12 +121,16 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isCommissionPackagesLoading.value = false;
-        AppLogger.logError("Failed to fetch commission packages: ${failure.message}");
+        AppLogger.logError(
+          "Failed to fetch commission packages: ${failure.message}",
+        );
       },
       (data) {
         isCommissionPackagesLoading.value = false;
         commissionPackages.value = data.data ?? [];
-        AppLogger.debugPrint("Commission packages fetched successfully: ${commissionPackages.length}");
+        AppLogger.debugPrint(
+          "Commission packages fetched successfully: ${commissionPackages.length}",
+        );
       },
     );
   }
@@ -122,16 +142,27 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingExecutive.value = false;
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (successMessage) {
         isUpdatingExecutive.value = false;
         isDirty.value = false;
-        Get.snackbar("Success", successMessage, snackPosition: SnackPosition.BOTTOM);
-        
+        Get.snackbar(
+          "Success",
+          successMessage,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
         // Refresh the detail to sync any unreturned calculated values
         if (executiveDetail.value?.id != null) {
-          fetchExecutiveDetail(executiveDetail.value!.id.toString(), routeToScreen: false);
+          fetchExecutiveDetail(
+            executiveDetail.value!.id.toString(),
+            routeToScreen: false,
+          );
         }
       },
     );
@@ -144,14 +175,19 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isAddWalletDetailsLoading.value = false;
-        AppLogger.logError("Failed to fetch executive wallet details: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        AppLogger.logError(
+          "Failed to fetch executive wallet details: ${failure.message}",
+        );
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (data) {
         isAddWalletDetailsLoading.value = false;
         exeAddWalletDetails.value = data.data;
         // Navigation should be done after fetching successfully
-       
       },
     );
   }
@@ -159,12 +195,18 @@ class ExecutiveController extends GetxController {
   Future<void> submitAddWallet(String id, String amount) async {
     isAddWalletLoading.value = true;
     final result = await addExecutiveWalletUseCase.call(id, amount);
-    
+
     result.fold(
       (failure) {
         isAddWalletLoading.value = false;
-        AppLogger.logError("Failed to add executive wallet: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        AppLogger.logError(
+          "Failed to add executive wallet: ${failure.message}",
+        );
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (message) {
         isAddWalletLoading.value = false;
@@ -183,12 +225,20 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingExecutive.value = false;
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (successMessage) {
         isUpdatingExecutive.value = false;
         Get.back();
-        Get.snackbar("Success", successMessage, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Success",
+          successMessage,
+          snackPosition: SnackPosition.BOTTOM,
+        );
         fetchExecutives();
       },
     );

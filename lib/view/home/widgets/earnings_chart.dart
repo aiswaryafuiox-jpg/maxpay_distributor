@@ -200,8 +200,9 @@ class EarningsChart extends StatelessWidget {
                           maxContentWidth: 220.w,
                           getTooltipItem: (group, groupIndex, rod, rodIndex) {
                             final int sIdx = group.x.toInt();
-                            if (sIdx < 0 || sIdx >= seriesList.length)
+                            if (sIdx < 0 || sIdx >= seriesList.length) {
                               return null;
+                            }
 
                             final currentSeries = seriesList[sIdx];
                             final String seriesName = currentSeries.name ?? '';
@@ -218,7 +219,22 @@ class EarningsChart extends StatelessWidget {
 
                               breakdownSpans.add(
                                 TextSpan(
-                                  text: '\n$cat : $valStr',
+                                  text: '\t$cat: ',
+                                  children: [
+                                    TextSpan(
+                                      text: '$valStr\n',
+
+                                      style: TextStyle(
+                                        color: AppColors.card3.withValues(
+                                          alpha: 0.85,
+                                        ),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 11.sp,
+                                        fontFamily: 'Poppins',
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: 0.85),
                                     fontWeight: FontWeight.w500,
@@ -231,7 +247,7 @@ class EarningsChart extends StatelessWidget {
                             }
 
                             return BarTooltipItem(
-                              seriesName,
+                              "$seriesName\n",
                               TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,

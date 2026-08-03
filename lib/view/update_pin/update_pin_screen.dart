@@ -14,7 +14,9 @@ class UpdatePinPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final controller = Get.put(sl<UpdatePinController>());
+    final controller = Get.isRegistered<UpdatePinController>()
+        ? Get.find<UpdatePinController>()
+        : Get.put(sl<UpdatePinController>());
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -23,14 +25,14 @@ class UpdatePinPage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,//
           children: [
             SizedBox(height: 30.h),
             Text(
               "New M-Pin (4 digits only)",
               style: TextHelper.pin.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
-              )
+              ),
             ),
             SizedBox(height: 10.h),
             PinTextFieldWidget(
@@ -42,7 +44,7 @@ class UpdatePinPage extends StatelessWidget {
               "Confirm M-Pin",
               style: TextHelper.pin.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
-              )
+              ),
             ),
             SizedBox(height: 10.h),
             PinTextFieldWidget(
@@ -51,14 +53,16 @@ class UpdatePinPage extends StatelessWidget {
             ),
             const Spacer(),
             Center(
-              child: Obx(() => CommonButton(
-                title: controller.isLoading.value ? "Updating..." : "Submit",
-                onTap: controller.isLoading.value 
-                  ? () {} 
-                  : () {
-                      controller.updatePin();
-                    },
-              )),
+              child: Obx(
+                () => CommonButton(
+                  title: controller.isLoading.value ? "Updating..." : "Submit",
+                  onTap: controller.isLoading.value
+                      ? () {}
+                      : () {
+                          controller.updatePin();
+                        },
+                ),
+              ),
             ),
             SizedBox(height: 30.h),
           ],

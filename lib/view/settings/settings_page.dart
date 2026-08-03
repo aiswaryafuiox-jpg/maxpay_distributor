@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -182,7 +183,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               "Web Login",
                               style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize: 14.sp,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
@@ -199,6 +200,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     borderRadius: BorderRadius.circular(8.r),
                                   ),
                                   child: Row(
+                                    spacing: 3.w,
                                     children: [
                                       Text(
                                         "Link",
@@ -208,14 +210,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                         ),
                                       ),
 
-                                      SvgPicture.asset(
-                                        AssetImages.linkShare,
-                                        width: 15.w,
-                                        height: 15.h,
-                                        colorFilter: const ColorFilter.mode(
-                                          Colors.white,
-                                          BlendMode.srcIn,
-                                        ),
+                                      Icon(
+                                        Ionicons.arrow_redo_outline,
+                                        size: 15.w,
+                                        color: AppColors.white,
                                       ),
                                     ],
                                   ),
@@ -226,16 +224,11 @@ class _SettingsPageState extends State<SettingsPage> {
                                   onTap: () {
                                     Get.toNamed(AppRoutes.scanWebLogin);
                                   },
-                                  child: Icon(
-                                    Icons.qr_code_2,
-                                    size: 50,
-                                    color: AppColors.darkbgBlack,
+                                  child: Image.asset(
+                                    AssetImages.qrCode,
+                                    width: 35.w,
+                                    height: 35.w,
                                   ),
-                                  // Image.asset(
-                                  //   AssetImages.qrCode,
-                                  //   width: 50.w,
-                                  //   height: 50.w,
-                                  // ),
                                 ),
                               ],
                             ),
@@ -280,11 +273,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _buildMenuTile(
                       context,
-                      'Account (active/inactive)',
+                      'Account ',
                       () {
                         _showStatusDialog();
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
+                      '(active/inactive)',
                     ),
                     _buildMenuTile(
                       context,
@@ -429,9 +423,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildMenuTile(
     BuildContext context,
     String title,
+
     VoidCallback onTap,
-    Widget leadingIcon,
-  ) {
+    Widget leadingIcon, [
+    String? minititle,
+  ]) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -449,15 +445,40 @@ class _SettingsPageState extends State<SettingsPage> {
         dense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 8.h),
         leading: leadingIcon,
-        title: Text(
-          title,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontSize: 16.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
+        title: minititle != null
+            ? Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: title,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.sp,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    TextSpan(
+                      text: minititle,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13.sp,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                  color: colorScheme.onSurface,
+                ),
+              ),
         trailing: Icon(
           Icons.chevron_right,
           color: colorScheme.onSurface.withValues(alpha: 0.5),

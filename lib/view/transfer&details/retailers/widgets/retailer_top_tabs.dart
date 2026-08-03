@@ -41,12 +41,14 @@ class RetailerTopTabs extends StatelessWidget {
         children: [
           Expanded(
             flex: 4,
-            child: buildTab(
-              "Total Retailer: ${Get.find<RetailerController>().retailers.length}",
-              AppColors.clrPrimary,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(4),
-                bottomLeft: Radius.circular(4),
+            child: Obx(
+              () => buildTab(
+                "Total Retailer: ${Get.find<RetailerController>().retailers.length}",
+                AppColors.clrPrimary,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(4),
+                  bottomLeft: Radius.circular(4),
+                ),
               ),
             ),
           ),
