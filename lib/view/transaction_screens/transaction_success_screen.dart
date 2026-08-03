@@ -246,9 +246,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     context,
                     hint: "Search",
                     controller: _controller.searchController,
-                    onChanged: (v) {
-                      // Optional: debounce this or rely on submitted
-                    },
+                    onChanged: _controller.onSearchChanged,
                     onSubmitted: (v) {
                       _controller.fetchTransactionReport();
                     },
