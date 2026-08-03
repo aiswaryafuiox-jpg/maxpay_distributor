@@ -43,7 +43,9 @@ import 'package:maxpay/view/login_history/login_history_screen.dart';
 import 'package:maxpay/view/mobile_recharge/mobile_recharge_page.dart';
 import 'package:maxpay/view/my_earning/my_earning_screen.dart';
 import 'package:maxpay/view/nav_page/nav_page.dart';
+import 'package:maxpay/view/notifications/notification_screen.dart';
 import 'package:maxpay/view/refund/refund_screen.dart';
+import 'package:maxpay/view/search/search_screen.dart';
 import 'package:maxpay/view/report/payoutrequest/payout_request_screen.dart';
 import 'package:maxpay/view/settings/commission_settings/commission_settings_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
@@ -331,6 +333,14 @@ class AppPages {
     GetPage(
       name: AppRoutes.bulkPackageChange,
       page: () => const BulkPackageChangeScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.search,
+      page: () => const SearchScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.notification,
+      page: () => NotificationPage(),
     ),
   ];
 }

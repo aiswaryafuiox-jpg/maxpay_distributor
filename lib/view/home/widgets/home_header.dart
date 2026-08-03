@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/image_loader.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/date_uttils.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/utils/theme.dart';
@@ -109,7 +110,9 @@ class HomeHeaderSection extends StatelessWidget {
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.search);
+                      },
                       icon: Icon(
                         Ionicons.search_outline,
                         size: isTablet ? 32.sp : 25.sp,
@@ -121,7 +124,9 @@ class HomeHeaderSection extends StatelessWidget {
 
                     /// NOTIFICATION
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(AppRoutes.notification);
+                      },
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [

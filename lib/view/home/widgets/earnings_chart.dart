@@ -79,14 +79,14 @@ class EarningsChart extends StatelessWidget {
         final double interval = (maxY / 3.0).clamp(1.0, double.infinity);
 
         // Vibrant gradient colors for each series bar
-        final List<List<Color>> barGradients = [
-          [const Color(0xFFFF334B), const Color(0xFFFF5252)], // Red/Coral
-          [const Color(0xFF2FD68E), const Color(0xFF4ADE80)], // Mint/Green
-          [const Color(0xFF1E86FF), const Color(0xFF3B82F6)], // Electric Blue
-          [const Color(0xFFFF8B1E), const Color(0xFFFFA726)], // Orange
-          [const Color(0xFF8B5CF6), const Color(0xFFA78BFA)], // Purple
-          [const Color(0xFF06B6D4), const Color(0xFF22D3EE)], // Cyan
-          [const Color(0xFFEC4899), const Color(0xFFF472B6)], // Pink
+        final List<Color> barGradients = [
+          AppColors.redClr,
+          AppColors.active1Bg,
+          AppColors.blueColor,
+          const Color(0xFF1E86FF),
+          const Color(0xFF8B5CF6),
+          const Color(0xFF06B6D4),
+          const Color(0xFFEC4899),
         ];
 
         final double barWidth = (160.w / seriesList.length).clamp(16.w, 25.w);
@@ -348,11 +348,7 @@ class EarningsChart extends StatelessWidget {
                           barRods: [
                             BarChartRodData(
                               toY: val,
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: grad,
-                              ),
+                              color: grad,
                               width: barWidth,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8.r),

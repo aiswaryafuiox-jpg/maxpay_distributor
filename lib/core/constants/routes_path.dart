@@ -16,7 +16,7 @@ class AppRoutes {
   //
   static const String onlineTransaction = '/online-transaction';
   static const String payoutDetails = '/payout-details';
-  static const payoutRequest ='/payout-request';
+  static const payoutRequest = '/payout-request';
   static const paymentRequest = '/payment-request';
 
   static const String withdrawrequest1 = '/withdrawrequest1';
@@ -26,9 +26,9 @@ class AppRoutes {
   static const String retaddWalletScreen = "/retaddWalletScreen";
   static const String exeAddWalletScreen = "/exeAddWalletScreen";
   static const retviewDetailsScreen = "/retviewDetailsScreen";
-  static const executive ='/executive';
-  static const createExecutive="/createExecutive";
-  static const exviewDetails ="/exviewDetails";
+  static const executive = '/executive';
+  static const createExecutive = "/createExecutive";
+  static const exviewDetails = "/exviewDetails";
   static const autoTransferScreen = "/autoTransferScreen";
   static const transferDetail = "/transfer-detail";
 
@@ -42,14 +42,14 @@ class AppRoutes {
   static const String webotp = '/webotp';
   static const String websuccess = '/websuccess';
   static const String setting = '/setting';
-  static const String commission ='/commission';
+  static const String commission = '/commission';
   static const String grade = '/grade';
   static const String prepaid = '/prepaid';
   static const String menu = '/menu';
   static const String dth = '/dth';
   static const String addwallet = '/addwallet';
-  static const String requestWalletpending= '/reqWalletpending';
-  static const String dueAmountAddwallet= '/dueAmountAddwallet';
+  static const String requestWalletpending = '/reqWalletpending';
+  static const String dueAmountAddwallet = '/dueAmountAddwallet';
   static const String transaction = '/transaction';
   static const String veirfypin = '/veirfypin';
   static const String statement = '/statement';
@@ -63,12 +63,11 @@ class AppRoutes {
   static const String outstanding = '/outstanding';
   static const String dayBook = "/dayBook";
   static const String regChargeCredit = '/reg-charge-credit';
-  static const String  payOutDetails = '/payout-detail';
-  static const String  payOutStatus = '/payout-status';
+  static const String payOutDetails = '/payout-detail';
+  static const String payOutStatus = '/payout-status';
   static const String bulkPackageCharge = '/bulk-package-charge';
   static const String bulkPackageChange = '/bulk-package-change';
   static const scanWebLogin = "/scanWebLogin";
-
-
-
+  static const String search = '/search';
+  static const String notification = '/notification';
 }

@@ -8,11 +8,14 @@ class WalletQrHistory {
 
   WalletQrHistory.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    if (json['data'] != null) {
+    if (json['data']['list'] != null &&
+        (json['data']['list'] as List).isNotEmpty) {
       data = <WalletQrHistoryData>[];
-      json['data'].forEach((v) {
+      json['data']['list'].forEach((v) {
         data!.add(WalletQrHistoryData.fromJson(v));
       });
+    } else {
+      data = [];
     }
     message = json['message'];
     code = json['code'];

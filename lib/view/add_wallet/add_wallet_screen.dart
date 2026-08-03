@@ -226,7 +226,7 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
-        title: 'Wallet Request',
+        title: 'Add Wallet',
         onBack: () {
           Get.find<NavbarController>().setIndex(0);
         },

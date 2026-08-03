@@ -88,6 +88,7 @@ import 'package:maxpay/controller/statement_controller.dart';
 import 'package:maxpay/controller/statement_read_more_controller.dart';
 import 'package:maxpay/controller/reg_charge_controller.dart';
 import 'package:maxpay/controller/online_transaction_controller.dart';
+import 'package:maxpay/controller/search_transaction_controller.dart';
 
 import '../../data/repository/login_send_otp_repo_impl.dart';
 import '../../domain/repository/login_send_otp_repo.dart';
@@ -434,6 +435,7 @@ Future<void> init() async {
     () => GetTransactionSuccessReportUseCase(sl()),
   );
   sl.registerFactory(() => TransactionController(sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => SearchTransactionController(sl()));
 
   // CashBack
   sl.registerLazySingleton<CashBackRepository>(() => CashBackRepoImpl(sl()));
