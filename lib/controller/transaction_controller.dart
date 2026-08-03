@@ -33,7 +33,8 @@ class TransactionController extends GetxController {
   
   RxString currentStatus = "success".obs;
   final TextEditingController searchController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
+  final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
 
   String fromDate = '';
   String toDate = '';
@@ -44,9 +45,18 @@ class TransactionController extends GetxController {
     final DateTime today = DateTime.now();
     fromDate = DateFormat('yyyy-MM-dd').format(today);
     toDate = DateFormat('yyyy-MM-dd').format(today);
-    dateController.text = DateFormat('dd.MM.yyyy').format(today);
+    fromDateController.text = DateFormat('dd.MM.yyyy').format(today);
+    toDateController.text = DateFormat('dd.MM.yyyy').format(today);
 
     fetchTransactionProducts();
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    fromDateController.dispose();
+    toDateController.dispose();
+    super.onClose();
   }
 
   Future<void> fetchTransactionReport({String? statusOverride}) async {
@@ -82,28 +92,28 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> selectDateRange(BuildContext context) async {
-    final picked = await showDateRangePicker(
+  Future<void> selectDate(BuildContext context, {required bool isFromDate}) async {
+    final DateTime initialDate = isFromDate
+        ? (DateTime.tryParse(fromDate) ?? DateTime.now())
+        : (DateTime.tryParse(toDate) ?? DateTime.now());
+
+    final picked = await showDatePicker(
       context: context,
+      initialDate: initialDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      initialDateRange: DateTimeRange(
-        start: DateTime.tryParse(fromDate) ?? DateTime.now(),
-        end: DateTime.tryParse(toDate) ?? DateTime.now(),
-      ),
     );
 
     if (picked != null) {
-      fromDate = DateFormat('yyyy-MM-dd').format(picked.start);
-      toDate = DateFormat('yyyy-MM-dd').format(picked.end);
-      
-      final displayStart = DateFormat('dd.MM.yyyy').format(picked.start);
-      final displayEnd = DateFormat('dd.MM.yyyy').format(picked.end);
-      
-      if (fromDate == toDate) {
-        dateController.text = displayStart;
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      final displayDate = DateFormat('dd.MM.yyyy').format(picked);
+
+      if (isFromDate) {
+        fromDate = formattedDate;
+        fromDateController.text = displayDate;
       } else {
-        dateController.text = "$displayStart - $displayEnd";
+        toDate = formattedDate;
+        toDateController.text = displayDate;
       }
 
       fetchTransactionReport();

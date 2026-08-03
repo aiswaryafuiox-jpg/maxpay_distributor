@@ -188,15 +188,12 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
 
-                            SizedBox(height: 6.h),
-
                             Row(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
-                                    vertical: 6.h,
-                                  ),
+                                  height: 24,
+                                  padding: .symmetric(horizontal: 12),
+                                  alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF00BC62),
                                     borderRadius: BorderRadius.circular(8.r),
@@ -210,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           fontSize: 13,
                                         ),
                                       ),
-                                      SizedBox(width: 4.w),
+
                                       SvgPicture.asset(
                                         AssetImages.linkShare,
                                         width: 15.w,
@@ -229,11 +226,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                   onTap: () {
                                     Get.toNamed(AppRoutes.scanWebLogin);
                                   },
-                                  child: Image.asset(
-                                    AssetImages.qrCode,
-                                    width: 50.w,
-                                    height: 50.w,
+                                  child: Icon(
+                                    Icons.qr_code_2,
+                                    size: 50,
+                                    color: AppColors.darkbgBlack,
                                   ),
+                                  // Image.asset(
+                                  //   AssetImages.qrCode,
+                                  //   width: 50.w,
+                                  //   height: 50.w,
+                                  // ),
                                 ),
                               ],
                             ),

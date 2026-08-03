@@ -46,7 +46,7 @@ class WebLoginController extends GetxController {
         },
         (success) {
           CustomToast.success(success);
-          Get.back(); // Or navigate to success screen
+          Get.offNamed('/websuccess');
         },
       );
     } else {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/image_loader.dart';
@@ -23,7 +24,7 @@ class HomeHeaderSection extends StatelessWidget {
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
       final isDark = themeController.isDarkMode;
-      
+
       final profileController = Get.find<ProfileController>();
       final profileData = profileController.profileData.value;
 
@@ -43,12 +44,13 @@ class HomeHeaderSection extends StatelessWidget {
                           radius: 20,
                           backgroundColor: Colors.red.withValues(alpha: 0.2),
                           child: NetworkImageWithLoader(
-                            profileData?.profileImg ?? 'https://i.pravatar.cc/150?u=martin',
+                            profileData?.profileImg ?? '',
                             radius: 20,
                             errorWidget: Text(
-                              (profileData?.name != null && profileData!.name!.isNotEmpty) 
-                                ? profileData.name![0].toUpperCase() 
-                                : 'M',
+                              (profileData?.name != null &&
+                                      profileData!.name!.isNotEmpty)
+                                  ? profileData.name![0].toUpperCase()
+                                  : 'M',
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: AppColors.clrPrimary,
@@ -109,7 +111,7 @@ class HomeHeaderSection extends StatelessWidget {
                       constraints: const BoxConstraints(),
                       onPressed: () {},
                       icon: Icon(
-                        Icons.search,
+                        Ionicons.search_outline,
                         size: isTablet ? 32.sp : 25.sp,
                         color: colorScheme.onSurface,
                       ),
@@ -124,18 +126,18 @@ class HomeHeaderSection extends StatelessWidget {
                         clipBehavior: Clip.none,
                         children: [
                           Icon(
-                            Icons.notifications_outlined,
+                            Ionicons.notifications_outline,
                             size: isTablet ? 32.sp : 25.sp,
                             color: colorScheme.onSurface,
                           ),
 
                           Positioned(
-                            right: -4,
-                            top: -4,
+                            right: 3,
+                            top: 2,
                             child: FadeIn(
                               duration: const Duration(milliseconds: 300),
                               child: Container(
-                                padding: EdgeInsets.all(4.r),
+                                padding: EdgeInsets.all(1.r),
                                 decoration: BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.circle,
@@ -147,20 +149,20 @@ class HomeHeaderSection extends StatelessWidget {
                                   ),
                                 ),
                                 constraints: BoxConstraints(
-                                  minWidth: 16.w,
-                                  minHeight: 16.h,
+                                  minWidth: 10.w,
+                                  minHeight: 10.h,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    "99",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 7.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                                // child: Center(
+                                //   child: Text(
+                                //     "99",
+                                //     style: TextStyle(
+                                //       color: Colors.white,
+                                //       fontSize: 7.sp,
+                                //       fontWeight: FontWeight.bold,
+                                //     ),
+                                //     textAlign: TextAlign.center,
+                                //   ),
+                                // ),
                               ),
                             ),
                           ),

@@ -38,6 +38,7 @@ dependencies:
   fl_chart: ^1.2.0
   flutter:
     sdk: flutter
+  flutter_ionicons: ^8.0.13
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.3.0
   fluttertoast: ^9.1.0

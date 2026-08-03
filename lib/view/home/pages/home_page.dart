@@ -78,7 +78,7 @@ class HomePageScreen extends StatelessWidget {
                         mainAxisSpacing: 10.h,
                         crossAxisSpacing: 10.w,
                         padding: EdgeInsets.all(4.w),
-                        mainAxisExtent: 110.h,
+                        mainAxisExtent: 120.h,
                         childAspectRatio: 0.9,
                         children: [
                           StatCard(
