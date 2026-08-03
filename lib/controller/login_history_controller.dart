@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/login_history_model.dart';
@@ -16,10 +18,28 @@ class LoginHistoryController extends GetxController {
   var toDate = ''.obs;
   var searchText = ''.obs;
 
+  final searchController = TextEditingController();
+  Timer? _debounceTimer;
+
   @override
   void onInit() {
     super.onInit();
     fetchLoginHistory();
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    _debounceTimer?.cancel();
+    super.onClose();
+  }
+
+  void onSearchChanged(String value) {
+    searchText.value = value;
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchLoginHistory();
+    });
   }
 
   Future<void> fetchLoginHistory() async {
