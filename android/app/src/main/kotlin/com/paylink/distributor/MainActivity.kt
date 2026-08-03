@@ -1,4 +1,4 @@
-package com.example.maxpay
+package com.paylink.distributor
 
 import android.content.Intent
 import android.content.pm.PackageManager
