@@ -12,7 +12,7 @@ import 'package:maxpay/domain/usecase/create_qr_usecase.dart';
 import 'package:maxpay/data/model/wallet_qr_history_model.dart';
 import 'package:maxpay/view/add_wallet_home/widge/add_wallet_dialogue.dart';
 
-class AddWalletController extends GetxController with WidgetsBindingObserver{
+class AddWalletController extends GetxController with WidgetsBindingObserver {
   final GetAddWalletBalanceUseCase getAddWalletBalanceUseCase;
   final CreateQrUsecase createQrUsecase;
 
@@ -47,9 +47,8 @@ class AddWalletController extends GetxController with WidgetsBindingObserver{
     );
   }
 
-
   static const MethodChannel _channel = MethodChannel(
-    "com.paylink.retailor/upi_choose",
+    "com.paylink.distributor/upi_choose",
   );
   Timer? _timer;
   final RxInt remainingSeconds = 300.obs;
@@ -60,7 +59,6 @@ class AddWalletController extends GetxController with WidgetsBindingObserver{
   Rx<WalletQrHistory> walletQrHistory = WalletQrHistory().obs;
   RxList<Map<String, dynamic>> upiApps = <Map<String, dynamic>>[].obs;
   RxBool isLoadingUpiApps = false.obs;
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

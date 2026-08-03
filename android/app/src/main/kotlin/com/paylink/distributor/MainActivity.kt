@@ -15,7 +15,7 @@ import android.content.Context
 import android.telephony.SubscriptionManager
 
 class MainActivity : FlutterFragmentActivity() {
-   private val CHANNEL = "com.paylink.retailor/upi_choose"
+   private val CHANNEL = "com.paylink.distributor/upi_choose"
     private val SIM_CHANNEL = "sim_verification"
     private val TAG = "UPI_DEBUG"
 
