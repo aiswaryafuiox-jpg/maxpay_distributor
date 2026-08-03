@@ -112,7 +112,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(isMenuScreen: true),
     );
   }
 

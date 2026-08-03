@@ -1,6 +1,5 @@
 import 'package:maxpay/core/constants/routes_path.dart';
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +10,8 @@ import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 
 class CustomBottomNavBar extends GetView<NavbarController> {
-  const CustomBottomNavBar({super.key});
+  final bool isMenuScreen;
+  const CustomBottomNavBar({super.key, this.isMenuScreen = false});
 
   final List<Map<String, dynamic>> _baseIcons = const [
     {"image": AssetImages.home, "label": "Home"},
@@ -33,10 +33,18 @@ class CustomBottomNavBar extends GetView<NavbarController> {
         currentIndex: selectedIndex,
         elevation: 12,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: isDark ? AppColors.clrPrimary : AppColors.blueColor,
+        selectedItemColor: isMenuScreen
+            ? Color.fromRGBO(255, 141, 40, 1)
+            : isDark
+            ? AppColors.clrPrimary
+            : AppColors.blueColor,
         unselectedItemColor: Colors.grey,
         selectedLabelStyle: TextStyle(
-          color: isDark ? AppColors.clrPrimary : AppColors.blueColor,
+          color: isMenuScreen
+              ? Color.fromRGBO(255, 141, 40, 1)
+              : isDark
+              ? AppColors.clrPrimary
+              : AppColors.blueColor,
           fontSize: 10.sp,
           fontWeight: FontWeight.w500,
           fontFamily: 'Poppins',
@@ -62,7 +70,11 @@ class CustomBottomNavBar extends GetView<NavbarController> {
               e["image"],
               colorFilter: ColorFilter.mode(
                 isSelected
-                    ? (isDark ? AppColors.clrPrimary : AppColors.blueColor)
+                    ? isMenuScreen
+                          ? Color.fromRGBO(255, 141, 40, 1)
+                          : (isDark
+                                ? AppColors.clrPrimary
+                                : AppColors.blueColor)
                     : Colors.grey,
                 BlendMode.srcIn,
               ),
@@ -74,9 +86,3 @@ class CustomBottomNavBar extends GetView<NavbarController> {
     });
   }
 }
-
-
-
-
-
-
