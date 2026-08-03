@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/transfer_detail_list_model.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
@@ -10,12 +13,23 @@ class TransferDetailController extends GetxController {
   final GetTransferDetailListUseCase getTransferDetailListUseCase;
   final ReverseWalletTransferUseCase reverseWalletTransferUseCase;
 
-  TransferDetailController(this.getTransferDetailsUseCase, this.getTransferDetailListUseCase, this.reverseWalletTransferUseCase);
+  TransferDetailController(
+    this.getTransferDetailsUseCase,
+    this.getTransferDetailListUseCase,
+    this.reverseWalletTransferUseCase,
+  );
 
   RxBool isLoading = false.obs;
   RxString selectedTransactionType = "Transfer".obs;
   RxBool isReverse = false.obs;
   RxString totalAmount = "₹0.00".obs;
+
+  RxString fromDate = ''.obs;
+  RxString toDate = ''.obs;
+  RxString searchQuery = ''.obs;
+
+  final searchController = TextEditingController();
+  Timer? _debounceTimer;
 
   RxList<Data> transferDetails = <Data>[].obs;
   RxList<TransferDetailListItem> transferDetailList = <TransferDetailListItem>[].obs;
@@ -23,8 +37,28 @@ class TransferDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    final now = DateTime.now();
+    final firstDay = DateTime(now.year, now.month, 1);
+    fromDate.value = DateFormat('yyyy-MM-dd').format(firstDay);
+    toDate.value = DateFormat('yyyy-MM-dd').format(now);
+
     getTransferDetails();
     fetchTransferDetailList();
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    _debounceTimer?.cancel();
+    super.onClose();
+  }
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query;
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchTransferDetailList();
+    });
   }
 
   Future<void> getTransferDetails() async {
@@ -44,9 +78,19 @@ class TransferDetailController extends GetxController {
     isLoading.value = false;
   }
 
-  Future<void> fetchTransferDetailList({String type = 'all', String fromDate = '2026-01-01', String toDate = '2026-12-31', String search = ''}) async {
+  Future<void> fetchTransferDetailList({
+    String? type,
+    String? fromDateStr,
+    String? toDateStr,
+    String? searchStr,
+  }) async {
     isLoading.value = true;
-    final result = await getTransferDetailListUseCase(type, fromDate, toDate, search);
+    final t = type ?? (isReverse.value ? 'reverse' : 'all');
+    final f = fromDateStr ?? (fromDate.value.isNotEmpty ? fromDate.value : '2026-01-01');
+    final to = toDateStr ?? (toDate.value.isNotEmpty ? toDate.value : '2026-12-31');
+    final s = searchStr ?? searchQuery.value;
+
+    final result = await getTransferDetailListUseCase(t, f, to, s);
     result.fold(
       (failure) {
         Get.snackbar("Error", failure.message);
@@ -54,9 +98,11 @@ class TransferDetailController extends GetxController {
       (response) {
         if (response.data?.list != null) {
           transferDetailList.assignAll(response.data!.list!);
+        } else {
+          transferDetailList.clear();
         }
         totalAmount.value = "₹ ${response.data?.summaryAmount ?? '0.00'}";
-      }
+      },
     );
     isLoading.value = false;
   }
@@ -69,6 +115,7 @@ class TransferDetailController extends GetxController {
       selectedTransactionType.value = "Transfer";
       isReverse.value = false;
     }
+    fetchTransferDetailList();
   }
 
   Future<void> reverseWalletTransfer(String id) async {
@@ -81,7 +128,7 @@ class TransferDetailController extends GetxController {
       (response) {
         Get.snackbar("Success", response.message ?? "Transfer reversed successfully");
         fetchTransferDetailList(); // Refresh the list
-      }
+      },
     );
     isLoading.value = false;
   }

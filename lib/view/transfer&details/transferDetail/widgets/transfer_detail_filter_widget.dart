@@ -8,12 +8,16 @@ class TransferDetailFilterWidget extends StatefulWidget {
   final String selectedType;
   final ValueChanged<String> onChanged;
   final List<String> transferTypes;
+  final TextEditingController? searchController;
+  final ValueChanged<String>? onSearchChanged;
 
   const TransferDetailFilterWidget({
     super.key,
     required this.selectedType,
     required this.onChanged,
     required this.transferTypes,
+    this.searchController,
+    this.onSearchChanged,
   });
 
   @override
@@ -68,6 +72,8 @@ class _TransferDetailFilterWidgetState
 
           /// SEARCH
           TextField(
+            controller: widget.searchController,
+            onChanged: widget.onSearchChanged,
             style: TextHelper.max9(context),
             decoration: InputDecoration(
               hintText: "Search",

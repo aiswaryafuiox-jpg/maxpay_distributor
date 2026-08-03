@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/data/model/report/reg_charge_detail_model.dart';
@@ -19,11 +20,19 @@ class RegChargeController extends GetxController {
   RxNum totalDistributorCommission = RxNum(0);
   RxNum totalExecutiveCommission = RxNum(0);
 
+  Timer? _debounceTimer;
+
   @override
   void onInit() {
     super.onInit();
     _initializeDates();
     fetchRegChargeDetails();
+  }
+
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    super.onClose();
   }
 
   void _initializeDates() {
@@ -41,7 +50,10 @@ class RegChargeController extends GetxController {
 
   void updateSearchQuery(String query) {
     searchQuery.value = query;
-    fetchRegChargeDetails();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchRegChargeDetails();
+    });
   }
 
   Future<void> fetchRegChargeDetails() async {

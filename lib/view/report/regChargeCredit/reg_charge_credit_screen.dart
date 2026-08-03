@@ -78,6 +78,7 @@ class _RegChargeCreditScreenState extends State<RegChargeCreditScreen> {
                 TextField(
                   controller: _searchController,
                   style: TextStyle(color: theme.colorScheme.onSurface),
+                  onChanged: (value) => controller.updateSearchQuery(value),
                   onSubmitted: (value) => controller.updateSearchQuery(value),
                   decoration: InputDecoration(
                     hintText: 'Search',

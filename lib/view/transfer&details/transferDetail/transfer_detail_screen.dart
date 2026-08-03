@@ -96,6 +96,8 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                       .map((e) => e.name ?? "")
                       .toList(),
                   selectedType: controller.selectedTransactionType.value,
+                  searchController: controller.searchController,
+                  onSearchChanged: controller.onSearchChanged,
                   onChanged: (value) {
                     controller.changeTransactionType(value);
                   },

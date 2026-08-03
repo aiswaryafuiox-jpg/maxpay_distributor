@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/daybook/day_book_products_model.dart';
@@ -29,11 +30,14 @@ class DayBookController extends GetxController {
   final toDateController = TextEditingController();
   final searchController = TextEditingController();
 
+  Timer? _debounceTimer;
+
   @override
   void onClose() {
     fromDateController.dispose();
     toDateController.dispose();
     searchController.dispose();
+    _debounceTimer?.cancel();
     super.onClose();
   }
 
@@ -41,6 +45,13 @@ class DayBookController extends GetxController {
   void onInit() {
     super.onInit();
     fetchProducts();
+  }
+
+  void onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchDayBookList();
+    });
   }
 
   Future<void> fetchProducts() async {

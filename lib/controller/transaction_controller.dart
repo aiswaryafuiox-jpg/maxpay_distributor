@@ -39,6 +39,8 @@ class TransactionController extends GetxController {
   String fromDate = '';
   String toDate = '';
 
+  Timer? _debounceTimer;
+
   @override
   void onInit() {
     super.onInit();
@@ -53,10 +55,18 @@ class TransactionController extends GetxController {
 
   @override
   void onClose() {
+    _debounceTimer?.cancel();
     searchController.dispose();
     fromDateController.dispose();
     toDateController.dispose();
     super.onClose();
+  }
+
+  void onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchTransactionReport();
+    });
   }
 
   Future<void> fetchTransactionReport({String? statusOverride}) async {
