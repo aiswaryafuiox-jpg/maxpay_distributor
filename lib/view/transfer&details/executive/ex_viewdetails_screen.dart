@@ -235,7 +235,10 @@ class _ExeViewDetailsScreenState extends State<ExeViewDetailsScreen> {
             SizedBox(height: 14.h),
 
             buildLabel("Wallet Balance", isDark, context),
-            buildReadOnlyField(context, "₹${detail?.walletBalance ?? 0.00}"),
+            buildReadOnlyField(
+              context,
+              (detail?.walletBalance ?? 0.00).currencyIndian,
+            ),
 
             SizedBox(height: 14.h),
 

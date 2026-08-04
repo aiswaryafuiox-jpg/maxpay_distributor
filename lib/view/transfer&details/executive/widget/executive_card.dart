@@ -99,9 +99,9 @@ class ExecutiveCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "${executive.dueAmount?.currencyIndian ?? 0.00}",
+                    (executive.dueAmount ?? 0.00).currencyIndian,
                     style: TextHelper.max2.copyWith(
-                      color: Color(0xFFEE0023),
+                      color: const Color(0xFFEE0023),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -119,7 +119,8 @@ class ExecutiveCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    (executive.walletBalance ?? 0.00).currencyIndian,
+                    (executive.walletBalance ?? executive.walletAmount ?? 0.00)
+                        .currencyIndian,
                     style: TextHelper.max2.copyWith(
                       color: AppColors.clrPrimary,
                       fontSize: 20,

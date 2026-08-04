@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../domain/usecase/update_pin_usecase.dart';
 import '../domain/usecase/send_update_mpin_otp_usecase.dart';
@@ -49,13 +50,17 @@ class UpdatePinController extends GetxController {
       },
       (successMessage) {
         isOtpLoading.value = false;
-        Get.toNamed(AppRoutes.updateMpinOtp);
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
+        if (Get.currentRoute != AppRoutes.updateMpinOtp) {
+          Get.toNamed(AppRoutes.updateMpinOtp);
+        }
+        Fluttertoast.showToast(
+          msg: "OTP Sent Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
-          colorText: Colors.white,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       },
     );

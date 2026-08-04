@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
@@ -31,7 +32,7 @@ class TransactionController extends GetxController {
 
   RxBool isReportLoading = false.obs;
   RxList<TransactionReportItem> transactions = <TransactionReportItem>[].obs;
-  
+
   RxString currentStatus = "success".obs;
   final TextEditingController searchController = TextEditingController();
   final TextEditingController fromDateController = TextEditingController();
@@ -90,7 +91,11 @@ class TransactionController extends GetxController {
       (failure) {
         isReportLoading.value = false;
         AppLogger.logError("Failed to fetch report: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (response) {
         isReportLoading.value = false;
@@ -103,7 +108,10 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> selectDate(BuildContext context, {required bool isFromDate}) async {
+  Future<void> selectDate(
+    BuildContext context, {
+    required bool isFromDate,
+  }) async {
     final DateTime initialDate = isFromDate
         ? (DateTime.tryParse(fromDate) ?? DateTime.now())
         : (DateTime.tryParse(toDate) ?? DateTime.now());
@@ -134,12 +142,16 @@ class TransactionController extends GetxController {
   Future<void> fetchTransactionProducts() async {
     isProductsLoading.value = true;
     final result = await getTransactionProductsUseCase.call();
-    
+
     result.fold(
       (failure) {
         isProductsLoading.value = false;
         AppLogger.logError("Failed to fetch products: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (response) {
         isProductsLoading.value = false;
@@ -151,15 +163,22 @@ class TransactionController extends GetxController {
   }
 
   Future<void> fetchTransactionDetail(int id) async {
-    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
-    
+    Get.dialog(
+      const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
     final result = await getTransactionDetailUseCase.call(id);
-    
+
     Get.back(); // close loading dialog
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        Get.snackbar(
+          "Error",
+          failure.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       },
       (response) {
         if (response.data != null) {
@@ -181,10 +200,16 @@ class TransactionController extends GetxController {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Transaction Detail", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              "Transaction Detail",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
             _buildDetailRow("Transaction ID", detail.transactionId ?? 'N/A'),
-            _buildDetailRow("Date & Time", detail.dateTime ?? 'N/A'),
+            _buildDetailRow(
+              "Date & Time",
+              formatTransactionDate(detail.dateTime ?? ''),
+            ),
             _buildDetailRow("Product", detail.productName ?? 'N/A'),
             _buildDetailRow("Mobile", detail.mobile ?? 'N/A'),
             _buildDetailRow("Retailer Name", detail.retailerName ?? 'N/A'),
@@ -217,8 +242,16 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> submitDispute(String id, String subject, String description) async {
-    final result = await submitTransactionDisputeUseCase(id, subject, description);
+  Future<void> submitDispute(
+    String id,
+    String subject,
+    String description,
+  ) async {
+    final result = await submitTransactionDisputeUseCase(
+      id,
+      subject,
+      description,
+    );
 
     result.fold(
       (failure) {

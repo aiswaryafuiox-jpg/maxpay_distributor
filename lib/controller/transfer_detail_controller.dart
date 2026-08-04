@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/transfer_detail_list_model.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
 import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
 import 'package:maxpay/domain/usecase/reverse_wallet_transfer_usecase.dart';
@@ -20,9 +21,10 @@ class TransferDetailController extends GetxController {
   );
 
   RxBool isLoading = false.obs;
-  RxString selectedTransactionType = "Transfer".obs;
+  RxString selectedTransactionType = "All".obs;
   RxBool isReverse = false.obs;
   RxString totalAmount = "₹0.00".obs;
+  RxString label = "".obs;
 
   RxString fromDate = ''.obs;
   RxString toDate = ''.obs;
@@ -32,17 +34,33 @@ class TransferDetailController extends GetxController {
   Timer? _debounceTimer;
 
   RxList<Data> transferDetails = <Data>[].obs;
-  RxList<TransferDetailListItem> transferDetailList = <TransferDetailListItem>[].obs;
+  RxList<TransferDetailListItem> transferDetailList =
+      <TransferDetailListItem>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     final now = DateTime.now();
-    final firstDay = DateTime(now.year, now.month, 1);
-    fromDate.value = DateFormat('yyyy-MM-dd').format(firstDay);
+    fromDate.value = DateFormat('yyyy-MM-dd').format(now);
     toDate.value = DateFormat('yyyy-MM-dd').format(now);
 
     getTransferDetails();
+    fetchTransferDetailList();
+  }
+
+  void updateFromDate(String date) {
+    fromDate.value = date;
+    fetchTransferDetailList();
+  }
+
+  void updateToDate(String date) {
+    toDate.value = date;
+    fetchTransferDetailList();
+  }
+
+  void updateDateRange(String from, String to) {
+    fromDate.value = from;
+    toDate.value = to;
     fetchTransferDetailList();
   }
 
@@ -85,9 +103,25 @@ class TransferDetailController extends GetxController {
     String? searchStr,
   }) async {
     isLoading.value = true;
-    final t = type ?? (isReverse.value ? 'reverse' : 'all');
-    final f = fromDateStr ?? (fromDate.value.isNotEmpty ? fromDate.value : '2026-01-01');
-    final to = toDateStr ?? (toDate.value.isNotEmpty ? toDate.value : '2026-12-31');
+    final selected = type ?? selectedTransactionType.value;
+    String t = 'all';
+    if (selected.isNotEmpty && selected.toLowerCase() != 'all') {
+      final matched = transferDetails.firstWhereOrNull(
+        (e) => e.name?.toLowerCase() == selected.toLowerCase(),
+      );
+      t = matched?.value ?? selected.toLowerCase();
+    }
+
+    final f =
+        fromDateStr ??
+        (fromDate.value.isNotEmpty
+            ? fromDate.value
+            : DateFormat('yyyy-MM-dd').format(DateTime.now()));
+    final to =
+        toDateStr ??
+        (toDate.value.isNotEmpty
+            ? toDate.value
+            : DateFormat('yyyy-MM-dd').format(DateTime.now()));
     final s = searchStr ?? searchQuery.value;
 
     final result = await getTransferDetailListUseCase(t, f, to, s);
@@ -101,18 +135,18 @@ class TransferDetailController extends GetxController {
         } else {
           transferDetailList.clear();
         }
-        totalAmount.value = "₹ ${response.data?.summaryAmount ?? '0.00'}";
+        totalAmount.value = (response.data?.summaryAmount ?? 0).currencyIndian;
+        label.value = response.data?.summaryLabel ?? "";
       },
     );
     isLoading.value = false;
   }
 
   void changeTransactionType(String value) {
-    if (value == "Reverse") {
-      selectedTransactionType.value = "Reverse";
+    selectedTransactionType.value = value;
+    if (value.toLowerCase() == "reverse") {
       isReverse.value = true;
     } else {
-      selectedTransactionType.value = "Transfer";
       isReverse.value = false;
     }
     fetchTransferDetailList();
@@ -126,7 +160,10 @@ class TransferDetailController extends GetxController {
         Get.snackbar("Error", failure.message);
       },
       (response) {
-        Get.snackbar("Success", response.message ?? "Transfer reversed successfully");
+        Get.snackbar(
+          "Success",
+          response.message ?? "Transfer reversed successfully",
+        );
         fetchTransferDetailList(); // Refresh the list
       },
     );

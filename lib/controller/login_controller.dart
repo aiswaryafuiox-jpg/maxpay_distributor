@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/services/local_storage_service.dart';
@@ -70,7 +71,18 @@ class LoginController extends GetxController {
       },
       (response) {
         if (response.success == true) {
-          Get.toNamed(AppRoutes.otpVerification, arguments: response);
+          Fluttertoast.showToast(
+            msg: "OTP Sent Successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          if (Get.currentRoute != AppRoutes.otpVerification) {
+            Get.toNamed(AppRoutes.otpVerification, arguments: response);
+          }
         } else {
           CustomToast.error(response.message ?? "Something went wrong");
         }

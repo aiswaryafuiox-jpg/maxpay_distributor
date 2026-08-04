@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -141,10 +142,18 @@ class ProfileController extends GetxController {
           );
 
           // Temporarily showing the OTP in snackbar if returning for dev testing.
-          Get.snackbar(
-            "Success",
-            "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}",
-            snackPosition: SnackPosition.BOTTOM,
+          // Get.snackbar(
+          //   "Success",
+          //   "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}",
+          //   snackPosition: SnackPosition.BOTTOM,
+          // );
+          Fluttertoast.showToast(msg: "OTP Sent Successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
           );
 
           Get.to(() => const ProfileUpdateOtpScreen(), arguments: data);
@@ -181,6 +190,8 @@ class ProfileController extends GetxController {
           "Success",
           data.message ?? "Profile updated successfully",
           snackPosition: SnackPosition.BOTTOM,
+          isDismissible: true,
+          animationDuration: Duration(milliseconds: 600),
         );
       },
     );
@@ -201,10 +212,14 @@ class ProfileController extends GetxController {
       },
       (data) {
         isUpdating.value = false;
-        Get.snackbar(
-          "Success",
-          "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}",
-          snackPosition: SnackPosition.BOTTOM,
+        Fluttertoast.showToast(
+          msg: "OTP Sent Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       },
     );
@@ -227,10 +242,14 @@ class ProfileController extends GetxController {
       (data) {
         isUpdating.value = false;
         if (data.data?.otpRequired == true) {
-          Get.snackbar(
-            "Success",
-            "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}",
-            snackPosition: SnackPosition.BOTTOM,
+          Fluttertoast.showToast(
+            msg: "OTP Sent Successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
           );
           Get.to(() => const StatusUpdateOtpScreen(), arguments: data);
         } else {

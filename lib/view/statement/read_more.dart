@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/di/service_locator.dart';
@@ -9,7 +10,9 @@ import 'package:maxpay/controller/statement_read_more_controller.dart';
 class StatementReadMoreScreen extends StatelessWidget {
   StatementReadMoreScreen({super.key});
 
-  final StatementReadMoreController controller = Get.put(sl<StatementReadMoreController>());
+  final StatementReadMoreController controller = Get.put(
+    sl<StatementReadMoreController>(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +72,18 @@ class StatementReadMoreScreen extends StatelessWidget {
                   _DetailRow(
                     label: 'Product',
                     value: data.product ?? 'N/A',
-                    trailing: _ProductBadge(text: data.product ?? 'N/A'),
+                    trailing: data.product != "-"
+                        ? _ProductBadge(text: data.product ?? 'N/A')
+                        : null,
                   ),
-                  _DetailRow(label: 'Description', value: data.description ?? 'N/A'),
-                  _DetailRow(label: 'Date & Time', value: data.dateTime ?? 'N/A'),
+                  _DetailRow(
+                    label: 'Description',
+                    value: data.description ?? 'N/A',
+                  ),
+                  _DetailRow(
+                    label: 'Date & Time',
+                    value: formatTransactionDate(data.dateTime ?? ''),
+                  ),
                   _DetailRow(
                     label: 'Transaction ID',
                     value: data.transactionId ?? 'N/A',
@@ -130,7 +141,7 @@ class _DetailRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
@@ -140,11 +151,13 @@ class _DetailRow extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
+          SizedBox(width: 8.w),
           trailing ??
-              Flexible(
+              Expanded(
                 child: Text(
                   value,
                   textAlign: TextAlign.right,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextHelper.max1.copyWith(
                     color: valueColor ?? theme.colorScheme.onSurface,

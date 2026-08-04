@@ -40,8 +40,8 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
         CustomToast.error(failure.message);
       },
       (data) {
-        if (data.data?.walletBalance != null) {
-          walletBalance.value = data.data!.walletBalance!;
+        if (data.data?.totalBalance != null) {
+          walletBalance.value = data.data!.totalBalance?.toString() ?? "0.00";
         }
       },
     );

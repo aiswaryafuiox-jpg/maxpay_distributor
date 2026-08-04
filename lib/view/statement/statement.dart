@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/controller/statement_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
@@ -317,7 +318,7 @@ class _StatementScreenState extends State<StatementScreen> {
                 ),
               ),
               Text(
-                item.dateTime ?? "N/A",
+                formatTransactionDate(item.dateTime ?? ""),
                 style: TextHelper.max1.copyWith(
                   color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
@@ -397,27 +398,33 @@ class _StatementScreenState extends State<StatementScreen> {
     ThemeData theme, {
     Color? valueColor,
     bool isBold = false,
+    int maxLines = 2,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
             style: TextHelper.max6.copyWith(color: theme.colorScheme.onSurface),
           ),
-          Text(
-            value,
-            style: TextHelper.max7.copyWith(
-              color: valueColor ?? theme.colorScheme.onSurface,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              value,
+              maxLines: maxLines,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: TextHelper.max7.copyWith(
+                color: valueColor ?? theme.colorScheme.onSurface,
+                fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+              ),
             ),
           ),
         ],
       ),
     );
   }
-  // color: isDark
-  //                     ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
 }

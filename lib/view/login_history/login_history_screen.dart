@@ -5,6 +5,7 @@ import 'package:maxpay/controller/login_history_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/data/model/login_history_model.dart';
 import 'package:maxpay/global_widget/common_filter_box.dart';
@@ -18,7 +19,9 @@ class LoginHistoryScreen extends StatefulWidget {
 }
 
 class _LoginHistoryScreenState extends State<LoginHistoryScreen> {
-  final LoginHistoryController controller = Get.put(sl<LoginHistoryController>());
+  final LoginHistoryController controller = Get.put(
+    sl<LoginHistoryController>(),
+  );
 
   Future<void> _selectDate(BuildContext context, bool isFromDate) async {
     final DateTime? picked = await showDatePicker(
@@ -50,14 +53,20 @@ class _LoginHistoryScreenState extends State<LoginHistoryScreen> {
         child: Column(
           children: [
             /// FILTER BOX
-            Obx(() => CommonFilterBox(
-              fromDateText: controller.fromDate.value.isEmpty ? null : controller.fromDate.value,
-              toDateText: controller.toDate.value.isEmpty ? null : controller.toDate.value,
-              onFromDateTap: () => _selectDate(context, true),
-              onToDateTap: () => _selectDate(context, false),
-              searchController: controller.searchController,
-              onSearchChanged: controller.onSearchChanged,
-            )),
+            Obx(
+              () => CommonFilterBox(
+                fromDateText: controller.fromDate.value.isEmpty
+                    ? null
+                    : controller.fromDate.value,
+                toDateText: controller.toDate.value.isEmpty
+                    ? null
+                    : controller.toDate.value,
+                onFromDateTap: () => _selectDate(context, true),
+                onToDateTap: () => _selectDate(context, false),
+                searchController: controller.searchController,
+                onSearchChanged: controller.onSearchChanged,
+              ),
+            ),
 
             const SizedBox(height: 16),
             Divider(color: AppColors.darktextclr.withValues(alpha: 0.5)),
@@ -82,7 +91,8 @@ class _LoginHistoryScreenState extends State<LoginHistoryScreen> {
 
                 return ListView.separated(
                   itemCount: list.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     return _LoginHistoryCard(item: list[index]);
                   },
@@ -99,7 +109,7 @@ class _LoginHistoryScreenState extends State<LoginHistoryScreen> {
 /// LOGIN HISTORY CARD
 class _LoginHistoryCard extends StatelessWidget {
   final LoginHistoryItem item;
-  
+
   const _LoginHistoryCard({required this.item});
 
   @override
@@ -153,7 +163,9 @@ class _LoginHistoryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    item.dateTime ?? item.loginTime ?? "",
+                    formatTransactionDate(
+                      item.dateTime ?? item.loginTime ?? "",
+                    ),
                     style: TextHelper.max1.copyWith(
                       color: isDark
                           ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
@@ -170,6 +182,7 @@ class _LoginHistoryCard extends StatelessWidget {
             thickness: 1,
           ),
           const SizedBox(height: 13),
+
           /// BOTTOM ROW
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

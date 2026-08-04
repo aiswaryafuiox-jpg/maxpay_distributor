@@ -34,7 +34,11 @@ class ApiService {
 
           log("REQUEST => ${options.method}");
           log("URL => ${options.baseUrl}${options.path}");
-          log("BODY => ${options.data}");
+          log(
+            options.data is FormData
+                ? "BODY => ${(options.data as FormData).fields.map((e) => "${e.key}: ${e.value}").toList()}"
+                : "BODY => ${options.data}",
+          );
 
           if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";

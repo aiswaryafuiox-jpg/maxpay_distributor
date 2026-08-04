@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import '../core/utils/logg_helper.dart';
 import '../data/model/retailer/retailer_list_response_model.dart';
 import '../data/model/retailer/retailer_detail_response_model.dart';
@@ -207,6 +208,7 @@ class RetailerController extends GetxController {
         addWalletDetails.value = data.data;
         AppLogger.debugPrint("Add wallet details fetched successfully");
         Get.to(() => const RetAddWalletScreen());
+        Get.find<AddWalletController>().fetchWalletBalance();
       },
     );
   }

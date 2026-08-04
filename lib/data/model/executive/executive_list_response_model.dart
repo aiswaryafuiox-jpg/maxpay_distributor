@@ -57,6 +57,7 @@ class Executive {
   String? regMobileNumber;
   num? dueAmount;
   num? walletBalance;
+  num? walletAmount;
   int? isActive;
   // Note: Add other properties if they exist in the actual response payload
 
@@ -66,16 +67,39 @@ class Executive {
     this.regMobileNumber,
     this.dueAmount,
     this.walletBalance,
+    this.walletAmount,
     this.isActive,
   });
 
+  static num? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value;
+    if (value is String) return num.tryParse(value);
+    return null;
+  }
+
   Executive.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    executiveName = json['executive_name'];
-    regMobileNumber = json['reg_mobile_number'];
-    dueAmount = json['due_amount'];
-    walletBalance = json['wallet_balance'];
-    isActive = json['is_active'];
+    id = json['id'] is int
+        ? json['id']
+        : int.tryParse(json['id']?.toString() ?? '');
+    executiveName = json['executive_name']?.toString();
+    regMobileNumber = json['reg_mobile_number']?.toString();
+    dueAmount = _parseNum(json['due_amount']);
+    walletBalance = _parseNum(
+      json['wallet_balance'] ??
+          json['wallet_amount'] ??
+          json['wallet'] ??
+          json['balance'],
+    );
+    walletAmount = _parseNum(
+      json['wallet_amount'] ??
+          json['wallet_balance'] ??
+          json['wallet'] ??
+          json['balance'],
+    );
+    isActive = json['is_active'] is int
+        ? json['is_active']
+        : int.tryParse(json['is_active']?.toString() ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -85,6 +109,7 @@ class Executive {
     data['reg_mobile_number'] = regMobileNumber;
     data['due_amount'] = dueAmount;
     data['wallet_balance'] = walletBalance;
+    data['wallet_amount'] = walletAmount;
     data['is_active'] = isActive;
     return data;
   }

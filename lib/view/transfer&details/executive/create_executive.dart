@@ -17,13 +17,9 @@ class CreateExecutiveScreen extends StatefulWidget {
 }
 
 class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
-  final TextEditingController executiveNameController = TextEditingController(
-    text: "John Williamson",
-  );
+  final TextEditingController executiveNameController = TextEditingController();
 
-  final TextEditingController mobileController = TextEditingController(
-    text: "+91 982345755",
-  );
+  final TextEditingController mobileController = TextEditingController();
 
   String? selectedPackage;
 
@@ -65,6 +61,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 ),
                 decoration: InputDecoration(
                   filled: true,
+                  hintText: "Enter Name...",
                   fillColor: isDark
                       ? AppColors.darkplceholder
                       : AppColors.lightbg2,
@@ -111,7 +108,7 @@ class _CreateExecutiveScreenState extends State<CreateExecutiveScreen> {
                 ],
                 decoration: InputDecoration(
                   filled: true,
-
+                  hintText: "Enter 10 Digit Mobile Number...",
                   fillColor: isDark
                       ? AppColors.darkplceholder
                       : AppColors.lightbg2,
