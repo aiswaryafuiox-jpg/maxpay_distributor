@@ -24,11 +24,16 @@ class PrivacyPolicyController extends GetxController {
       (data) async {
         privacyPolicyData.value = data.data;
         final urlStr = data.data?.privacyPolicy;
-        if (urlStr != null && urlStr.isNotEmpty) {
-          final uri = Uri.parse(urlStr);
-          if (await canLaunchUrl(uri)) {
-            await launchUrl(uri, mode: LaunchMode.externalApplication);
-          } else {
+        if (urlStr != null && urlStr.trim().isNotEmpty) {
+          try {
+            var formattedUrl = urlStr.trim();
+            if (!formattedUrl.startsWith('http://') &&
+                !formattedUrl.startsWith('https://')) {
+              formattedUrl = 'http://$formattedUrl';
+            }
+            final uri = Uri.parse(formattedUrl);
+            await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+          } catch (e) {
             CustomToast.error("Could not open Privacy Policy link");
           }
         } else {

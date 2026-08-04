@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
@@ -7,6 +8,9 @@ class ProfileTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? initialValue;
   final int maxLines;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
 
   const ProfileTextField({
     super.key,
@@ -14,6 +18,9 @@ class ProfileTextField extends StatelessWidget {
     this.controller,
     this.initialValue,
     this.maxLines = 1,
+    this.keyboardType,
+    this.inputFormatters,
+    this.maxLength,
   });
 
   @override
@@ -53,10 +60,14 @@ class ProfileTextField extends StatelessWidget {
             controller: controller,
             initialValue: initialValue,
             maxLines: maxLines,
+            keyboardType: keyboardType,
+            inputFormatters: inputFormatters,
+            maxLength: maxLength,
             style: TextHelper.max9(context).copyWith(
               color: theme.colorScheme.onSurface,
             ),
             decoration: InputDecoration(
+              counterText: maxLength != null ? "" : null,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
               isDense: true,

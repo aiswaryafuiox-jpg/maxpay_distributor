@@ -142,12 +142,16 @@ class _MobileRechargePageState extends State<MobileRechargePage>
                 ),
                 child: TextField(
                   keyboardType: TextInputType.phone,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
                   style: TextStyle(
                     fontSize: 14.sp,
                     color: isDark ? Colors.white : Colors.black,
                   ),
                   decoration: InputDecoration(
+                    counterText: "",
                     hintText: '9876543210',
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
                     border: InputBorder.none,

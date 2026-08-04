@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/data/model/transfer_detail_model.dart';
 import 'package:maxpay/data/model/transfer_detail_list_model.dart';
 import 'package:maxpay/core/extensions/currency.dart';
@@ -165,6 +166,7 @@ class TransferDetailController extends GetxController {
           response.message ?? "Transfer reversed successfully",
         );
         fetchTransferDetailList(); // Refresh the list
+        Get.find<AddWalletController>().fetchWalletBalance();
       },
     );
     isLoading.value = false;

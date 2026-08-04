@@ -207,15 +207,16 @@ class _KycScreenState extends State<KycScreen> {
 
                         child: TextFormField(
                           controller: _whatsappController,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
                           ],
                           style: TextStyle(color: theme.colorScheme.onSurface),
 
                           decoration: InputDecoration(
-
-
+                            counterText: "",
                             hintStyle: TextStyle(
                               // color: theme.colorScheme.onSurfaceVariant,
                               color: isDark

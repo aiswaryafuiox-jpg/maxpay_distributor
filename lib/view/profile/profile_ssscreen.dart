@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
@@ -348,7 +349,16 @@ class _ProfileScreenState extends State<ProfileggScreen> {
 
               const SizedBox(height: 8),
 
-              _buildTextField(context, "+91 9876541302"),
+              _buildTextField(
+                context,
+                "9876541302",
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(10),
+                ],
+              ),
 
               const SizedBox(height: 120),
 
@@ -363,15 +373,24 @@ class _ProfileScreenState extends State<ProfileggScreen> {
     );
   }
 
-  static Widget _buildTextField(BuildContext context, String hint) {
+  static Widget _buildTextField(
+    BuildContext context,
+    String hint, {
+    TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
+    int? maxLength,
+  }) {
     final theme = Theme.of(context);
 
     return TextFormField(
       initialValue: hint,
-
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      maxLength: maxLength,
       style: TextStyle(color: theme.colorScheme.onSurface),
 
       decoration: InputDecoration(
+        counterText: maxLength != null ? "" : null,
         filled: true,
 
         fillColor: theme.brightness == Brightness.light

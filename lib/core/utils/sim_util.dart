@@ -1,15 +1,14 @@
-
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:permission_handler/permission_handler.dart';
-// import 'package:sim_card_code/sim_card_code.dart';
 import 'package:flutter/services.dart';
 
 class SimUtil {
   /// Test numbers exception list
   static const List<String> testNumbers = [
     '9999999999',
-    '8098309905',
+    '6369497198',
+    '9895762284',
   ];
 
   /// Helper function to normalize and match
@@ -62,11 +61,11 @@ class SimUtil {
 
     // 1. Request phone permission
     var status = await Permission.phone.status;
-    if (!status.isGranted) {
+    if (!status.isGranted && !status.isLimited) {
       status = await Permission.phone.request();
     }
 
-    if (!status.isGranted) {
+    if (!status.isGranted && !status.isLimited) {
       if (showToasts) {
         CustomToast.error(
           "Phone permission is required to verify the SIM card",
@@ -77,46 +76,69 @@ class SimUtil {
 
     // 2. Fetch SIM info using MethodChannel
     try {
-      final List<dynamic> simList = await _simChannel.invokeMethod(
+      final List<dynamic>? simList = await _simChannel.invokeMethod(
         'getSimList',
       );
-      AppLogger.logError("Detected SIM cards via channel: ${simList.length}");
+      AppLogger.logError(
+        "Detected SIM cards via channel: ${simList?.length ?? 0}",
+      );
 
-      if (simList.isEmpty) {
+      if (simList == null || simList.isEmpty) {
         if (showToasts) {
           CustomToast.error("No SIM card detected in this device");
         }
         return false;
       }
 
-      bool numberExists = false;
+      int readableSimsCount = 0;
+      bool numberMatched = false;
 
       for (var sim in simList) {
         final Map<dynamic, dynamic> simData = sim as Map<dynamic, dynamic>;
-        final String? phoneNumber = simData['number']?.toString();
+        final String? phoneNumber = simData['number']?.toString().trim();
 
         AppLogger.logError(
           "SIM slot=${simData['slotIndex']}, carrier=${simData['carrierName']}, number=$phoneNumber",
         );
 
         if (phoneNumber != null && phoneNumber.isNotEmpty) {
+          readableSimsCount++;
           if (_matches(enteredPhone, phoneNumber)) {
-            numberExists = true;
+            numberMatched = true;
             break;
           }
         }
       }
 
-      if (!numberExists) {
-        if (showToasts) {
-          CustomToast.error(
-            "The entered mobile number does not exist on this device",
-          );
-        }
-        return false;
+      // If we found a direct match on any readable SIM, permit immediately.
+      if (numberMatched) {
+        AppLogger.logError(
+          "SIM check passed: Phone number matched active SIM.",
+        );
+        return true;
       }
 
-      return true;
+      // If NOT all inserted SIMs returned readable numbers (e.g. carrier did not store MSISDN on SIM hardware),
+      // we allow the login/session to proceed because at least one active SIM card exists whose number cannot be read by Android OS.
+      // Ownership is then securely verified through OTP / SMS.
+      final int totalSimsCount = simList.length;
+      if (readableSimsCount < totalSimsCount) {
+        AppLogger.logError(
+          "SIM check fallback: $readableSimsCount of $totalSimsCount SIMs returned readable numbers. Permitting operation.",
+        );
+        return true;
+      }
+
+      // If ALL inserted SIMs returned readable phone numbers and NONE of them matched the entered phone:
+      AppLogger.logError(
+        "SIM check failed: None of the $totalSimsCount readable SIM cards matched $enteredPhone.",
+      );
+      if (showToasts) {
+        CustomToast.error(
+          "The entered mobile number does not exist on this device",
+        );
+      }
+      return false;
     } catch (e) {
       AppLogger.logError("Failed to get SIM list via channel: $e");
       if (showToasts) {
@@ -125,78 +147,4 @@ class SimUtil {
       return false;
     }
   }
-
-  // /// Old implementation of verifySimPresent using sim_card_code package.
-  // /// Kept here for easy reversion.
-  // static Future<bool> verifySimPresentOld(
-  //   String registeredPhone, {
-  //   bool showToasts = false,
-  // }) async {
-  //   final enteredPhone = registeredPhone.trim();
-
-  //   if (testNumbers.contains(enteredPhone)) {
-  //     return true; // Bypass for test numbers
-  //   }
-
-  //   // 1. Request phone permission
-  //   var status = await Permission.phone.status;
-  //   if (!status.isGranted) {
-  //     status = await Permission.phone.request();
-  //   }
-
-  //   if (!status.isGranted) {
-  //     if (showToasts) {
-  //       CustomToast.error(
-  //         "Phone permission is required to verify the SIM card",
-  //       );
-  //     }
-  //     return false;
-  //   }
-
-  //   // 2. Fetch SIM info
-  //   final sims = await SimCardManager.allSimInfo;
-  //   AppLogger.logError("Detected SIM cards: ${sims.length}");
-
-  //   if (sims.isEmpty) {
-  //     if (showToasts) {
-  //       CustomToast.error("No SIM card detected in this device");
-  //     }
-  //     return false;
-  //   }
-
-  //   bool numberExists = false;
-
-  //   for (var sim in sims) {
-  //     AppLogger.logError(
-  //       "SIM slot=${sim.slotIndex}, carrier=${sim.carrierName}, number=${sim.phoneNumber}",
-  //     );
-  //     if (sim.phoneNumber != null && sim.phoneNumber!.isNotEmpty) {
-  //       if (_matches(enteredPhone, sim.phoneNumber)) {
-  //         numberExists = true;
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   // Also check the default phoneNumber getter
-  //   final defaultNumber = await SimCardManager.phoneNumber;
-  //   AppLogger.logError("Default SIM phone number: $defaultNumber");
-  //   if (defaultNumber != null && defaultNumber.isNotEmpty) {
-  //     if (_matches(enteredPhone, defaultNumber)) {
-  //       numberExists = true;
-  //     }
-  //   }
-
-  //   // Strictly block if a number isn't found
-  //   if (!numberExists) {
-  //     if (showToasts) {
-  //       CustomToast.error(
-  //         "The entered mobile number does not exist on this device",
-  //       );
-  //     }
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 }

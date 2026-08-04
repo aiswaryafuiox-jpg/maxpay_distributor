@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
@@ -319,6 +320,9 @@ class AppPages {
     GetPage(name: AppRoutes.favorite, page: () => const FavoriteScreen()),
     GetPage(
       name: AppRoutes.walletBalance,
+      binding: BindingsBuilder(
+        () => Get.lazyPut(() => AddWalletController(sl(), sl())),
+      ),
       page: () => const WalletBalanceScreen(),
     ),
     GetPage(name: AppRoutes.update, page: () => const UpdatePinPage()),
