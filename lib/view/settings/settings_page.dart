@@ -11,6 +11,7 @@ import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:maxpay/controller/privacy_policy_controller.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
@@ -25,14 +26,27 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isActive = true;
+  String _appVersion = '1.0.0';
 
   @override
   void initState() {
     super.initState();
+    _loadAppVersion();
     Get.put(ProfileController(sl(), sl(), sl(), sl(), sl(), sl()));
     isActive = Get.find<ProfileController>().profileData.value?.isActive == 1
         ? true
         : false;
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _appVersion = packageInfo.version;
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _showStatusDialog() async {
@@ -400,7 +414,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                     /// 🔹 VERSION TEXT
                     Text(
-                      'Latest Version 1.0.0',
+                      'Latest Version $_appVersion',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14.sp,
