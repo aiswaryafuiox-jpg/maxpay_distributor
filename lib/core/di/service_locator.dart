@@ -193,6 +193,10 @@ import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
+import 'package:maxpay/data/repository/privacy_policy_repo_impl.dart';
+import 'package:maxpay/domain/repository/privacy_policy_repo.dart';
+import 'package:maxpay/domain/usecase/get_privacy_policy_usecase.dart';
 
 final sl = GetIt.instance;
 Future<void> init() async {
@@ -500,6 +504,15 @@ Future<void> init() async {
   sl.registerLazySingleton<SupportRepository>(() => SupportRepoImpl(sl()));
   sl.registerLazySingleton<GetSupportUseCase>(() => GetSupportUseCase(sl()));
   sl.registerFactory(() => SupportController(sl()));
+
+  // Privacy Policy
+  sl.registerLazySingleton<PrivacyPolicyRepository>(
+    () => PrivacyPolicyRepoImpl(sl()),
+  );
+  sl.registerLazySingleton<GetPrivacyPolicyUseCase>(
+    () => GetPrivacyPolicyUseCase(sl()),
+  );
+  sl.registerFactory(() => PrivacyPolicyController(sl()));
 
   // Login History
   sl.registerLazySingleton<LoginHistoryRepository>(

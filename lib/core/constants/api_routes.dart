@@ -123,4 +123,5 @@ class ApiRoutes {
   static const String distributorUpdatePin = '/api/distributor_update_pin';
   static const String distributorUpdateMpinSendOtp = '/api/distributor_update_mpin_send_otp';
   static const String distributorUpdateMpin = '/api/distributor_update_mpin';
+  static const String distributorPrivacyPolicy = '/api/distributor_privacy_policy';
 }

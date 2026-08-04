@@ -10,6 +10,9 @@ import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import '../../controller/login_controller.dart';
+import 'package:flutter/gestures.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 
 class LoginPhoneNamePage extends StatefulWidget {
   const LoginPhoneNamePage({super.key});
@@ -97,18 +100,26 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                               color: colorScheme.onSurface,
                               height: 1.5,
                             ),
-                            children: const [
-                              TextSpan(
+                            children: [
+                              const TextSpan(
                                 text: "Registration implies acceptance of the ",
                               ),
-                              TextSpan(
+                              const TextSpan(
                                 text: "Terms of Service",
                                 style: TextStyle(color: AppColors.clrPrimary),
                               ),
-                              TextSpan(text: " and "),
+                              const TextSpan(text: " and "),
                               TextSpan(
                                 text: "Privacy Policy.",
-                                style: TextStyle(color: AppColors.clrPrimary),
+                                style: const TextStyle(
+                                  color: AppColors.clrPrimary,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    final privacyController =
+                                        Get.put(sl<PrivacyPolicyController>());
+                                    privacyController.openPrivacyPolicy();
+                                  },
                               ),
                             ],
                           ),

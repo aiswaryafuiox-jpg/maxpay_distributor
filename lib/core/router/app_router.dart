@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:maxpay/controller/executive_controller.dart';
+import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/controller/banner_controller.dart';
@@ -266,7 +267,11 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.setting, page: () => const SettingsPage()),
 
-    GetPage(name: AppRoutes.grade, page: () => const GradeScreen()),
+    GetPage(
+      name: AppRoutes.grade,
+      page: () => const GradeScreen(),
+      binding: BindingsBuilder(() => Get.lazyPut(() => GradeController(sl()))),
+    ),
     GetPage(name: AppRoutes.prepaid, page: () => const MobileRechargePage()),
     GetPage(name: AppRoutes.menu, page: () => const MenuScreen()),
     GetPage(name: AppRoutes.dth, page: () => const DTHRechargePage()),
@@ -334,13 +339,7 @@ class AppPages {
       name: AppRoutes.bulkPackageChange,
       page: () => const BulkPackageChangeScreen(),
     ),
-    GetPage(
-      name: AppRoutes.search,
-      page: () => const SearchScreen(),
-    ),
-    GetPage(
-      name: AppRoutes.notification,
-      page: () => NotificationPage(),
-    ),
+    GetPage(name: AppRoutes.search, page: () => const SearchScreen()),
+    GetPage(name: AppRoutes.notification, page: () => NotificationPage()),
   ];
 }

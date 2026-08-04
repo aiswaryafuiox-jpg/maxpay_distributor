@@ -11,6 +11,7 @@ import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
@@ -336,7 +337,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildMenuTile(
                       context,
                       'Privacy Policy',
-                      () {},
+                      () {
+                        final controller =
+                            Get.put(sl<PrivacyPolicyController>());
+                        controller.openPrivacyPolicy();
+                      },
                       SvgPicture.asset(AssetImages.privacyPolicy, width: 24.w),
                     ),
                     _buildMenuTile(
