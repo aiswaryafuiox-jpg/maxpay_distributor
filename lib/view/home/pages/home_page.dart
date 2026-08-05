@@ -50,19 +50,17 @@ class HomePageScreen extends StatelessWidget {
                       final data = controller.homeCardData.value;
 
                       final successAmt = data?.success?.amount ?? 0;
-                      final successCount = data?.success?.count ?? 0;
-                      final successStr =
-                          '${(successAmt as num).currencyIndian} /\n$successCount Nos';
+                      // final successCount = data?.success?.count ?? 0;
+                      final successStr = (successAmt as num).currencyIndian;
 
                       final processingAmt = data?.processing?.amount ?? 0;
-                      final processingCount = data?.processing?.count ?? 0;
+                      // final processingCount = data?.processing?.count ?? 0;
                       final processingStr =
-                          '${(processingAmt as num).currencyIndian} /\n$processingCount Nos';
+                          (processingAmt as num).currencyIndian;
 
                       final failedAmt = data?.failed?.amount ?? 0;
-                      final failedCount = data?.failed?.count ?? 0;
-                      final failedStr =
-                          '${(failedAmt as num).currencyIndian} /\n$failedCount Nos';
+                      // final failedCount = data?.failed?.count ?? 0;
+                      final failedStr = (failedAmt as num).currencyIndian;
 
                       final todayData = controller.todayTransactionData.value;
                       final todayCredit = todayData?.todaysCredit?.amount ?? 0;
@@ -96,15 +94,16 @@ class HomePageScreen extends StatelessWidget {
                           Obx(() {
                             final walletCtrl =
                                 Get.isRegistered<AddWalletController>()
-                                    ? Get.find<AddWalletController>()
-                                    : Get.put(AddWalletController(sl(), sl()));
+                                ? Get.find<AddWalletController>()
+                                : Get.put(AddWalletController(sl(), sl()));
                             return StatCard(
                               onTap: () {
                                 Get.toNamed(AppRoutes.walletBalance);
                               },
                               title: 'Wallet Balance',
-                              bgColor:
-                                  AppColors.darkBlue.withValues(alpha: 0.04),
+                              bgColor: AppColors.darkBlue.withValues(
+                                alpha: 0.04,
+                              ),
                               value:
                                   walletCtrl.walletBalance.value.currencyIndian,
                               textColor: isDark

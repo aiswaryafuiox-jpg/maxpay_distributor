@@ -40,7 +40,7 @@
 
     </application>
 
-    <!-- Required to query activities that can process text and web links -->
+    <!-- Required to query activities that can process text, web links, and UPI payments -->
     <queries>
 
         <intent>
@@ -56,6 +56,11 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="upi" />
         </intent>
 
     </queries>

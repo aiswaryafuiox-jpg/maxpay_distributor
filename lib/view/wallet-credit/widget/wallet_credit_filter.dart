@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,17 +11,15 @@ import 'package:maxpay/core/utils/texthelper.dart';
 class WalletCreditFilterWidget extends StatelessWidget {
   final WalletController controller;
 
-  const WalletCreditFilterWidget({
-    super.key,
-    required this.controller,
-  });
+  const WalletCreditFilterWidget({super.key, required this.controller});
 
   Future<void> _selectDate(BuildContext context, bool isFromDate) async {
     final DateTime now = DateTime.now();
     DateTime initial = now;
     try {
-      final currentStr =
-          isFromDate ? controller.fromDate.value : controller.toDate.value;
+      final currentStr = isFromDate
+          ? controller.fromDate.value
+          : controller.toDate.value;
       if (currentStr.isNotEmpty) {
         initial = DateFormat('yyyy-MM-dd').parse(currentStr);
       }
@@ -63,27 +62,44 @@ class WalletCreditFilterWidget extends StatelessWidget {
         children: [
           /// Dropdown
           Obx(() {
-            return DropdownButtonFormField<int?>(
+            return DropdownButtonFormField<String?>(
               initialValue: controller.selectedCreditTypeId.value,
               isExpanded: true,
+              style: TextHelper.max1.copyWith(fontSize: 14),
               decoration: InputDecoration(
                 hintText: "Select Credit Type",
+                hintStyle: TextHelper.max1.copyWith(fontSize: 12),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 10,
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkFilterBorder
+                        : Colors.grey.withValues(alpha: 0.4),
+                  ),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.darkFilterBorder
+                        : Colors.grey.withValues(alpha: 0.4),
+                  ),
                 ),
               ),
               items: [
-                const DropdownMenuItem<int?>(
+                const DropdownMenuItem<String?>(
                   value: null,
                   child: Text("All Credit Types"),
                 ),
                 ...controller.walletCreditTypes.map((item) {
-                  return DropdownMenuItem<int?>(
-                    value: item.id,
+                  return DropdownMenuItem<String?>(
+                    value: item.name,
                     child: Text(item.name ?? ""),
                   );
                 }),
@@ -139,14 +155,31 @@ class WalletCreditFilterWidget extends StatelessWidget {
                 horizontal: 12,
                 vertical: 10,
               ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12),
+              prefixIcon: FittedBox(
+                fit: .scaleDown,
                 child: SvgPicture.asset(
                   AssetImages.search,
+                  height: 20,
+                  width: 12,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.darkFilterBorder
+                      : Colors.grey.withValues(alpha: 0.4),
                 ),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  width: 1,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.darkFilterBorder
+                      : Colors.grey.withValues(alpha: 0.4),
+                ),
               ),
             ),
           ),
@@ -161,21 +194,14 @@ class _DateField extends StatelessWidget {
   final TextStyle? style;
   final VoidCallback onTap;
 
-  const _DateField({
-    required this.text,
-    this.style,
-    required this.onTap,
-  });
+  const _DateField({required this.text, this.style, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(
             color: Theme.of(context).brightness == Brightness.dark
@@ -187,10 +213,7 @@ class _DateField extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: style,
-            ),
+            Text(text, style: style),
             const Icon(Icons.calendar_today, size: 14),
           ],
         ),

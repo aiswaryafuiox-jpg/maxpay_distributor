@@ -32,7 +32,7 @@ class _ProfileUpdateOtpScreenState extends State<ProfileUpdateOtpScreen> {
     if (args is UpdateProfileResponseModel) {
       final otp = args.data?.otp;
       if (otp != null) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 5), () {
           if (mounted) {
             setState(() {
               _otpController.text = otp.toString();

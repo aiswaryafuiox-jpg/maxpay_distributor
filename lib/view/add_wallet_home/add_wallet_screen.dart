@@ -5,6 +5,7 @@ import 'package:maxpay/controller/add_wallet_controller.dart';
 
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
@@ -148,17 +149,17 @@ class AddWalletScreenMain extends GetView<AddWalletController> {
                   return Center(child: CircularProgressIndicator());
                 }
 
-                if (controller.walletQrHistory.value.data?.isEmpty ?? true) {
+                if (controller.walletQrHistory.value.data?.list?.isEmpty ?? true) {
                   return Center(child: Text("No Transactions"));
                 }
                 return Column(
                   spacing: 12,
                   crossAxisAlignment: .start,
                   children: [
-                    ...(controller.walletQrHistory.value.data ?? []).map(
+                    ...(controller.walletQrHistory.value.data?.list ?? []).map(
                       (e) => transactionCard(
                         context: context,
-                        txnId: e.txnId ?? '',
+                        txnId: e.transactionId ?? '',
 
                         dateTime: e.dateTime ?? '',
                         status: e.status?.capitalize ?? '',
@@ -168,7 +169,7 @@ class AddWalletScreenMain extends GetView<AddWalletController> {
                             : e.status == 'failed'
                             ? Colors.red
                             : Colors.green,
-                        amount: e.amount ?? '',
+                        amount: e.amount?.currencyIndian ?? '',
                       ),
                     ),
                   ],

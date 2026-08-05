@@ -42,8 +42,8 @@ class MyEarningsController extends GetxController {
 
   void _initializeDates() {
     final now = DateTime.now();
-    final firstDay = DateTime(now.year, now.month, 1);
-    fromDate.value = DateFormat('yyyy-MM-dd').format(firstDay);
+
+    fromDate.value = DateFormat('yyyy-MM-dd').format(now);
     toDate.value = DateFormat('yyyy-MM-dd').format(now);
     fromDateController.text = fromDate.value;
     toDateController.text = toDate.value;

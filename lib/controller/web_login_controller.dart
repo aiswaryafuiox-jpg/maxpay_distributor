@@ -40,7 +40,7 @@ class WebLoginController extends GetxController {
         (failure) {
           CustomToast.error(failure.message);
           // Allow scanning again after failure
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 5), () {
             isScanning.value = true;
           });
         },

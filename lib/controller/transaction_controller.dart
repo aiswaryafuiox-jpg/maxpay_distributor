@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
@@ -181,66 +182,11 @@ class TransactionController extends GetxController {
         );
       },
       (response) {
-        if (response.data != null) {
-          _showTransactionDetailDialog(response.data!);
-        }
+        Get.toNamed(AppRoutes.view, arguments: response);
       },
     );
   }
 
-  void _showTransactionDetailDialog(TransactionDetailData detail) {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Get.theme.scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Transaction Detail",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildDetailRow("Transaction ID", detail.transactionId ?? 'N/A'),
-            _buildDetailRow(
-              "Date & Time",
-              formatTransactionDate(detail.dateTime ?? ''),
-            ),
-            _buildDetailRow("Product", detail.productName ?? 'N/A'),
-            _buildDetailRow("Mobile", detail.mobile ?? 'N/A'),
-            _buildDetailRow("Retailer Name", detail.retailerName ?? 'N/A'),
-            _buildDetailRow("Amount", (detail.amount ?? 0).currencyIndian),
-            _buildDetailRow("Status", detail.status ?? 'N/A'),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Get.back(),
-                child: const Text("Close"),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
 
   Future<void> submitDispute(
     String id,

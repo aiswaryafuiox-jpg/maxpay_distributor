@@ -28,6 +28,7 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
   void onInit() {
     super.onInit();
     fetchWalletBalance();
+    getWalletHistory();
   }
 
   Future<void> fetchWalletBalance() async {
@@ -56,7 +57,7 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
   String _lastAmount = '0.00';
 
   RxBool isCheckingStatus = false.obs;
-  Rx<WalletQrHistory> walletQrHistory = WalletQrHistory().obs;
+  Rx<WalletQrHistoryModel> walletQrHistory = WalletQrHistoryModel().obs;
   RxList<Map<String, dynamic>> upiApps = <Map<String, dynamic>>[].obs;
   RxBool isLoadingUpiApps = false.obs;
 

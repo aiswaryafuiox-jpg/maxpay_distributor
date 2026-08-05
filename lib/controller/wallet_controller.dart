@@ -17,7 +17,7 @@ class WalletController extends GetxController {
   });
 
   var walletCreditTypes = <Data>[].obs;
-  var selectedCreditTypeId = RxnInt();
+  var selectedCreditTypeId = RxnString();
   var walletCreditItems = <WalletCreditItem>[].obs;
   var totalCreditAmount = '0.00'.obs;
 
@@ -48,8 +48,8 @@ class WalletController extends GetxController {
 
   void _initializeDates() {
     final now = DateTime.now();
-    final firstDay = DateTime(now.year, now.month, 1);
-    fromDate.value = DateFormat('yyyy-MM-dd').format(firstDay);
+
+    fromDate.value = DateFormat('yyyy-MM-dd').format(now);
     toDate.value = DateFormat('yyyy-MM-dd').format(now);
   }
 
@@ -109,7 +109,7 @@ class WalletController extends GetxController {
     fetchWalletCreditList();
   }
 
-  void updateSelectedType(int? typeId) {
+  void updateSelectedType(String? typeId) {
     selectedCreditTypeId.value = typeId;
     fetchWalletCreditList();
   }

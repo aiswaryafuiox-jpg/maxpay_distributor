@@ -57,7 +57,9 @@ class ApiService {
           log("ERROR => ${e.message}");
           log("ERROR RESPONSE => ${e.response?.data}");
 
-          if (e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
+          if (e.requestOptions.path.contains(ApiRoutes.loginSendOtp) ||
+              e.requestOptions.path.contains(ApiRoutes.verifyOtp) ||
+              e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
               e.requestOptions.path.contains(ApiRoutes.updateStatusVerifyOtp) ||
               e.requestOptions.path.contains(
                 ApiRoutes.updateProfileVerifyOtp,
@@ -146,10 +148,29 @@ class ApiService {
   /// Handle Unauthorized
   Future<void> _handleUnauthorized() async {
     final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
     await prefs.remove("token");
 
-    g.Get.offAllNamed(AppRoutes.loginPhoneName);
+    if (token != null && token.isNotEmpty) {
+      final currentRoute = g.Get.currentRoute;
+      final authRoutes = [
+        AppRoutes.splash,
+        AppRoutes.intro,
+        AppRoutes.welcome,
+        AppRoutes.selectSim,
+        AppRoutes.loginPhoneName,
+        AppRoutes.otpVerification,
+        AppRoutes.pinCodeCreation,
+        AppRoutes.enterPin,
+        AppRoutes.veirfypin,
+        AppRoutes.biometricsIntro,
+        AppRoutes.biometricsScanning,
+      ];
 
-    g.Get.snackbar("Session Expired", "Please login again.");
+      if (!authRoutes.contains(currentRoute)) {
+        g.Get.offAllNamed(AppRoutes.loginPhoneName);
+        g.Get.snackbar("Session Expired", "Please login again.");
+      }
+    }
   }
 }

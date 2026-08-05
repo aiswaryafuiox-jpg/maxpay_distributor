@@ -41,9 +41,9 @@ class CommissionSettingsController extends GetxController {
   Future<void> fetchCommissionSettings() async {
     isLoading.value = true;
     errorMessage.value = '';
-    
+
     final result = await getCommissionSettingsUseCase.call();
-    
+
     result.fold(
       (failure) {
         errorMessage.value = failure.message;
@@ -58,10 +58,18 @@ class CommissionSettingsController extends GetxController {
     );
   }
 
-  Future<void> updatePackageStatus({required int id, required String type, required String status}) async {
+  Future<void> updatePackageStatus({
+    required int id,
+    required String type,
+    required String status,
+  }) async {
     isUpdating.value = true;
-    final result = await updatePackageStatusUseCase.call(id: id, type: type, status: status);
-    
+    final result = await updatePackageStatusUseCase.call(
+      id: id,
+      type: type,
+      status: status,
+    );
+
     result.fold(
       (failure) {
         Get.snackbar(
@@ -90,7 +98,7 @@ class CommissionSettingsController extends GetxController {
   Future<void> resetPackageCommission({required int id}) async {
     isUpdating.value = true;
     final result = await resetPackageCommissionUseCase.call(id: id);
-    
+
     result.fold(
       (failure) {
         Get.snackbar(
@@ -118,9 +126,9 @@ class CommissionSettingsController extends GetxController {
 
   Future<void> fetchBulkPackageOptions() async {
     isUpdating.value = true;
-    
+
     final result = await getBulkPackageOptionsUseCase.call();
-    
+
     result.fold(
       (failure) {
         Get.snackbar(
@@ -141,11 +149,18 @@ class CommissionSettingsController extends GetxController {
     );
   }
 
-  Future<void> applyBulkPackageCharge({required int packageId, required String userType, required VoidCallback onSuccess}) async {
+  Future<void> applyBulkPackageCharge({
+    required int packageId,
+    required String userType,
+    required VoidCallback onSuccess,
+  }) async {
     isUpdating.value = true;
-    
-    final result = await bulkPackageChargeUseCase.call(packageId: packageId, userType: userType);
-    
+
+    final result = await bulkPackageChargeUseCase.call(
+      packageId: packageId,
+      userType: userType,
+    );
+
     result.fold(
       (failure) {
         Get.snackbar(
@@ -171,11 +186,18 @@ class CommissionSettingsController extends GetxController {
     );
   }
 
-  Future<void> applyBulkPackageChange({required int packageId, required String status, required VoidCallback onSuccess}) async {
+  Future<void> applyBulkPackageChange({
+    required int packageId,
+    required String status,
+    required VoidCallback onSuccess,
+  }) async {
     isUpdating.value = true;
-    
-    final result = await bulkPackageChangeUseCase.call(packageId: packageId, status: status);
-    
+
+    final result = await bulkPackageChangeUseCase.call(
+      packageId: packageId,
+      status: status,
+    );
+
     result.fold(
       (failure) {
         Get.snackbar(
@@ -188,6 +210,8 @@ class CommissionSettingsController extends GetxController {
         isUpdating.value = false;
       },
       (message) {
+        isUpdating.value = false;
+        onSuccess();
         Get.snackbar(
           'Success',
           message,
@@ -195,8 +219,6 @@ class CommissionSettingsController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        isUpdating.value = false;
-        onSuccess();
       },
     );
   }

@@ -49,45 +49,48 @@ class StatCard extends StatelessWidget {
           ),
         ),
 
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: FittedBox(
+          fit: .scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
 
-          children: [
-            /// IMAGE / ICON
-            SizedBox(
-              height: 40.h,
-              child: Center(child: imageWidget),
-            ),
-            if (needSpacingbwImage) SizedBox(height: 2.h),
-
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w700,
-                fontSize: 10.sp,
-                color: textColor ?? theme.colorScheme.onSurface,
+            children: [
+              /// IMAGE / ICON
+              SizedBox(
+                height: 40.h,
+                child: Center(child: imageWidget),
               ),
-            ),
+              if (needSpacingbwImage) SizedBox(height: 2.h),
 
-            if (value != null) ...[
-              SizedBox(height: 2.h),
               Text(
-                value!,
+                title,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   fontSize: 10.sp,
-                  height: 1.2,
-                  color: valueColor,
+                  color: textColor ?? theme.colorScheme.onSurface,
                 ),
               ),
+
+              if (value != null) ...[
+                SizedBox(height: 2.h),
+                Text(
+                  value!,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10.sp,
+                    height: 1.2,
+                    color: valueColor,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

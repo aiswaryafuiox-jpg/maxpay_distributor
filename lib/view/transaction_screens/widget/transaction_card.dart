@@ -214,6 +214,17 @@ class TransactionCard extends StatelessWidget {
                     },
                     isCompact: true,
                   ),
+                  customButton(
+                    text: "Share",
+                    color: AppColors.blueColor,
+                    onTap: () {
+                      if (item.id != null) {
+                        Get.find<TransactionController>()
+                            .fetchTransactionDetail(item.id!);
+                      }
+                    },
+                    isCompact: true,
+                  ),
                 ],
               ),
             ),

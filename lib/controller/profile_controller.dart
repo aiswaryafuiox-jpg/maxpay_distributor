@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/utils/logg_helper.dart';
 import '../domain/usecase/profile/get_profile_usecase.dart';
 import '../domain/usecase/profile/update_profile_usecase.dart';
@@ -63,6 +64,12 @@ class ProfileController extends GetxController {
   }
 
   Future<void> fetchProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if (token == null || token.isEmpty) {
+      return;
+    }
+
     isLoading.value = true;
     final result = await getProfileUseCase.call();
 

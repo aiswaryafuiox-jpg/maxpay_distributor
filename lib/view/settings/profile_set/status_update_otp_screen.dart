@@ -32,7 +32,7 @@ class _StatusUpdateOtpScreenState extends State<StatusUpdateOtpScreen> {
     if (args is UpdateStatusSendOtpResponseModel) {
       final otp = args.data?.otp;
       if (otp != null) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 5), () {
           if (mounted) {
             setState(() {
               _otpController.text = otp.toString();

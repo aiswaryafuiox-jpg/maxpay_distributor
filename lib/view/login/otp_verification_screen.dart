@@ -32,7 +32,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
     if (args is LoginSendOtpResponseModel) {
       final otp = args.data?.otp;
       if (otp != null) {
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 5), () {
           if (mounted) {
             setState(() {
               _otpController.text = otp.toString();

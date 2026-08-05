@@ -1,6 +1,7 @@
 package com.paylink.distributor
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -37,13 +38,13 @@ class MainActivity : FlutterFragmentActivity() {
                         }
                         try {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            val chooser = Intent.createChooser(intent, "Pay using")
-                            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                            if (chooser.resolveActivity(packageManager) != null) {
+                            if (intent.resolveActivity(packageManager) != null) {
+                                val chooser = Intent.createChooser(intent, "Pay using")
+                                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(chooser)
                                 result.success(true)
                             } else {
+                                Log.w(TAG, "No app available to handle UPI URI: $url")
                                 result.success(false)
                             }
                         } catch (e: Exception) {
@@ -56,10 +57,6 @@ class MainActivity : FlutterFragmentActivity() {
                         try {
                             val upiIntent = Intent(Intent.ACTION_VIEW, Uri.parse("upi://pay"))
 
-                            // FIX: MATCH_DEFAULT_ONLY is the correct flag — UPI apps
-                            // register their upi:// intent-filter with category DEFAULT.
-                            // MATCH_ALL was silently returning empty/wrong results on
-                            // several OEM ROMs.
                             val resolveInfos = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 packageManager.queryIntentActivities(
                                     upiIntent,
@@ -68,6 +65,7 @@ class MainActivity : FlutterFragmentActivity() {
                                     )
                                 )
                             } else {
+                                @Suppress("DEPRECATION")
                                 packageManager.queryIntentActivities(
                                     upiIntent,
                                     PackageManager.MATCH_DEFAULT_ONLY
@@ -79,20 +77,19 @@ class MainActivity : FlutterFragmentActivity() {
                                 Log.d(TAG, "Found: ${it.activityInfo.packageName}")
                             }
 
+                            val iconSize = (96 * resources.displayMetrics.density).toInt().coerceIn(72, 192)
+
                             val apps = resolveInfos
-                                .distinctBy { it.activityInfo.packageName } // avoid dup entries
+                                .distinctBy { it.activityInfo.packageName }
                                 .map { info ->
                                     val packageName = info.activityInfo.packageName
                                     val appName = info.loadLabel(packageManager).toString()
                                     val iconDrawable = info.loadIcon(packageManager)
-                                    val bitmap = if (iconDrawable is BitmapDrawable) {
-                                        iconDrawable.bitmap
+
+                                    val bitmap = if (iconDrawable is BitmapDrawable && iconDrawable.bitmap != null) {
+                                        Bitmap.createScaledBitmap(iconDrawable.bitmap, iconSize, iconSize, true)
                                     } else {
-                                        val bmp = Bitmap.createBitmap(
-                                            iconDrawable.intrinsicWidth.coerceAtLeast(1),
-                                            iconDrawable.intrinsicHeight.coerceAtLeast(1),
-                                            Bitmap.Config.ARGB_8888
-                                        )
+                                        val bmp = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888)
                                         val canvas = android.graphics.Canvas(bmp)
                                         iconDrawable.setBounds(0, 0, canvas.width, canvas.height)
                                         iconDrawable.draw(canvas)
@@ -100,7 +97,7 @@ class MainActivity : FlutterFragmentActivity() {
                                     }
 
                                     val stream = ByteArrayOutputStream()
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 85, stream)
                                     val iconBytes = stream.toByteArray()
 
                                     mapOf(
@@ -126,16 +123,15 @@ class MainActivity : FlutterFragmentActivity() {
                             return@setMethodCallHandler
                         }
                         try {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            intent.setPackage(packageName)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                            if (intent.resolveActivity(packageManager) != null) {
-                                startActivity(intent)
-                                result.success(true)
-                            } else {
-                                result.success(false)
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                                setPackage(packageName)
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             }
+                            startActivity(intent)
+                            result.success(true)
+                        } catch (e: ActivityNotFoundException) {
+                            Log.w(TAG, "App not found for package: $packageName")
+                            result.success(false)
                         } catch (e: Exception) {
                             Log.e(TAG, "openSpecificUpiApp failed", e)
                             result.error("UPI_OPEN_ERROR", e.message, null)

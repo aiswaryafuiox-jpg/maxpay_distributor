@@ -285,7 +285,13 @@ class AppPages {
       page: () => const AddWalletScreen(),
     ),
 
-    GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreenMain()),
+    GetPage(
+      name: AppRoutes.addwallet,
+      page: () => const AddWalletScreenMain(),
+      binding: BindingsBuilder(
+        () => Get.lazyPut(() => AddWalletController(sl(), sl())),
+      ),
+    ),
     GetPage(name: AppRoutes.veirfypin, page: () => const PinCodeEnterPage()),
     GetPage(
       name: AppRoutes.transaction,
@@ -316,7 +322,7 @@ class AppPages {
       name: AppRoutes.regChargeCredit,
       page: () => const RegChargeCreditScreen(),
     ),
-    GetPage(name: AppRoutes.view, page: () => const ViewDetailsScreen()),
+    GetPage(name: AppRoutes.view, page: () => const TransactionDetailsPage()),
     GetPage(name: AppRoutes.favorite, page: () => const FavoriteScreen()),
     GetPage(
       name: AppRoutes.walletBalance,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
 import '../core/utils/logg_helper.dart';
 import '../data/model/retailer/retailer_list_response_model.dart';
@@ -57,6 +58,12 @@ class RetailerController extends GetxController {
   }
 
   Future<void> fetchRetailers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if (token == null || token.isEmpty) {
+      return;
+    }
+
     isLoading.value = true;
     final result = await getRetailersUseCase.call();
 

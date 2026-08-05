@@ -58,11 +58,11 @@ class CreateQrRepoImpl implements CreateQrRepository {
   }
 
   @override
-  Future<Either<Failure, WalletQrHistory>> getWalletHistory() async {
+  Future<Either<Failure, WalletQrHistoryModel>> getWalletHistory() async {
     // try {
     final response = await _apiService.get(ApiRoutes.distributorWalletHistory);
     if (response['code'] == 200) {
-      return Right(WalletQrHistory.fromJson(response));
+      return Right(WalletQrHistoryModel.fromJson(response));
     } else {
       return Left(
         ServerFailure(response['message'] ?? 'Failed to fetch history'),

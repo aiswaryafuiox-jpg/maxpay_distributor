@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:maxpay/controller/wallet_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/data/model/wallet_credit_list_model.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
@@ -51,7 +53,7 @@ class WalletCreditScreen extends StatelessWidget {
                     Text("Credit Amount", style: TextHelper.max16),
                     const SizedBox(height: 4),
                     Text(
-                      "₹ ${controller.totalCreditAmount.value}",
+                      (controller.totalCreditAmount.value).currencyIndian,
                       style: TextHelper.lato12,
                     ),
                   ],
@@ -83,8 +85,9 @@ class WalletCreditScreen extends StatelessWidget {
                         Text(
                           "No wallet credit records found",
                           style: TextStyle(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.7),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.7,
+                            ),
                           ),
                         ),
                       ],
@@ -159,13 +162,13 @@ class _WalletCreditCard extends StatelessWidget {
                     "Date & Time:",
                     style: TextHelper.max1.copyWith(
                       color: isDark
-                        ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-                        : AppColors.darktextclr,
+                          ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
+                          : AppColors.darktextclr,
                     ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    item.dateTime ?? 'N/A',
+                    formatTransactionDate(item.dateTime ?? 'N/A'),
                     style: TextHelper.max1.copyWith(
                       color: isDark
                           ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
@@ -226,7 +229,7 @@ class _WalletCreditCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "₹ ${item.amount ?? '0.00'}",
+                    (item.amount ?? '0').currencyIndian,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
