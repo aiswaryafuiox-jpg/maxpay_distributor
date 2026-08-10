@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
-import 'package:maxpay/core/extensions/currency.dart';
-import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
@@ -12,7 +10,6 @@ import '../domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import '../domain/usecase/transaction/submit_transaction_dispute_usecase.dart';
 import '../data/model/transaction/transaction_product_response_model.dart';
 import '../data/model/transaction/transaction_report_response_model.dart';
-import '../data/model/transaction/transaction_detail_response_model.dart';
 
 class TransactionController extends GetxController {
   final GetTransactionProductsUseCase getTransactionProductsUseCase;
