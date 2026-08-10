@@ -1,4 +1,4 @@
-package com.paylink.distributor
+package com.paylink.business
 
 import android.Manifest
 import android.content.ActivityNotFoundException

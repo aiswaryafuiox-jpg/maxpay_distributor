@@ -7,8 +7,8 @@ class SimUtil {
   /// Test numbers exception list
   static const List<String> testNumbers = [
     '9999999999',
-    '6369497198',
-    '9895762284',
+    '7200251365',
+    '9876541302',
   ];
 
   /// Helper function to normalize and match
