@@ -189,75 +189,26 @@ class EarningsChart extends StatelessWidget {
                       barTouchData: BarTouchData(
                         enabled: true,
                         touchTooltipData: BarTouchTooltipData(
-                          getTooltipColor: (group) => const Color(0xFF1E293B),
-                          tooltipPadding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 8.h,
-                          ),
-                          tooltipMargin: 8,
-                          fitInsideHorizontally: true,
-                          fitInsideVertically: true,
-                          maxContentWidth: 220.w,
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                            final int sIdx = group.x.toInt();
-                            if (sIdx < 0 || sIdx >= seriesList.length) {
-                              return null;
-                            }
-
-                            final currentSeries = seriesList[sIdx];
-                            final String seriesName = currentSeries.name ?? '';
-                            final List<num> sData = currentSeries.data ?? [];
-
-                            final List<TextSpan> breakdownSpans = [];
-
-                            for (int k = 0; k < categories.length; k++) {
-                              final String cat = categories[k];
-                              final num val = k < sData.length ? sData[k] : 0;
-                              final String valStr = val % 1 == 0
-                                  ? "${val.toInt()}"
-                                  : val.toStringAsFixed(1);
-
-                              breakdownSpans.add(
-                                TextSpan(
-                                  text: '\t$cat: ',
-                                  children: [
-                                    TextSpan(
-                                      text: '$valStr\n',
-
-                                      style: TextStyle(
-                                        color: AppColors.card3.withValues(
-                                          alpha: 0.85,
-                                        ),
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 11.sp,
-                                        fontFamily: 'Poppins',
-                                        height: 1.35,
-                                      ),
-                                    ),
-                                  ],
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.85),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 11.sp,
-                                    fontFamily: 'Poppins',
-                                    height: 1.35,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return BarTooltipItem(
-                              "$seriesName\n",
-                              TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12.sp,
-                                fontFamily: 'Poppins',
-                              ),
-                              children: breakdownSpans,
-                            );
-                          },
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) =>
+                              null,
                         ),
+                        touchCallback: (FlTouchEvent event, barTouchResponse) {
+                          if (event is FlTapUpEvent ||
+                              event.runtimeType.toString() == 'FlTapUpEvent') {
+                            if (barTouchResponse != null &&
+                                barTouchResponse.spot != null) {
+                              final int sIdx =
+                                  barTouchResponse.spot!.touchedBarGroupIndex;
+                              if (sIdx >= 0 && sIdx < seriesList.length) {
+                                _showDataDialog(
+                                  context,
+                                  seriesList[sIdx],
+                                  categories,
+                                );
+                              }
+                            }
+                          }
+                        },
                       ),
                       titlesData: FlTitlesData(
                         show: true,
@@ -385,6 +336,88 @@ class EarningsChart extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+
+  void _showDataDialog(
+    BuildContext context,
+    GraphSeries series,
+    List<String> categories,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final bool isDark = Theme.of(context).brightness == Brightness.dark;
+        final String seriesName = series.name ?? 'Data';
+        final List<num> sData = series.data ?? [];
+
+        return AlertDialog(
+          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          title: Text(
+            seriesName,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Poppins',
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(categories.length, (k) {
+                final String cat = categories[k];
+                final num val = k < sData.length ? sData[k] : 0;
+                final String valStr = val % 1 == 0
+                    ? "${val.toInt()}"
+                    : val.toStringAsFixed(1);
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        cat,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontFamily: 'Poppins',
+                          color: isDark ? Colors.white70 : Colors.black54,
+                        ),
+                      ),
+                      Text(
+                        valStr,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "Close",
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFFF334B),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -148,7 +148,7 @@ class AppPages {
           fenix: true,
         );
         Get.lazyPut<BannerController>(
-          () => BannerController(sl()),
+          () => BannerController(bannerUsecase: sl()),
           fenix: true,
         );
         Get.lazyPut<GraphController>(() => GraphController(sl()), fenix: true);

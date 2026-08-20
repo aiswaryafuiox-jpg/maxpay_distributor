@@ -101,6 +101,11 @@ class _BiometricsScanningPageState extends State<BiometricsScanningPage> {
       //   snackPosition:
       //       SnackPosition.BOTTOM,
       // );
+    } on LocalAuthException catch (e) {
+      setState(() {
+        isAuthenticating = false;
+      });
+      CustomToast.error(e.description ?? "User Cancelled");
     } catch (e) {
       setState(() {
         isAuthenticating = false;

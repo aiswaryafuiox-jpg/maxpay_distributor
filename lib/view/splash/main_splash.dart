@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/login_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
+import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/sim_util.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
-
+import 'package:maxpay/core/utils/texthelper.dart';
 
 class MainSplashScreen extends StatefulWidget {
   const MainSplashScreen({super.key});
@@ -37,6 +38,8 @@ class _MainSplashScreenState extends State<MainSplashScreen>
   late final Animation<Offset> _rightLogoAnimation;
   late final Animation<double> _piecesOpacityAnimation;
   late final Animation<double> _hookTurnAnimation;
+  late final Animation<double> _textOpacityAnimation;
+  late final Animation<double> _welcomeTextOpacityAnimation;
 
   @override
   void initState() {
@@ -44,17 +47,17 @@ class _MainSplashScreenState extends State<MainSplashScreen>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2200),
+      duration: const Duration(milliseconds: 3000),
     );
 
     final hookAnimation = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(0, 0.62, curve: Curves.easeOutBack),
+      curve: const Interval(0.3, 0.75, curve: Curves.easeOutBack),
     );
 
     final logoAnimation = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(0, 0.62, curve: Curves.easeOutCubic),
+      curve: const Interval(0.3, 0.75, curve: Curves.easeOutCubic),
     );
 
     _leftLogoAnimation = Tween<Offset>(
@@ -72,16 +75,26 @@ class _MainSplashScreenState extends State<MainSplashScreen>
       end: 0,
     ).animate(hookAnimation);
 
-    _piecesOpacityAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 0,
-          end: 1,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 20,
+    _welcomeTextOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.25, curve: Curves.easeIn),
       ),
-      TweenSequenceItem(tween: ConstantTween<double>(1), weight: 80),
-    ]).animate(_controller);
+    );
+
+    _piecesOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 0.5, curve: Curves.easeOut),
+      ),
+    );
+
+    _textOpacityAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.8, 1.0, curve: Curves.easeIn),
+      ),
+    );
 
     _controller.forward();
 
@@ -179,46 +192,87 @@ class _MainSplashScreenState extends State<MainSplashScreen>
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: Center(
-        child: FadeTransition(
-          opacity: _piecesOpacityAnimation,
-          child: SizedBox(
-            width: _logoSize.w,
-            height: _logoSize.w,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  left: _linkPieceLeft * logoScale,
-                  top: _linkPieceTop * logoScale,
-                  child: SlideTransition(
-                    position: _rightLogoAnimation,
-                    child: _SplashLogoImage(
-                      asset: AssetImages.edit1,
-                      width: _linkPieceWidth * logoScale,
-                      isDark: isDark,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: _payPieceLeft * logoScale,
-                  top: _payPieceTop * logoScale,
-                  child: SlideTransition(
-                    position: _leftLogoAnimation,
-                    child: RotationTransition(
-                      turns: _hookTurnAnimation,
-                      child: SvgPicture.asset(
-                        AssetImages.edit,
-                        width: _payPieceWidth * logoScale,
-                        fit: BoxFit.contain,
+
+      body: Stack(
+        children: [
+          Center(
+            child: FadeTransition(
+              opacity: _piecesOpacityAnimation,
+              child: SizedBox(
+                width: _logoSize.w,
+                height: _logoSize.w,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: _linkPieceLeft * logoScale,
+                      top: _linkPieceTop * logoScale,
+                      child: SlideTransition(
+                        position: _rightLogoAnimation,
+                        child: _SplashLogoImage(
+                          asset: AssetImages.edit1,
+                          width: _linkPieceWidth * logoScale,
+                          isDark: isDark,
+                        ),
                       ),
                     ),
-                  ),
+                    Positioned(
+                      left: _payPieceLeft * logoScale,
+                      top: _payPieceTop * logoScale,
+                      child: SlideTransition(
+                        position: _leftLogoAnimation,
+                        child: RotationTransition(
+                          turns: _hookTurnAnimation,
+                          child: SvgPicture.asset(
+                            AssetImages.edit,
+                            width: _payPieceWidth * logoScale,
+                            fit: BoxFit.contain,
+                            colorFilter: ColorFilter.mode(
+                              Colors.red,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      bottom: -30,
+                      left: 10,
+                      child: FadeTransition(
+                        opacity: _textOpacityAnimation,
+                        child: Text(
+                          "Business",
+                          style: TextHelper.max2.copyWith(
+                            color: AppColors.clrPrimary,
+                            fontWeight: .w700,
+                            fontSize: 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+
+          Positioned(
+            top: 70,
+            left: 10,
+            child: FadeTransition(
+              opacity: _welcomeTextOpacityAnimation,
+              child: Text(
+                "Welcome to..",
+                style: TextHelper.max2.copyWith(
+                  color: AppColors.clrPrimary,
+                  fontWeight: .w700,
+                  fontSize: 32,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

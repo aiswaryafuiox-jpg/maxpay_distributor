@@ -12,6 +12,7 @@ class AppColors {
   static const Color darkBlue = Color.fromRGBO(73, 91, 255, 0.4);
   static const Color redClr = Color(0xffFF0000);
   static const Color textclr = Color(0xffC1C2C8);
+  static const Color textclr2 = Color(0xff636363);
   static const Color darktextclr = Color(0xff636363);
   static const Color background = Color(0xFFF6F7FF);
   static const Color darkbgBlack = Color(0xff25293C);

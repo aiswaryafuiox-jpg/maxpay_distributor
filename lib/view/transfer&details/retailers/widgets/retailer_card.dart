@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maxpay/core/extensions/currency.dart';
-import 'package:maxpay/view/transfer&details/retailers/widgets/retailor_cardbutton.dart';
+import 'package:maxpay/core/constants/asset_images.dart';
 import '../../../../core/constants/colors.dart';
 import '../../../../core/constants/routes_path.dart';
 import '../../../../core/utils/texthelper.dart';
-
 import '../../../../data/model/retailer/retailer_list_response_model.dart';
 import '../../../../controller/retailer_controller.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,102 @@ class RetailerCard extends StatelessWidget {
 
   const RetailerCard({super.key, required this.retailer});
 
+  Widget _buildIconButton(Color bgColor, String svgPath, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: Container(
+        height: 38,
+        width: 38,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          svgPath,
+          height: 20,
+          width: 20,
+          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAmountColumn(
+    String title,
+    num? amount,
+    Color amountColor,
+    bool isDark,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          title,
+          style: TextHelper.max1.copyWith(
+            fontSize: 8.sp,
+            fontWeight: .w400,
+            color: AppColors.clrTextgrey,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          (amount ?? 0.00).currencyIndian,
+          style: TextHelper.max2.copyWith(
+            color: amountColor,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  TableRow _buildTableRow(
+    String label,
+    String value,
+    bool isDark, [
+    bool isName = false,
+  ]) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            label,
+            style: TextHelper.max1.copyWith(
+              fontSize: 11.sp,
+              fontWeight: .w500,
+
+              color: AppColors.clrTextgrey,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            " : ",
+            style: TextHelper.max1.copyWith(
+              color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            value,
+            style: TextHelper.max1.copyWith(
+              fontSize: 12.sp,
+              fontWeight: isName ? .w700 : .w500,
+              color: AppColors.clrTextblack,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -21,269 +118,180 @@ class RetailerCard extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.only(top: 8, right: 16, bottom: 8, left: 16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
+        color: const Color(0xFFE5FBFF),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : AppColors.totalborde2.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: const Color(0x0A000000), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: "Retailer Name: ",
-                  style: TextHelper.max1.copyWith(
-                    color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                flex: 6,
+                child: Table(
+                  columnWidths: const {
+                    0: IntrinsicColumnWidth(),
+                    1: IntrinsicColumnWidth(),
+                    2: FlexColumnWidth(),
+                  },
+                  children: [
+                    _buildTableRow(
+                      "Retailer Name",
+                      retailer.retailerName?.capitalize ?? "-",
+                      isDark,
+                      true,
+                    ),
+                    _buildTableRow(
+                      "Reg. Mobile No",
+                      retailer.regMobileNumber != null
+                          ? "+91 ${retailer.regMobileNumber}"
+                          : "-",
+                      isDark,
+                    ),
+                    _buildTableRow(
+                      "Exe. Name",
+                      retailer.executiveName ?? "-",
+                      isDark,
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: retailer.retailerName ?? "-",
-                  style: TextHelper.max1.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
-                  ),
+              ),
+              FittedBox(
+                fit: .scaleDown,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Wallet Amount",
+                      style: TextHelper.max1.copyWith(
+                        fontWeight: .w400,
+                        fontSize: 10,
+                        color: AppColors.clrTextgrey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      (retailer.walletAmount ?? 0.00).currencyIndian,
+                      style: TextHelper.max2.copyWith(
+                        color: const Color(0xFF17A2B8), // cyan
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
-          const SizedBox(height: 5),
-
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: "Reg. Mobile No: ",
-                  style: TextHelper.max1.copyWith(
-                    color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                  ),
-                ),
-                TextSpan(
-                  text: retailer.regMobileNumber != null
-                      ? "+91 ${retailer.regMobileNumber}"
-                      : "-",
-                  style: TextHelper.max1.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 12),
 
           Divider(
             color: isDark ? AppColors.darkFilterBorder : Colors.grey.shade300,
             thickness: 1,
           ),
-
           const SizedBox(height: 12),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Due Amount",
-                    style: TextHelper.max1.copyWith(
-                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    (retailer.dueAmount ?? 0.00).currencyIndian,
-                    style: TextHelper.max2.copyWith(
-                      color: Color(0xFFEE0023),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              _buildAmountColumn(
+                "Due Amount",
+                retailer.dueAmount,
+                const Color(0xFFEE0023),
+                isDark,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "Wallet Amount",
-                    style: TextHelper.max1.copyWith(
-                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    (retailer.walletAmount ?? 0.00).currencyIndian,
-                    style: TextHelper.max2.copyWith(
-                      color: AppColors.clrPrimary,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              _buildAmountColumn(
+                "Today Online",
+                0.00,
+                const Color(0xFFFD7E14),
+                isDark,
+              ),
+              _buildAmountColumn(
+                "Today Transfer",
+                0.00,
+                const Color(0xFF28A745),
+                isDark,
               ),
             ],
           ),
-
-          const SizedBox(height: 14),
-
+          const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: "Executive Name: ",
-                        style: TextHelper.max1.copyWith(
-                          color: isDark
-                              ? AppColors.textclr
-                              : AppColors.clrTextgrey,
-                        ),
-                      ),
-                      TextSpan(
-                        text: retailer.executiveName ?? "-",
-                        style: TextHelper.max1.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? AppColors.textclr
-                              : AppColors.clrTextblack,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
-                  vertical: 4,
+                  vertical: 8,
                 ),
                 decoration: BoxDecoration(
                   gradient: AppColors.silverGradient,
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   "Silver",
                   style: TextHelper.max1.copyWith(
                     color: Colors.black87,
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
                 ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: SizedBox(
-          //         height: 34,
-          //         child: ElevatedButton(
-          //           style: ElevatedButton.styleFrom(
-          //             elevation: 0,
-          //             backgroundColor: isActive ? Colors.green : Colors.red,
-          //             shape: RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(6),
-          //             ),
-          //           ),
-          //           onPressed: () {},
-          //           child: Text(
-          //             isActive ? "Active" : "Inactive",
-          //             maxLines: 1,
-          //             overflow: TextOverflow.ellipsis,
-          //             style: TextHelper.max1.copyWith(
-          //               color: Colors.white,
-          //               fontSize: 10,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //
-          //     const SizedBox(width: 8),
-          //
-          //     Expanded(
-          //       child: SizedBox(
-          //         height: 34,
-          //         child: ElevatedButton(
-          //           style: ElevatedButton.styleFrom(
-          //             elevation: 0,
-          //             backgroundColor: AppColors.view,
-          //             alignment: Alignment.centerLeft,
-          //             padding: const EdgeInsets.symmetric(horizontal: 8),
-          //             shape: RoundedRectangleBorder(
-          //               borderRadius: BorderRadius.circular(6),
-          //             ),
-          //           ),
-          //           onPressed: () {},
-          //           child: Text(
-          //             "View Details",
-          //             maxLines: 1,
-          //             overflow: TextOverflow.ellipsis,
-          //             style: TextHelper.max1.copyWith(
-          //               color: Colors.white,
-          //               fontSize: 10,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //
-          //     const SizedBox(width: 8),
-          //
-          //     Expanded(
-          //       child: SizedBox(
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              RetailerListCardButton(
-                color: retailer.isActive == 1
-                    ? AppColors.activeBtn
-                    : AppColors.redClr,
-                textColor: AppColors.white,
-                onPressed: () {},
-                text: retailer.isActive == 1 ? "Active" : "Inactive",
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Container(
+                  height: 38,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    color: retailer.isActive == 1
+                        ? AppColors.activeBtn
+                        : AppColors.redClr,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    retailer.isActive == 1 ? "Active" : "Inactive",
+                    style: TextHelper.max1.copyWith(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
               ),
-
-              const SizedBox(width: 6),
-
-              RetailerListCardButton(
-                onPressed: () {
-                  if (retailer.id != null) {
-                    Get.toNamed(
-                      AppRoutes.retviewDetailsScreen,
-                      arguments: {'id': retailer.id.toString()},
-                    );
-                  }
-                },
-                color: AppColors.view,
-                textColor: AppColors.white,
-                text: "View Details",
-              ),
-
-              const SizedBox(width: 6),
-
-              RetailerListCardButton(
-                color: AppColors.activeBtn,
-                textColor: AppColors.white,
-                onPressed: () {
-                  Get.find<RetailerController>().fetchAddWalletDetails(
-                    retailer.id.toString(),
-                  );
-                },
-                text: "Add Wallet",
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildIconButton(
+                    const Color(0xFF007BFF),
+                    AssetImages.receipt,
+                    () {
+                      // Action for receipt
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildIconButton(
+                    const Color(0xFFFD7E14),
+                    AssetImages.profileSolo,
+                    () {
+                      if (retailer.id != null) {
+                        Get.toNamed(
+                          AppRoutes.retviewDetailsScreen,
+                          arguments: {'id': retailer.id.toString()},
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildIconButton(
+                    const Color(0xFF17A2B8),
+                    AssetImages.walletAdd,
+                    () {
+                      Get.find<RetailerController>().fetchAddWalletDetails(
+                        retailer.id.toString(),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

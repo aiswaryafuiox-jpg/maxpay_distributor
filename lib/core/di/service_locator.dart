@@ -495,9 +495,7 @@ Future<void> init() async {
   sl.registerLazySingleton<IpAddressRepository>(
     () => IpAddressRepositoryImpl(sl()),
   );
-  sl.registerLazySingleton<IpAddressUseCase>(
-    () => IpAddressUseCase(sl()),
-  );
+  sl.registerLazySingleton<IpAddressUseCase>(() => IpAddressUseCase(sl()));
   sl.registerFactory(() => IpAddressController(ipAddressUseCase: sl()));
 
   // Support
@@ -548,7 +546,7 @@ Future<void> init() async {
 
   // Home Page
   sl.registerFactory(() => HomePageController(sl(), sl(), sl()));
-  sl.registerFactory(() => BannerController(sl()));
+  sl.registerFactory(() => BannerController(bannerUsecase: sl()));
   sl.registerFactory(() => GraphController(sl()));
 
   // Login
@@ -638,9 +636,7 @@ Future<void> init() async {
   sl.registerLazySingleton<WalletCreditListRepository>(
     () => WalletCreditListRepoImpl(sl()),
   );
-  sl.registerLazySingleton<WalletRepository>(
-    () => WalletRepositoryImpl(sl()),
-  );
+  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(sl()));
   sl.registerLazySingleton<GetWalletCreditTypeUseCase>(
     () => GetWalletCreditTypeUseCase(sl()),
   );

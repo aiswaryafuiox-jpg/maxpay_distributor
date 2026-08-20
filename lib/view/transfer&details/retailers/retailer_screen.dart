@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/global_widget/common_filter_box.dart';
 
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_card.dart';
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_top_tabs.dart';
@@ -27,6 +29,10 @@ class RetailerScreen extends StatelessWidget {
             children: [
               const RetailerTopTabs(),
               const SizedBox(height: 18),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: RetailersFilterWidget(),
+              ),
 
               Center(
                 child: SizedBox(
@@ -72,6 +78,74 @@ class RetailerScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class RetailersFilterWidget extends StatelessWidget {
+  const RetailersFilterWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final RetailerController retailerController = Get.put(
+      RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+    );
+
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xff2F3349) : const Color(0xffF8F9FA),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: 'inactive',
+            decoration: InputDecoration(
+              fillColor: isDark ? AppColors.darkplceholder : AppColors.white,
+              filled: true,
+              hintText: "Select Package",
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 15,
+                fontFamily: "Poppins",
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA), // light border
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA),
+                  width: 1,
+                ),
+              ),
+            ),
+            items: ["active", 'inactive'].map((pkg) {
+              return DropdownMenuItem<String>(value: pkg, child: Text(pkg));
+            }).toList(),
+            onChanged: (v) {},
+          ),
+
+          const SizedBox(height: 12),
+
+          SearchBox(),
+        ],
       ),
     );
   }

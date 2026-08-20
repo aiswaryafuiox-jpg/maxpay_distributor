@@ -56,7 +56,7 @@ class _NewsTickerState extends State<NewsTicker> {
 
       await scrollController.animateTo(
         max,
-        duration: const Duration(seconds: 24),
+        duration: const Duration(seconds: 18),
         curve: Curves.linear,
       );
 
@@ -67,7 +67,6 @@ class _NewsTickerState extends State<NewsTicker> {
 
     _isRunning = false;
   }
-  
 
   @override
   Widget build(BuildContext context) {

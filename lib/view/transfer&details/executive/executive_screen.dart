@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../controller/executive_controller.dart';
 import '../../../core/constants/colors.dart';
 import '../../../global_widget/custom_app.dart';
+import 'package:maxpay/global_widget/common_filter_box.dart';
 
 class ExecutiveScreen extends StatelessWidget {
   const ExecutiveScreen({super.key});
@@ -25,7 +26,10 @@ class ExecutiveScreen extends StatelessWidget {
             children: [
               const ExecutiveTopTabs(),
               const SizedBox(height: 18),
-
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: ExecutiveFilterWidget(),
+              ),
               Center(
                 child: SizedBox(
                   width: 300,
@@ -69,6 +73,71 @@ class ExecutiveScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ExecutiveFilterWidget extends StatelessWidget {
+  const ExecutiveFilterWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xff2F3349) : const Color(0xffF8F9FA),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: 'active',
+            decoration: InputDecoration(
+              fillColor: isDark ? AppColors.darkplceholder : AppColors.white,
+              filled: true,
+              hintText: "Select Package",
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 15,
+                fontFamily: "Poppins",
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA), // light border
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA),
+                  width: 1,
+                ),
+              ),
+            ),
+            items: ["active", 'inactive'].map((pkg) {
+              return DropdownMenuItem<String>(
+                value: pkg,
+                child: Text(pkg.capitalize ?? 'Select'),
+              );
+            }).toList(),
+            onChanged: (v) {},
+          ),
+          const SizedBox(height: 12),
+          SearchBox(),
+        ],
       ),
     );
   }

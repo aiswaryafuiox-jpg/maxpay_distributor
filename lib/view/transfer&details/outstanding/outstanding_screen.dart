@@ -19,7 +19,7 @@ class _OutstandingScreenState extends State<OutstandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Outstandings")),
+      appBar: AppBar(title: Text("Due Amount")),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.w),
