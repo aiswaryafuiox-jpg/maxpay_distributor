@@ -61,7 +61,7 @@ class ExecutiveTopTabs extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => buildTab(
-                  "${conttr.executiveCount}",
+                  "${conttr.executivesData.value.activeCount ?? 0}",
                   SvgPicture.asset(AssetImages.profileUser),
                   AppColors.active1Bg,
                   borderRadius: const BorderRadius.only(
@@ -74,7 +74,7 @@ class ExecutiveTopTabs extends StatelessWidget {
             Expanded(
               child: Obx(
                 () => buildTab(
-                  conttr.executiveCount.toString(),
+                  "${conttr.executivesData.value.inactiveCount ?? 0}",
                   SvgPicture.asset(AssetImages.profileUser),
                   AppColors.redClr,
                   isSelected: true,

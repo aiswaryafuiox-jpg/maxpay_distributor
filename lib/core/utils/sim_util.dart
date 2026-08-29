@@ -6,9 +6,7 @@ import 'package:flutter/services.dart';
 class SimUtil {
   /// Test numbers exception list
   static const List<String> testNumbers = [
-    '9999999999',
-    '7200251365',
-    '9876541302',
+    '9751222553',
   ];
 
   /// Helper function to normalize and match

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
+import 'package:maxpay/view/transaction_screens/widget/share_receipt.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_detail_usecase.dart';
@@ -179,11 +179,14 @@ class TransactionController extends GetxController {
         );
       },
       (response) {
-        Get.toNamed(AppRoutes.view, arguments: response);
+        // Get.toNamed(AppRoutes.view, arguments: response);
+        ShareReceipt.shareScreenshot(
+          context: Get.context!,
+          data: response.data!,
+        );
       },
     );
   }
-
 
   Future<void> submitDispute(
     String id,

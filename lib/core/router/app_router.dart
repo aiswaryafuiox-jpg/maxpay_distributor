@@ -25,6 +25,7 @@ import 'package:maxpay/domain/usecase/transaction/get_transaction_detail_usecase
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/add_wallet_home/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
+import 'package:maxpay/view/bank_detail/bank_details.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
 import 'package:maxpay/view/dth_recharge/dth_recharge_page.dart';
 import 'package:maxpay/view/favorite/favorite.dart';
@@ -144,11 +145,11 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(sl(), sl(), sl()),
+          () => HomePageController(sl(), sl(), sl(), sl(), sl(), sl()),
           fenix: true,
         );
         Get.lazyPut<BannerController>(
-          () => BannerController(bannerUsecase: sl()),
+          () => BannerController(bannerUsecase: sl(), advusecase: sl()),
           fenix: true,
         );
         Get.lazyPut<GraphController>(() => GraphController(sl()), fenix: true);
@@ -156,6 +157,7 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
     GetPage(name: AppRoutes.lowWallet, page: () => const LowWalletScreen()),
+    GetPage(name: AppRoutes.bank, page: () => BankDetailsPage()),
     //
     GetPage(
       name: AppRoutes.onlineTransaction,

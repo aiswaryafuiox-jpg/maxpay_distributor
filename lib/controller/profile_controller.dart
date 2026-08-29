@@ -15,6 +15,7 @@ import '../domain/usecase/profile/verify_update_status_otp_usecase.dart';
 import '../data/model/profile/get_profile_response_model.dart';
 import '../view/settings/profile_set/profile_update_otp_screen.dart';
 import '../view/settings/profile_set/status_update_otp_screen.dart';
+import '../core/utils/sim_util.dart';
 
 class ProfileController extends GetxController {
   final GetProfileUseCase getProfileUseCase;
@@ -72,6 +73,8 @@ class ProfileController extends GetxController {
 
     isLoading.value = true;
     final result = await getProfileUseCase.call();
+
+    if (isClosed) return;
 
     result.fold(
       (failure) {
@@ -154,7 +157,13 @@ class ProfileController extends GetxController {
           //   "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}",
           //   snackPosition: SnackPosition.BOTTOM,
           // );
-          Fluttertoast.showToast(msg: "OTP Sent Successfully",
+          String toastMsg = "OTP Sent Successfully";
+          if (data.data?.phoneNumber != null && SimUtil.testNumbers.contains(data.data?.phoneNumber)) {
+            toastMsg = "OTP: ${data.data?.otp}";
+          }
+          
+          Fluttertoast.showToast(
+            msg: toastMsg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
@@ -219,8 +228,13 @@ class ProfileController extends GetxController {
       },
       (data) {
         isUpdating.value = false;
+        String toastMsg = "OTP Sent Successfully";
+        if (data.data?.phoneNumber != null && SimUtil.testNumbers.contains(data.data?.phoneNumber)) {
+          toastMsg = "OTP: ${data.data?.otp}";
+        }
+        
         Fluttertoast.showToast(
-          msg: "OTP Sent Successfully",
+          msg: toastMsg,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -249,8 +263,13 @@ class ProfileController extends GetxController {
       (data) {
         isUpdating.value = false;
         if (data.data?.otpRequired == true) {
+          String toastMsg = "OTP Sent Successfully";
+          if (data.data?.phoneNumber != null && SimUtil.testNumbers.contains(data.data?.phoneNumber)) {
+            toastMsg = "OTP: ${data.data?.otp}";
+          }
+          
           Fluttertoast.showToast(
-            msg: "OTP Sent Successfully",
+            msg: toastMsg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,

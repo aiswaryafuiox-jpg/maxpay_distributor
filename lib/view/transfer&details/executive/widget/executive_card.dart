@@ -171,10 +171,7 @@ class ExecutiveCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      (executive.walletBalance ??
-                              executive.walletAmount ??
-                              0.00)
-                          .currencyIndian,
+                      (executive.walletAmount ?? " 0.00").currencyIndian,
                       style: TextHelper.max2.copyWith(
                         color: const Color(0xFF17A2B8), // cyan
                         fontSize: 20,
@@ -197,19 +194,19 @@ class ExecutiveCard extends StatelessWidget {
             children: [
               _buildAmountColumn(
                 "Due Amount",
-                executive.dueAmount,
+                num.parse(executive.dueAmount ?? '0'),
                 const Color(0xFFEE0023),
                 isDark,
               ),
               _buildAmountColumn(
                 "Today Online",
-                0.00,
+                num.parse(executive.todayOnline ?? '0'),
                 const Color(0xFFFD7E14),
                 isDark,
               ),
               _buildAmountColumn(
                 "Today Transfer",
-                0.00,
+                num.parse(executive.todayTransfer ?? '0'),
                 const Color(0xFF28A745),
                 isDark,
               ),

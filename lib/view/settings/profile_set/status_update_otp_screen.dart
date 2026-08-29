@@ -3,12 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/responsive.dart';
-import '../../login/widgets/custom_numeric_keyboard.dart';
 import '../../login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
 import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
 import '../../../controller/profile_controller.dart';
-import '../../../../data/model/profile/update_status_send_otp_response_model.dart';
 
 class StatusUpdateOtpScreen extends StatefulWidget {
   const StatusUpdateOtpScreen({super.key});
@@ -19,51 +17,17 @@ class StatusUpdateOtpScreen extends StatefulWidget {
 
 class _StatusUpdateOtpScreenState extends State<StatusUpdateOtpScreen> {
   final TextEditingController _otpController = TextEditingController();
-  bool _showVerifyButton = false;
 
   @override
   void initState() {
     super.initState();
-    _autoFillOtp();
   }
 
-  void _autoFillOtp() {
-    final args = Get.arguments;
-    if (args is UpdateStatusSendOtpResponseModel) {
-      final otp = args.data?.otp;
-      if (otp != null) {
-        Future.delayed(const Duration(seconds: 5), () {
-          if (mounted) {
-            setState(() {
-              _otpController.text = otp.toString();
-              _showVerifyButton = _otpController.text.length == 4;
-            });
-          }
-        });
-      }
+  void _verifyOtp() {
+    if (_otpController.text.length == 4) {
+      final controller = Get.find<ProfileController>();
+      controller.verifyStatusOtp(_otpController.text);
     }
-  }
-
-  void _handleKeyPress(String key) {
-    setState(() {
-      if (key == 'backspace') {
-        if (_otpController.text.isNotEmpty) {
-          _otpController.text = _otpController.text.substring(
-            0,
-            _otpController.text.length - 1,
-          );
-        }
-      } else if (key == 'submit') {
-        // Handle direct submit if needed
-      } else {
-        if (_otpController.text.length < 4) {
-          _otpController.text += key;
-        }
-      }
-
-      // Automatically show verify button when 4 digits are entered
-      _showVerifyButton = _otpController.text.length == 4;
-    });
   }
 
   @override
@@ -147,7 +111,8 @@ class _StatusUpdateOtpScreenState extends State<StatusUpdateOtpScreen> {
                         Pinput(
                           length: 4,
                           controller: _otpController,
-                          readOnly: true,
+                          keyboardType: TextInputType.number,
+                          onCompleted: (pin) => _verifyOtp(),
                           mainAxisAlignment: MainAxisAlignment.center,
                           submittedPinTheme: PinTheme(
                             width: isTablet ? 70.w : 60.w,
@@ -211,26 +176,16 @@ class _StatusUpdateOtpScreenState extends State<StatusUpdateOtpScreen> {
                   ),
                 ),
 
-                /// 🔹 NUMERIC KEYBOARD / VERIFY BUTTON
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: _showVerifyButton
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
-                          child: CustomElevatedButton(
-                            text: 'Verify OTP',
-                            onPressed: () {
-                              final controller = Get.find<ProfileController>();
-                              controller.verifyStatusOtp(_otpController.text);
-                            },
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(bottom: 20.h),
-                          child: CustomNumericKeyboard(
-                            onKeyPressed: _handleKeyPress,
-                          ),
-                        ),
+                /// 🔹 VERIFY BUTTON
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
+                  child: Obx(
+                    () => CustomElevatedButton(
+                      text: 'Verify OTP',
+                      onPressed: _verifyOtp,
+                      isLoading: Get.find<ProfileController>().isUpdating.value,
+                    ),
+                  ),
                 ),
               ],
             ),

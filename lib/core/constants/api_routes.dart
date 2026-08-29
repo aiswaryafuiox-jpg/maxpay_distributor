@@ -1,12 +1,16 @@
 class ApiRoutes {
-  static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
-  // static const comURL = "https://beforeafternutrition.fuiox.com/storage";
+  // static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
+  static const baseURL = "https://paylinkonline.in";
 
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
   static const String loginSendOtp = "/api/distributor_login_sendotp";
   static const String getNews = "/api/distributor_get_news";
   static const String getBanners = "/api/distributor_get_banner";
+  static const String getAdvertisement = "/api/distributor_get_advertisement";
+  static const String getPopupMessage = "/api/distributor_get_popup_message";
+  static const String getFaq = "/api/distributor_get_faq";
+  static const String getFaqReply = "/api/distributor_faq_reply";
   static const String getGraph = "/api/distributor_graph";
   static const String distributorGetIp = "/api/distributor_get_ip";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
@@ -133,4 +137,5 @@ class ApiRoutes {
   static const String distributorUpdateMpin = '/api/distributor_update_mpin';
   static const String distributorPrivacyPolicy =
       '/api/distributor_privacy_policy';
+  static const bankdetail = "/get_bank_details";
 }

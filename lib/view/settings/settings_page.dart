@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +15,7 @@ import 'package:maxpay/controller/privacy_policy_controller.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -206,31 +206,45 @@ class _SettingsPageState extends State<SettingsPage> {
 
                             Row(
                               children: [
-                                Container(
-                                  height: 24,
-                                  padding: .symmetric(horizontal: 12),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF00BC62),
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Row(
-                                    spacing: 3.w,
-                                    children: [
-                                      Text(
-                                        "Link",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 13,
+                                InkWell(
+                                  onTap: () {
+                                    SharePlus.instance.share(
+                                      ShareParams(
+                                        uri: Uri.parse(
+                                          "https://paylinkonline.in/distributor/login",
                                         ),
                                       ),
-
-                                      Icon(
-                                        Ionicons.arrow_redo_outline,
-                                        size: 15.w,
-                                        color: AppColors.white,
-                                      ),
-                                    ],
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 8.w),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                      vertical: 5.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "Link",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3.w),
+                                        Icon(
+                                          Icons.reply_rounded,
+                                          color: Colors.white,
+                                          size: 14.sp,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
 
@@ -278,6 +292,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
+
                     _buildMenuTile(
                       context,
                       'Bulk Package Update',
@@ -347,13 +362,21 @@ class _SettingsPageState extends State<SettingsPage> {
                               width: 24.w,
                             ),
                     ),
-
+                    _buildMenuTile(
+                      context,
+                      'Bank Details',
+                      () {
+                        Get.toNamed(AppRoutes.bank);
+                      },
+                      SvgPicture.asset(AssetImages.cashback, width: 24.w),
+                    ),
                     _buildMenuTile(
                       context,
                       'Privacy Policy',
                       () {
-                        final controller =
-                            Get.put(sl<PrivacyPolicyController>());
+                        final controller = Get.put(
+                          sl<PrivacyPolicyController>(),
+                        );
                         controller.openPrivacyPolicy();
                       },
                       SvgPicture.asset(AssetImages.privacyPolicy, width: 24.w),

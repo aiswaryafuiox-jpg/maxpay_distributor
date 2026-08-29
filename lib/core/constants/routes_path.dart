@@ -69,5 +69,6 @@ class AppRoutes {
   static const String bulkPackageChange = '/bulk-package-change';
   static const scanWebLogin = "/scanWebLogin";
   static const String search = '/search';
+    static const String bank='/bank';
   static const String notification = '/notification';
 }

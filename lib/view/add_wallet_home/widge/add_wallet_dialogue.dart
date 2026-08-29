@@ -4,11 +4,16 @@ import 'package:maxpay/controller/add_wallet_controller.dart';
 
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/utils/logg_helper.dart';
+import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class AddWalletPopup extends StatefulWidget {
+class AddWalletPopup extends StatelessWidget {
   final String amount;
   final String url;
+  final String? phonepeLink;
+  final String? gpayLink;
   final String txtionId;
 
   const AddWalletPopup({
@@ -16,57 +21,21 @@ class AddWalletPopup extends StatefulWidget {
     required this.amount,
     required this.url,
     required this.txtionId,
+    required this.phonepeLink,
+    this.gpayLink,
   });
-
-  @override
-  State<AddWalletPopup> createState() => _AddWalletPopupState();
-}
-
-class _AddWalletPopupState extends State<AddWalletPopup> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollLeft() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        (_scrollController.offset - 80).clamp(
-          0.0,
-          _scrollController.position.maxScrollExtent,
-        ),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _scrollRight() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        (_scrollController.offset + 80).clamp(
-          0.0,
-          _scrollController.position.maxScrollExtent,
-        ),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final isDark = theme.brightness == Brightness.dark;
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
-        width: 350,
+        width: 340,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: theme.scaffoldBackgroundColor,
@@ -76,10 +45,14 @@ class _AddWalletPopupState extends State<AddWalletPopup> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ----------------------------------------------------------
+              // HEADER
+              // ----------------------------------------------------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(width: 24),
+
                   Text(
                     "Account Details",
                     style: TextStyle(
@@ -88,12 +61,17 @@ class _AddWalletPopupState extends State<AddWalletPopup> {
                       color: theme.colorScheme.onSurface,
                     ),
                   ),
+
                   InkWell(
                     onTap: () async {
                       final controller = Get.find<AddWalletController>();
+
                       controller.stopTimer();
+
                       controller.amountController.clear();
+
                       Get.back();
+
                       await controller.getWalletHistory();
                     },
                     child: const Icon(
@@ -107,278 +85,317 @@ class _AddWalletPopupState extends State<AddWalletPopup> {
 
               const SizedBox(height: 18),
 
-              /// QR Code
-              Container(
-                width: 220,
-                height: 220,
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Center(
-                  child: QrImageView(
-                    data: widget.url,
-                    version: QrVersions.auto,
-                    size: 220,
+              // ----------------------------------------------------------
+              // QR CODE
+              // ----------------------------------------------------------
+              GestureDetector(
+                onTap: () async {
+                  // Allow user to tap QR itself
+                  // and open the UPI payment app.
+                  await openUpiPayment(url);
+                },
+                child: Container(
+                  width: 220,
+                  height: 220,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
+                  child: Center(
+                    child: QrImageView(
+                      data: url,
+                      version: QrVersions.auto,
+                      size: 210,
+                      backgroundColor: Colors.white,
+                      errorCorrectionLevel: QrErrorCorrectLevel.M,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // ----------------------------------------------------------
+              // TAP QR
+              // ----------------------------------------------------------
+              Text(
+                "Tap QR to open payment",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  fontFamily: 'Poppins',
                 ),
               ),
 
               const SizedBox(height: 18),
 
-              /// Amount & Expiry Box (matching image design)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkplceholder : Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.clrPrimary, width: 1.5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              // ----------------------------------------------------------
+              // AMOUNT
+              // ----------------------------------------------------------
+              SizedBox(
+                width: 270,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Amount",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Obx(() {
-                          final controller = Get.find<AddWalletController>();
-                          final minutes =
-                              (controller.remainingSeconds.value ~/ 60)
-                                  .toString()
-                                  .padLeft(2, '0');
-                          final seconds =
-                              (controller.remainingSeconds.value % 60)
-                                  .toString()
-                                  .padLeft(2, '0');
-
-                          return Text(
-                            "Expiry: $minutes.$seconds",
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
-                        }),
-                      ],
+                    const Text(
+                      "Amount",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                      ),
                     ),
+
+                    const SizedBox(height: 8),
+
                     Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
-                        vertical: 10,
+                        vertical: 14,
                       ),
                       decoration: BoxDecoration(
                         color: isDark
                             ? AppColors.darkbgBlack
-                            : const Color(0xFFF6F8FA),
-                        borderRadius: BorderRadius.circular(10),
+                            : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isDark
-                              ? Colors.grey.shade800
-                              : Colors.grey.shade200,
+                              ? Colors.grey.shade700
+                              : Colors.grey.shade300,
                         ),
                       ),
                       child: Text(
-                        widget.amount.currencyIndian,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface,
+                        amount.currencyIndian,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              // ----------------------------------------------------------
+              // EXPIRY TIMER
+              // ----------------------------------------------------------
+              Obx(() {
+                final controller = Get.find<AddWalletController>();
+
+                final minutes = (controller.remainingSeconds.value ~/ 60)
+                    .toString()
+                    .padLeft(2, '0');
+
+                final seconds = (controller.remainingSeconds.value % 60)
+                    .toString()
+                    .padLeft(2, '0');
+
+                return Text(
+                  "Expiry: $minutes:$seconds",
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 20),
+
+              // ----------------------------------------------------------
+              // NOTE
+              // ----------------------------------------------------------
+              const Text(
+                "Scan this QR code using "
+                "PhonePe, Google Pay or any UPI app.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
 
               const SizedBox(height: 16),
 
-              /// "Pay Using" Card (matching image design)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkplceholder : Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(
-                        alpha: isDark ? 0.2 : 0.05,
+              // ----------------------------------------------------------
+              // UPI BUTTONS
+              // ----------------------------------------------------------
+              Row(
+                children: [
+                  // GPay
+                  if (gpayLink != null && gpayLink!.trim().isNotEmpty)
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onPressed: () async {
+                          final controller = Get.find<AddWalletController>();
+
+                          final gpayUrl = controller.buildWorkingUpiUrl(
+                            paymentLink: gpayLink!,
+                            amount: amount,
+                          );
+
+                          if (gpayUrl.isEmpty) {
+                            CustomToast.error("Invalid GPay payment link");
+                            return;
+                          }
+
+                          await controller.openSpecificUpiApp(
+                            packageName:
+                                "com.google.android.apps.nbu.paisa.user",
+                            url: gpayUrl,
+                          );
+                        },
+                        child: const Text(
+                          "GPay",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
                     ),
-                  ],
-                  border: isDark
-                      ? Border.all(color: AppColors.darkFilterBorder)
-                      : null,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Pay Using",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.clrPrimary,
+
+                  if (gpayLink != null &&
+                      gpayLink!.trim().isNotEmpty &&
+                      phonepeLink != null &&
+                      phonepeLink!.trim().isNotEmpty)
+                    const SizedBox(width: 12),
+
+                  // PhonePe
+                  if (phonepeLink != null && phonepeLink!.trim().isNotEmpty)
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF5F259F),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onPressed: () {
+                          Get.find<AddWalletController>().openSpecificUpiApp(
+                            packageName: "com.phonepe.app",
+                            url: phonepeLink!,
+                          );
+                        },
+                        child: const Text(
+                          "PhonePe",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    Obx(() {
-                      final controller = Get.find<AddWalletController>();
-
-                      if (controller.isLoadingUpiApps.value) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(12),
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-
-                      if (controller.upiApps.isEmpty) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(12),
-                            child: Text(
-                              "No UPI apps installed",
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ),
-                        );
-                      }
-
-                      return Row(
-                        children: [
-                          /// Left Scroll Button
-                          GestureDetector(
-                            onTap: _scrollLeft,
-                            child: Container(
-                              width: 26,
-                              height: 26,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFF8CE0EE),
-                              ),
-                              child: const Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                size: 12,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-
-                          /// UPI Apps List
-                          Expanded(
-                            child: SizedBox(
-                              height: 62,
-                              child: ListView.separated(
-                                controller: _scrollController,
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: controller.upiApps.length,
-                                separatorBuilder: (_, _) =>
-                                    const SizedBox(width: 10),
-                                itemBuilder: (context, index) {
-                                  final app = controller.upiApps[index];
-                                  return InkWell(
-                                    borderRadius: BorderRadius.circular(12),
-                                    onTap: () {
-                                      controller.openSpecificUpiApp(
-                                        packageName: app["packageName"],
-                                        url: widget.url,
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: isDark
-                                            ? AppColors.darkbgBlack
-                                            : Colors.white,
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: isDark
-                                              ? Colors.grey.shade800
-                                              : Colors.grey.shade200,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(
-                                              alpha: 0.04,
-                                            ),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Center(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          child: Image.memory(
-                                            app["icon"],
-                                            width: 42,
-                                            height: 42,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-
-                          /// Right Scroll Button
-                          GestureDetector(
-                            onTap: _scrollRight,
-                            child: Container(
-                              width: 26,
-                              height: 26,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFF8CE0EE),
-                              ),
-                              child: const Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 12,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ],
-                ),
+                ],
               ),
+
+              const SizedBox(height: 10),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+// ==========================================================================
+// OPEN UPI PAYMENT
+// ==========================================================================
+
+Future<void> openUpiPayment(String paymentUrl) async {
+  try {
+    final value = paymentUrl.trim();
+
+    if (value.isEmpty) {
+      CustomToast.error("Payment link is empty");
+      return;
+    }
+
+    AppLogger.debugPrint("UPI payment URL = $value");
+
+    final uri = Uri.tryParse(value);
+
+    if (uri == null) {
+      CustomToast.error("Invalid payment link");
+      return;
+    }
+
+    // --------------------------------------------------------------
+    // If backend sends HTTPS URL containing UPI query parameters,
+    // convert it into standard UPI URI.
+    // --------------------------------------------------------------
+
+    Uri finalUri = uri;
+
+    if (uri.scheme == 'http' || uri.scheme == 'https') {
+      final query = uri.queryParameters;
+
+      final pa = query['pa'];
+
+      if (pa != null && pa.isNotEmpty) {
+        final params = <String, String>{};
+
+        const allowed = [
+          'pa',
+          'pn',
+          'mc',
+          'tr',
+          'tid',
+          'tn',
+          'am',
+          'cu',
+          'url',
+          'mode',
+          'purpose',
+          'orgid',
+        ];
+
+        for (final key in allowed) {
+          final value = query[key];
+
+          if (value != null && value.isNotEmpty) {
+            params[key] = value;
+          }
+        }
+
+        if (!params.containsKey('cu')) {
+          params['cu'] = 'INR';
+        }
+
+        finalUri = Uri(scheme: 'upi', host: 'pay', queryParameters: params);
+      }
+    }
+
+    AppLogger.debugPrint("FINAL UPI URL = $finalUri");
+
+    // --------------------------------------------------------------
+    // OPEN PAYMENT
+    // --------------------------------------------------------------
+
+    final canOpen = await canLaunchUrl(finalUri);
+
+    if (!canOpen) {
+      CustomToast.error("No UPI app installed");
+      return;
+    }
+
+    await launchUrl(finalUri, mode: LaunchMode.externalApplication);
+  } catch (e) {
+    AppLogger.debugPrint("Open UPI error: $e");
+
+    CustomToast.error("Unable to open UPI payment");
   }
 }

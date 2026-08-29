@@ -175,7 +175,7 @@ class RetailerCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      (retailer.walletAmount ?? 0.00).currencyIndian,
+                      (retailer.walletAmount ?? '0.00').currencyIndian,
                       style: TextHelper.max2.copyWith(
                         color: const Color(0xFF17A2B8), // cyan
                         fontSize: 20,
@@ -198,19 +198,19 @@ class RetailerCard extends StatelessWidget {
             children: [
               _buildAmountColumn(
                 "Due Amount",
-                retailer.dueAmount,
+                num.parse(retailer.dueAmount ?? '0.00'),
                 const Color(0xFFEE0023),
                 isDark,
               ),
               _buildAmountColumn(
                 "Today Online",
-                0.00,
+                num.parse(retailer.todayOnline ?? '0.00'),
                 const Color(0xFFFD7E14),
                 isDark,
               ),
               _buildAmountColumn(
                 "Today Transfer",
-                0.00,
+                num.parse(retailer.todayTransfer ?? '0.00'),
                 const Color(0xFF28A745),
                 isDark,
               ),
@@ -226,13 +226,23 @@ class RetailerCard extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  gradient: AppColors.silverGradient,
+                  gradient:
+                      retailer.commissionPackage?.toLowerCase() == 'silver'
+                      ? AppColors.silverGradient
+                      : retailer.commissionPackage?.toLowerCase() == 'platinum'
+                      ? AppColors.platinumGradient
+                      : retailer.commissionPackage?.toLowerCase() == 'emerald'
+                      ? AppColors.emeraldGradient
+                      : AppColors.goldGradient,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  "Silver",
+                  retailer.commissionPackage ?? "Silver",
                   style: TextHelper.max1.copyWith(
-                    color: Colors.black87,
+                    color:
+                        retailer.commissionPackage?.toLowerCase() == 'emerald'
+                        ? Colors.white
+                        : Colors.black87,
                     fontSize: 12,
                   ),
                 ),
@@ -273,10 +283,10 @@ class RetailerCard extends StatelessWidget {
                     const Color(0xFFFD7E14),
                     AssetImages.profileSolo,
                     () {
-                      if (retailer.id != null) {
+                      if (retailer.userId != null) {
                         Get.toNamed(
                           AppRoutes.retviewDetailsScreen,
-                          arguments: {'id': retailer.id.toString()},
+                          arguments: {'id': retailer.id},
                         );
                       }
                     },
@@ -287,7 +297,7 @@ class RetailerCard extends StatelessWidget {
                     AssetImages.walletAdd,
                     () {
                       Get.find<RetailerController>().fetchAddWalletDetails(
-                        retailer.id.toString(),
+                        retailer.id!,
                       );
                     },
                   ),

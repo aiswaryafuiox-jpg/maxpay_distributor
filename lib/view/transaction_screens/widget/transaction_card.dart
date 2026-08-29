@@ -221,6 +221,7 @@ class TransactionCard extends StatelessWidget {
                       if (item.id != null) {
                         Get.find<TransactionController>()
                             .fetchTransactionDetail(item.id!);
+                        
                       }
                     },
                     isCompact: true,

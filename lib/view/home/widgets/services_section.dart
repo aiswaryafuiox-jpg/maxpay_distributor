@@ -9,10 +9,11 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/controller/banner_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/ad_model.dart';
-import 'package:maxpay/data/model/banner_model.dart';
 import 'package:maxpay/global_widget/wallet_balance_card.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 
 import '../../nav_page/navbar.dart';
 
@@ -24,8 +25,12 @@ class MenuScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     final HomePageController homeController = Get.find<HomePageController>();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController.fetchPopupMessage("Dashboard");
+    });
     final BannerController bannerController = Get.put(
-      BannerController(bannerUsecase: sl()),
+      BannerController(bannerUsecase: sl(), advusecase: sl()),
     );
 
     return Scaffold(
@@ -131,6 +136,7 @@ class MenuScreen extends StatelessWidget {
     await Future.wait([
       Get.find<HomePageController>().fetchHomeCardData(),
       Get.find<BannerController>().fetchbanner(),
+      Get.find<BannerController>().fetchadv(),
     ]);
   }
 
@@ -178,109 +184,15 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  /// ✅ PLACEHOLDER — shown when there is no advertisement/display image
-  Widget _adPlaceholder({
-    double? height,
-    double? width,
-    BorderRadius? borderRadius,
-  }) {
-    return Container(
-      height: height,
-      width: width ?? double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.clrPrimary,
-        borderRadius: borderRadius ?? BorderRadius.circular(16.r),
-      ),
-      child: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Your AD Here",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    "Please Contact",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: 16.w),
-              // ✅ SVG "no ad" icon — replace AssetImages.adPlaceholderImage
-              // with your actual svg asset key/path (also add it in
-              // AssetImages and register it under `assets:` in pubspec.yaml).
-              SvgPicture.asset(
-                AssetImages.loadingImage,
-                width: 34.w,
-                height: 34.w,
-                colorFilter: const ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // ============================================================
+  // CHECK VALID AD
+  // ============================================================
 
-  /// ✅ Wraps Image.network with a loading placeholder + graceful fallback
-  /// to the "Your Ad Here" placeholder if the url is empty or fails to load.
-  Widget _networkImageWithStates({
-    required String imageUrl,
-    required double height,
-    BorderRadius? borderRadius,
-    bool isAdSlot = false,
-  }) {
-    if (imageUrl.isEmpty) {
-      return isAdSlot
-          ? _adPlaceholder(height: height, borderRadius: borderRadius)
-          : _imageLoadingPlaceholder(
-              height: height,
-              borderRadius: borderRadius,
-            );
-    }
+  bool _hasValidAd(Advertisements ad) {
+    final displayImage = ad.displayImage?.trim() ?? "";
+    final adImage = ad.adImage?.trim() ?? "";
 
-    return Image.network(
-      imageUrl,
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: height,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return _imageLoadingPlaceholder(
-          height: height,
-          borderRadius: borderRadius,
-        );
-      },
-      errorBuilder: (_, _, _) => isAdSlot
-          ? _adPlaceholder(height: height, borderRadius: borderRadius)
-          : Container(
-              height: height,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: borderRadius ?? BorderRadius.circular(16.r),
-              ),
-              child: const Icon(Icons.broken_image),
-            ),
-    );
+    return displayImage.isNotEmpty || adImage.isNotEmpty;
   }
 
   /// ✅ Adapted from retailer app layout logic
@@ -365,68 +277,50 @@ class MenuScreen extends StatelessWidget {
 
     return Obx(() {
       final bannerController = Get.find<BannerController>();
-      final advList =
-          bannerController.advdata.value?.data?.advertisements ?? [];
+      final allAds = bannerController.advdata.value?.data?.advertisements ?? [];
 
-      return _buildLayoutWithAds(
-        context,
-        productList,
-        advList,
-        bannerController.currentAdvIndex.value,
-      );
+      final validAds = allAds.where(_hasValidAd).toList();
+
+      final List<Advertisements> upAds = [];
+      final List<Advertisements> downAds = [];
+
+      for (final ad in validAds) {
+        final screen = (ad.imageScreen ?? "").trim().toLowerCase();
+        if (screen == "up") {
+          upAds.add(ad);
+        }
+        if (screen == "down") {
+          downAds.add(ad);
+        }
+      }
+      AppLogger.logError("ads $validAds");
+      AppLogger.logError("upAds $upAds");
+
+      return _buildServicesWithAdSlots(context, productList, upAds, downAds);
     });
   }
 
   /// ✅ SAFE URL HELPER — handles both full URLs and relative paths
   String _toImageUrl(String? path) {
-    if (path == null || path.isEmpty) return "";
-    String formattedPath = path.replaceAll(' ', '%20');
+    if (path == null || path.trim().isEmpty) return "";
+    String formattedPath = path.trim().replaceAll(' ', '%20');
     if (formattedPath.startsWith("http://") ||
         formattedPath.startsWith("https://")) {
       return formattedPath;
     }
-    // Dummy return for relative paths since we don't have addToBase() here
-    return formattedPath;
+    return formattedPath.addToBase();
   }
 
-  /// ✅ IMAGE 1 LAYOUT — with ad banners between icons
-  Widget _buildLayoutWithAds(
+  Widget _buildServicesWithAdSlots(
     BuildContext context,
     List<Map<String, dynamic>> productList,
-    List<Advertisements> advList,
-    int currentIndex,
+    List<Advertisements> upAds,
+    List<Advertisements> downAds,
   ) {
-    final ad1Index = advList.isEmpty ? 0 : currentIndex % advList.length;
-    final ad2Index = advList.isEmpty ? 0 : (currentIndex + 1) % advList.length;
-
-    final adImageUrl1 = advList.isEmpty
-        ? ""
-        : _toImageUrl(advList[ad1Index].displayImage);
-    final adImageUrl2 = advList.isEmpty
-        ? ""
-        : _toImageUrl(advList[ad2Index].adImage);
-
     return Column(
       children: [
-        /// ROW 1: icons 0,1,2,3
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: .start,
-          children: [
-            if (productList.isNotEmpty)
-              _dynamicServiceItem(context, productList[0], 0),
-            if (productList.length > 1)
-              _dynamicServiceItem(context, productList[1], 1),
-            if (productList.length > 2)
-              _dynamicServiceItem(context, productList[2], 2),
-            if (productList.length > 3)
-              _dynamicServiceItem(context, productList[3], 3),
-          ],
-        ),
-
-        SizedBox(height: 20.h),
-
-        /// ROW 2: icons 4,5 + CENTER AD
+        _buildFirstFourServices(context, productList),
+        SizedBox(height: 18.h),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -439,111 +333,235 @@ class MenuScreen extends StatelessWidget {
               ],
             ),
             SizedBox(width: 12.w),
-
             Expanded(
-              child: InkWell(
-                onTap: adImageUrl1.isEmpty
-                    ? null
-                    : () {
-                        final urls = advList
-                            .map((e) => _toImageUrl(e.displayImage))
-                            .toList();
-                        _showFullImage(context, urls, ad1Index);
-                      },
-                child: SizedBox(
-                  height: 160.h,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.r),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 600),
-                      transitionBuilder: (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                      child: KeyedSubtree(
-                        key: ValueKey<String>(adImageUrl1),
-                        child: _networkImageWithStates(
-                          imageUrl: adImageUrl1,
-                          height: 160.h,
-                          borderRadius: BorderRadius.circular(16.r),
-                          isAdSlot: true,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: upAds.isNotEmpty
+                  ? _buildAdCarousel(context, upAds, "UP")
+                  : _buildPlaceholderCard(),
             ),
           ],
         ),
-
-        SizedBox(height: 10.h),
-
-        /// ROW 3: icons 6,7,8,9
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: .start,
-          children: [
-            if (productList.length > 6)
-              _dynamicServiceItem(context, productList[6], 6),
-            if (productList.length > 7)
-              _dynamicServiceItem(context, productList[7], 7),
-            if (productList.length > 8)
-              _dynamicServiceItem(context, productList[8], 8),
-            if (productList.length > 9)
-              _dynamicServiceItem(context, productList[9], 9),
-          ],
-        ),
-
         SizedBox(height: 18.h),
-
-        /// ROW 4: LEFT AD + icons 11,10
+        _buildFourServicesAt(context, productList, 6),
+        SizedBox(height: 18.h),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: InkWell(
-                onTap: adImageUrl2.isEmpty
-                    ? null
-                    : () {
-                        final urls = advList
-                            .map((e) => _toImageUrl(e.adImage))
-                            .toList();
-                        _showFullImage(context, urls, ad2Index);
-                      },
-                child: SizedBox(
-                  height: 160.h,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.r),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 600),
-                      transitionBuilder: (child, animation) =>
-                          FadeTransition(opacity: animation, child: child),
-                      child: KeyedSubtree(
-                        key: ValueKey<String>(adImageUrl2),
-                        child: _networkImageWithStates(
-                          imageUrl: adImageUrl2,
-                          height: 160.h,
-                          borderRadius: BorderRadius.circular(16.r),
-                          isAdSlot: true,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: downAds.isNotEmpty
+                  ? _buildAdCarousel(context, downAds, "DOWN")
+                  : _buildPlaceholderCard(),
             ),
             SizedBox(width: 12.w),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (productList.length > 11)
-                  _dynamicServiceItem(context, productList[11], 11),
                 if (productList.length > 10)
                   _dynamicServiceItem(context, productList[10], 10),
+                if (productList.length > 11)
+                  _dynamicServiceItem(context, productList[11], 11),
               ],
             ),
           ],
         ),
+        SizedBox(height: 18.h),
+        _buildRemainingServices(context, productList, 12),
       ],
+    );
+  }
+
+  Widget _buildAdCarousel(
+    BuildContext context,
+    List<Advertisements> ads,
+    String position,
+  ) {
+    if (ads.isEmpty) {
+      return _buildPlaceholderCard();
+    }
+
+    return SizedBox(
+      height: 160.h,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          PageView.builder(
+            itemCount: ads.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final ad = ads[index];
+              final displayImage = (ad.displayImage ?? "").trim();
+              final adImage = (ad.adImage ?? "").trim();
+              final image = displayImage.isNotEmpty ? displayImage : adImage;
+
+              if (image.isEmpty) {
+                return _buildPlaceholderCard();
+              }
+
+              final imageUrl = _toImageUrl(image);
+              if (imageUrl.isEmpty) {
+                return _buildPlaceholderCard();
+              }
+
+              return InkWell(
+                borderRadius: BorderRadius.circular(8.r),
+                onTap: () {
+                  if (adImage.isEmpty) return;
+                  final fullImageUrl = _toImageUrl(adImage);
+                  if (fullImageUrl.isEmpty) return;
+                  _showFullImage(context, [fullImageUrl], 0);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Image.network(
+                    imageUrl,
+                    width: double.infinity,
+                    height: 160.h,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return _buildPlaceholderCard();
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+          if (ads.length > 1)
+            Positioned(
+              bottom: 8.h,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(ads.length, (index) {
+                    return Container(
+                      width: 6.w,
+                      height: 6.w,
+                      margin: EdgeInsets.symmetric(horizontal: 3.w),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderCard() {
+    return Container(
+      height: 160.h,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: AppColors.clrPrimary,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Your AD Here",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                "Please Contact",
+                style: TextStyle(color: Colors.white, fontSize: 12.sp),
+              ),
+            ],
+          ),
+          Container(
+            width: 22.w,
+            height: 22.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 1.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFirstFourServices(
+    BuildContext context,
+    List<Map<String, dynamic>> productList,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (productList.isNotEmpty)
+          _dynamicServiceItem(context, productList[0], 0),
+        if (productList.length > 1)
+          _dynamicServiceItem(context, productList[1], 1),
+        if (productList.length > 2)
+          _dynamicServiceItem(context, productList[2], 2),
+        if (productList.length > 3)
+          _dynamicServiceItem(context, productList[3], 3),
+      ],
+    );
+  }
+
+  Widget _buildFourServicesAt(
+    BuildContext context,
+    List<Map<String, dynamic>> productList,
+    int startIndex,
+  ) {
+    if (productList.length <= startIndex) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (
+          int i = startIndex;
+          i < startIndex + 4 && i < productList.length;
+          i++
+        )
+          _dynamicServiceItem(context, productList[i], i),
+      ],
+    );
+  }
+
+  Widget _buildRemainingServices(
+    BuildContext context,
+    List<Map<String, dynamic>> productList,
+    int startIndex,
+  ) {
+    if (productList.length <= startIndex) {
+      return const SizedBox.shrink();
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: productList.length - startIndex,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 16.h,
+        crossAxisSpacing: 8.w,
+        childAspectRatio: 0.75,
+      ),
+      itemBuilder: (context, index) {
+        final actualIndex = startIndex + index;
+        return _dynamicServiceItem(
+          context,
+          productList[actualIndex],
+          actualIndex,
+        );
+      },
     );
   }
 

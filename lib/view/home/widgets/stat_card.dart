@@ -40,35 +40,36 @@ class StatCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(8.r),
-        decoration: BoxDecoration(
-          color: bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
+      child: MediaQuery.withClampedTextScaling(
+        maxScaleFactor: 1.15,
+        child: Container(
+          padding: EdgeInsets.all(8.r),
+          decoration: BoxDecoration(
+            color:
+                bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
 
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              offset: const Offset(0, 4),
-              blurRadius: 20,
-              spreadRadius: 0,
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                offset: const Offset(0, 4),
+                blurRadius: 20,
+                spreadRadius: 0,
+              ),
+            ],
+            border: Border.all(
+              color: borderColor ?? AppColors.clrPrimary,
+              width: borderWidth,
             ),
-          ],
-          border: Border.all(
-            color: borderColor ?? AppColors.clrPrimary,
-            width: borderWidth,
           ),
-        ),
 
-        child: FittedBox(
-          fit: .scaleDown,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
 
             children: [
               /// IMAGE / ICON
               SizedBox(
-                height: 40.h,
+                height: 36.h,
                 child: Center(child: imageWidget),
               ),
               if (needSpacingbwImage) SizedBox(height: 5.h),
@@ -98,7 +99,7 @@ class StatCard extends StatelessWidget {
                       TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
-                        fontSize: 10.sp,
+                        fontSize: 16.sp,
                         height: 1.2,
                         color: valueColor,
                       ),

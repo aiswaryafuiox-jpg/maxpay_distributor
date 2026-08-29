@@ -5,7 +5,6 @@ import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/utils/responsive.dart';
-import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
 import 'package:pinput/pinput.dart';
@@ -19,7 +18,6 @@ class UpdateMpinOtpPage extends StatefulWidget {
 
 class _UpdateMpinOtpPageState extends State<UpdateMpinOtpPage> {
   late final UpdatePinController _controller;
-  bool _showVerifyButton = false;
 
   @override
   void initState() {
@@ -28,29 +26,12 @@ class _UpdateMpinOtpPageState extends State<UpdateMpinOtpPage> {
         ? Get.find<UpdatePinController>()
         : Get.put(sl<UpdatePinController>());
     _controller.otpController.clear();
-    _showVerifyButton = _controller.otpController.text.length == 4;
   }
 
-  void _handleKeyPress(String key) {
-    setState(() {
-      if (key == 'backspace') {
-        if (_controller.otpController.text.isNotEmpty) {
-          _controller.otpController.text = _controller.otpController.text
-              .substring(0, _controller.otpController.text.length - 1);
-        }
-      } else if (key == 'submit') {
-        if (_controller.otpController.text.length == 4) {
-          _controller.onOtpVerify();
-        }
-      } else {
-        if (_controller.otpController.text.length < 4) {
-          _controller.otpController.text += key;
-        }
-      }
-
-      // Automatically show verify button when 4 digits are entered
-      _showVerifyButton = _controller.otpController.text.length == 4;
-    });
+  void _verifyOtp() {
+    if (_controller.otpController.text.length == 4 && !_controller.isOtpVerifying.value) {
+      _controller.onOtpVerify();
+    }
   }
 
   @override
@@ -134,7 +115,8 @@ class _UpdateMpinOtpPageState extends State<UpdateMpinOtpPage> {
                         Pinput(
                           length: 4,
                           controller: _controller.otpController,
-                          readOnly: true,
+                          keyboardType: TextInputType.number,
+                          onCompleted: (pin) => _verifyOtp(),
                           mainAxisAlignment: MainAxisAlignment.center,
                           submittedPinTheme: PinTheme(
                             width: isTablet ? 70.w : 60.w,
@@ -197,31 +179,16 @@ class _UpdateMpinOtpPageState extends State<UpdateMpinOtpPage> {
                   ),
                 ),
 
-                /// 🔹 NUMERIC KEYBOARD / VERIFY BUTTON
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: _showVerifyButton
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
-                          child: Obx(
-                            () => CustomElevatedButton(
-                              text: _controller.isOtpVerifying.value
-                                  ? 'Verifying...'
-                                  : 'Verify OTP',
-                              onPressed: () {
-                                if (!_controller.isOtpVerifying.value) {
-                                  _controller.onOtpVerify();
-                                }
-                              },
-                            ),
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(bottom: 20.h),
-                          child: CustomNumericKeyboard(
-                            onKeyPressed: _handleKeyPress,
-                          ),
-                        ),
+                /// 🔹 VERIFY BUTTON
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
+                  child: Obx(
+                    () => CustomElevatedButton(
+                      text: 'Verify OTP',
+                      onPressed: _verifyOtp,
+                      isLoading: _controller.isOtpVerifying.value,
+                    ),
+                  ),
                 ),
               ],
             ),

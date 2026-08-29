@@ -137,12 +137,47 @@ class ApiService {
 
       return {"data": response.data};
     } on DioException catch (e) {
-      log("DIO EXCEPTION => ${e.message}");
-      rethrow;
+      // ==========================================================
+      // CONNECTION ERROR
+      // ==========================================================
+
+      if (_isConnectionError(e)) {
+        log(
+          "🌐 Connection error: "
+          "${e.requestOptions.path}",
+        );
+
+        // IMPORTANT:
+        // Don't throw raw Dio message to UI.
+        throw Exception("No internet connection");
+      }
+
+      // ==========================================================
+      // API ERROR
+      // ==========================================================
+
+      final message = e.response?.data is Map
+          ? e.response?.data['message']?.toString()
+          : null;
+
+      log(
+        "DioException: "
+        "${e.requestOptions.path} "
+        "${message ?? e.type}",
+      );
+
+      throw Exception(message ?? "Something went wrong");
     } catch (e) {
       log("UNKNOWN ERROR => $e");
       throw Exception("Unexpected error occurred");
     }
+  }
+
+  bool _isConnectionError(DioException e) {
+    return e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout;
   }
 
   /// Handle Unauthorized

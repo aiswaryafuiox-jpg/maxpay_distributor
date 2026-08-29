@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/data/model/ad_model.dart';
 import 'package:maxpay/data/model/banner_model.dart';
+import 'package:maxpay/domain/usecase/home/get_advertisement_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_banner_usecase.dart';
 
 class BannerController extends GetxController {
   final GetBannerUseCase bannerUsecase;
-  // final AdvertisementUsecase advusecase;
+  final AdvertisementUsecase advusecase;
 
-  BannerController({required this.bannerUsecase});
+  BannerController({required this.bannerUsecase, required this.advusecase});
 
   RxBool isLoading = false.obs;
 
@@ -28,7 +29,7 @@ class BannerController extends GetxController {
     super.onInit();
     pageController = PageController();
     fetchbanner();
-    // fetchadv();
+    fetchadv();
   }
 
   Future<void> fetchbanner() async {
@@ -50,18 +51,18 @@ class BannerController extends GetxController {
     );
   }
 
-  // Future<void> fetchadv() async {
-  //   final result = await advusecase();
+  Future<void> fetchadv() async {
+    final result = await advusecase();
 
-  //   result.fold(
-  //     (failure) {
-  //       Get.snackbar("Error", failure.message);
-  //     },
-  //     (data) {
-  //       advdata.value = data;
-  //     },
-  //   );
-  // }
+    result.fold(
+      (failure) {
+        Get.snackbar("Error", failure.message);
+      },
+      (data) {
+        advdata.value = data;
+      },
+    );
+  }
 
   void startAutoSlide() {
     autoSlideTimer?.cancel();

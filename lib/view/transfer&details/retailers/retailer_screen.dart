@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/data/model/retailer/retailer_list_response_model.dart';
 import 'package:maxpay/global_widget/common_filter_box.dart';
 
 import 'package:maxpay/view/transfer&details/retailers/widgets/retailer_card.dart';
@@ -59,17 +60,36 @@ class RetailerScreen extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.retailers.isEmpty) {
+                      if (controller.retailers.value.retailers?.isEmpty ??
+                          true) {
                         return const Center(child: Text("No retailers found."));
                       }
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: controller.retailers.length,
-                        itemBuilder: (context, index) {
-                          final retailer = controller.retailers[index];
-                          return RetailerCard(retailer: retailer);
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!controller.isLoadMore.value &&
+                              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                            controller.fetchRetailers();
+                          }
+                          return false;
                         },
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: (controller.retailers.value.retailers?.length ?? 0) +
+                              (controller.isLoadMore.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == (controller.retailers.value.retailers?.length ?? 0)) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                            final retailer =
+                                controller.retailers.value.retailers?[index] ?? Retailer();
+                            return RetailerCard(retailer: retailer);
+                          },
+                        ),
                       );
                     });
                   },
@@ -103,7 +123,7 @@ class RetailersFilterWidget extends StatelessWidget {
       child: Column(
         children: [
           DropdownButtonFormField<String>(
-            initialValue: 'inactive',
+            initialValue: retailerController.currentStatusFilter ?? 'all',
             decoration: InputDecoration(
               fillColor: isDark ? AppColors.darkplceholder : AppColors.white,
               filled: true,
@@ -136,15 +156,23 @@ class RetailersFilterWidget extends StatelessWidget {
                 ),
               ),
             ),
-            items: ["active", 'inactive'].map((pkg) {
-              return DropdownMenuItem<String>(value: pkg, child: Text(pkg));
+            items: ["all", "active", 'inactive'].map((pkg) {
+              return DropdownMenuItem<String>(value: pkg, child: Text(pkg.capitalizeFirst ?? pkg));
             }).toList(),
-            onChanged: (v) {},
+            onChanged: (v) {
+              if (v != null) {
+                retailerController.fetchRetailers(isRefresh: true, statusFilter: v);
+              }
+            },
           ),
 
           const SizedBox(height: 12),
 
-          SearchBox(),
+          SearchBox(
+            onChanged: (v) {
+              retailerController.searchQuery.value = v;
+            },
+          ),
         ],
       ),
     );

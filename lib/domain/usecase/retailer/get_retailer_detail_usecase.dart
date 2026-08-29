@@ -8,7 +8,7 @@ class GetRetailerDetailUseCase {
 
   GetRetailerDetailUseCase(this.repository);
 
-  Future<Either<Failure, RetailerDetailResponseModel>> call(String id) {
+  Future<Either<Failure, RetailerDetailResponseModel>> call(int id) {
     return repository.getRetailerDetail(id);
   }
 }

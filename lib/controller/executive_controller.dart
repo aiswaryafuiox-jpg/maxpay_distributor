@@ -34,7 +34,13 @@ class ExecutiveController extends GetxController {
   );
 
   RxBool isLoading = false.obs;
+  RxBool isLoadMore = false.obs;
+  int currentPage = 1;
+  bool hasMorePages = true;
+  String? currentStatusFilter;
+  RxString searchQuery = ''.obs;
   RxList<Executive> executives = <Executive>[].obs;
+  Rx<ExecutiveListData> executivesData = ExecutiveListData().obs;
   RxInt executiveCount = 0.obs;
 
   RxBool isDetailLoading = false.obs;
@@ -56,15 +62,42 @@ class ExecutiveController extends GetxController {
     super.onInit();
     fetchExecutives();
     fetchCommissionPackages();
+    debounce(
+      searchQuery,
+      (_) => fetchExecutives(isRefresh: true),
+      time: const Duration(milliseconds: 500),
+    );
   }
 
-  Future<void> fetchExecutives() async {
-    isLoading.value = true;
-    final result = await getExecutivesUseCase.call();
+  Future<void> fetchExecutives({
+    bool isRefresh = false,
+    String? statusFilter,
+  }) async {
+    if (isRefresh || statusFilter != null) {
+      currentPage = 1;
+      hasMorePages = true;
+      if (statusFilter != null) currentStatusFilter = statusFilter;
+      isLoading.value = true;
+    } else {
+      if (!hasMorePages || isLoadMore.value || isLoading.value) return;
+      isLoadMore.value = true;
+    }
+
+    final String? filterVal = currentStatusFilter == 'active'
+        ? '1'
+        : (currentStatusFilter == 'inactive' ? '0' : null);
+
+    final params = GetExecutivesParams(
+      page: currentPage,
+      isActive: filterVal,
+      search: searchQuery.value,
+    );
+    final result = await getExecutivesUseCase.call(params);
 
     result.fold(
       (failure) {
         isLoading.value = false;
+        isLoadMore.value = false;
         Get.snackbar(
           "Error",
           failure.message,
@@ -74,8 +107,19 @@ class ExecutiveController extends GetxController {
       },
       (data) {
         isLoading.value = false;
-        executives.value = data.data?.list ?? [];
-        executiveCount.value = data.data?.totalExecutive ?? 0;
+        isLoadMore.value = false;
+        executivesData.value = data.data ?? ExecutiveListData();
+        final newList = data.data?.executives ?? [];
+        if (currentPage == 1) {
+          executives.value = newList;
+          executiveCount.value = data.data?.totalCount ?? 0;
+        } else {
+          executives.addAll(newList);
+        }
+
+        hasMorePages = newList.isNotEmpty;
+        if (hasMorePages) currentPage++;
+
         AppLogger.debugPrint(
           "Executives fetched successfully: ${executives.length}",
         );

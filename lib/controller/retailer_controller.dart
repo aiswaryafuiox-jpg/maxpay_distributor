@@ -36,7 +36,12 @@ class RetailerController extends GetxController {
   );
 
   RxBool isLoading = false.obs;
-  RxList<Retailer> retailers = <Retailer>[].obs;
+  RxBool isLoadMore = false.obs;
+  Rx<RetailerListData> retailers = RetailerListData().obs;
+  int currentPage = 1;
+  bool hasMorePages = true;
+  String? currentStatusFilter;
+  RxString searchQuery = ''.obs;
 
   RxBool isDetailLoading = false.obs;
   Rx<RetailerDetailData?> retailerDetail = Rx<RetailerDetailData?>(null);
@@ -55,21 +60,50 @@ class RetailerController extends GetxController {
   void onInit() {
     super.onInit();
     fetchRetailers();
+    debounce(
+      searchQuery,
+      (_) => fetchRetailers(isRefresh: true),
+      time: const Duration(milliseconds: 500),
+    );
   }
 
-  Future<void> fetchRetailers() async {
+  Future<void> fetchRetailers({
+    bool isRefresh = false,
+    String? statusFilter,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("token");
     if (token == null || token.isEmpty) {
       return;
     }
 
-    isLoading.value = true;
-    final result = await getRetailersUseCase.call();
+    if (isRefresh || statusFilter != null) {
+      currentPage = 1;
+      hasMorePages = true;
+      if (statusFilter != null) {
+        currentStatusFilter = statusFilter;
+      }
+      isLoading.value = true;
+    } else {
+      if (!hasMorePages || isLoadMore.value || isLoading.value) return;
+      isLoadMore.value = true;
+    }
+
+    final String? filterVal = currentStatusFilter == 'active'
+        ? '1'
+        : (currentStatusFilter == 'inactive' ? '0' : null);
+
+    final params = GetRetailersParams(
+      page: currentPage,
+      isActive: filterVal,
+      search: searchQuery.value,
+    );
+    final result = await getRetailersUseCase.call(params);
 
     result.fold(
       (failure) {
         isLoading.value = false;
+        isLoadMore.value = false;
         Get.snackbar(
           "Error",
           failure.message,
@@ -79,15 +113,41 @@ class RetailerController extends GetxController {
       },
       (data) {
         isLoading.value = false;
-        retailers.value = data.data?.list ?? [];
+        isLoadMore.value = false;
+
+        final newRetailersData = data.data ?? RetailerListData();
+        final List<Retailer> newRetailers = newRetailersData.retailers ?? [];
+
+        if (currentPage == 1) {
+          retailers.value = newRetailersData;
+        } else {
+          final currentList = retailers.value.retailers ?? [];
+          currentList.addAll(newRetailers);
+          retailers.value = RetailerListData(
+            totalCount:
+                newRetailersData.totalCount ?? retailers.value.totalCount,
+            activeCount:
+                newRetailersData.activeCount ?? retailers.value.activeCount,
+            inactiveCount:
+                newRetailersData.inactiveCount ?? retailers.value.inactiveCount,
+            pagination: newRetailersData.pagination,
+            retailers: currentList,
+          );
+        }
+
+        hasMorePages = newRetailersData.pagination?.hasMorePages ?? false;
+        if (hasMorePages) {
+          currentPage++;
+        }
+
         AppLogger.debugPrint(
-          "Retailers fetched successfully: ${retailers.length} items",
+          "Retailers fetched successfully: ${retailers.value.retailers?.length} items",
         );
       },
     );
   }
 
-  Future<void> fetchRetailerDetail(String id) async {
+  Future<void> fetchRetailerDetail(int id) async {
     isDetailLoading.value = true;
     retailerDetail.value = null; // reset old data
     final result = await getRetailerDetailUseCase.call(id);
@@ -161,7 +221,7 @@ class RetailerController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
         AppLogger.debugPrint("Retailer created successfully");
-        await fetchRetailers(); // Refresh the list
+        await fetchRetailers(isRefresh: true); // Refresh the list
       },
     );
   }
@@ -189,12 +249,12 @@ class RetailerController extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
         AppLogger.debugPrint("Retailer updated successfully");
-        await fetchRetailers(); // Refresh the list
+        await fetchRetailers(isRefresh: true); // Refresh the list
       },
     );
   }
 
-  Future<void> fetchAddWalletDetails(String id) async {
+  Future<void> fetchAddWalletDetails(int id) async {
     isAddWalletLoading.value = true;
     final result = await getAddWalletDetailsUseCase.call(id);
 
@@ -239,7 +299,9 @@ class RetailerController extends GetxController {
         isAddWalletLoading.value = false;
 
         AppLogger.debugPrint("Add wallet submitted successfully");
-        fetchRetailers(); // Refresh the list to reflect new balances
+        fetchRetailers(
+          isRefresh: true,
+        ); // Refresh the list to reflect new balances
         Get.back(); // Go back from Add Wallet screen
         Get.snackbar(
           "Success",

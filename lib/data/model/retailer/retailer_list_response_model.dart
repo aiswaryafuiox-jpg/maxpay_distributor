@@ -1,54 +1,116 @@
+// To parse this JSON data, do
+//
+//     final retailerListResponseModel = retailerListResponseModelFromJson(jsonString);
+
+import 'dart:convert';
+
+RetailerListResponseModel retailerListResponseModelFromJson(String str) =>
+    RetailerListResponseModel.fromJson(json.decode(str));
+
+String retailerListResponseModelToJson(RetailerListResponseModel data) =>
+    json.encode(data.toJson());
+
 class RetailerListResponseModel {
   bool? success;
-  RetailerData? data;
+  RetailerListData? data;
   String? message;
   int? code;
 
   RetailerListResponseModel({this.success, this.data, this.message, this.code});
 
-  RetailerListResponseModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    data = json['data'] != null ? RetailerData.fromJson(json['data']) : null;
-    message = json['message'];
-    code = json['code'];
-  }
+  factory RetailerListResponseModel.fromJson(Map<String, dynamic> json) =>
+      RetailerListResponseModel(
+        success: json["success"],
+        data: json["data"] == null
+            ? null
+            : RetailerListData.fromJson(json["data"]),
+        message: json["message"],
+        code: json["code"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['message'] = message;
-    data['code'] = code;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "data": data?.toJson(),
+    "message": message,
+    "code": code,
+  };
 }
 
-class RetailerData {
-  int? totalRetailer;
-  List<Retailer>? list;
+class RetailerListData {
+  int? totalCount;
+  int? activeCount;
+  int? inactiveCount;
+  Pagination? pagination;
+  List<Retailer>? retailers;
 
-  RetailerData({this.totalRetailer, this.list});
+  RetailerListData({
+    this.totalCount,
+    this.activeCount,
+    this.inactiveCount,
+    this.pagination,
+    this.retailers,
+  });
 
-  RetailerData.fromJson(Map<String, dynamic> json) {
-    totalRetailer = json['total_retailer'];
-    if (json['list'] != null) {
-      list = <Retailer>[];
-      json['list'].forEach((v) {
-        list!.add(Retailer.fromJson(v));
-      });
-    }
-  }
+  factory RetailerListData.fromJson(Map<String, dynamic> json) =>
+      RetailerListData(
+        totalCount: json["total_count"],
+        activeCount: json["active_count"],
+        inactiveCount: json["inactive_count"],
+        pagination: json["pagination"] == null
+            ? null
+            : Pagination.fromJson(json["pagination"]),
+        retailers: json["retailers"] == null
+            ? []
+            : List<Retailer>.from(
+                json["retailers"]!.map((x) => Retailer.fromJson(x)),
+              ),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['total_retailer'] = totalRetailer;
-    if (list != null) {
-      data['list'] = list!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "total_count": totalCount,
+    "active_count": activeCount,
+    "inactive_count": inactiveCount,
+    "pagination": pagination?.toJson(),
+    "retailers": retailers == null
+        ? []
+        : List<dynamic>.from(retailers!.map((x) => x.toJson())),
+  };
+}
+
+class Pagination {
+  int? currentPage;
+  int? perPage;
+  int? filteredCount;
+  int? from;
+  int? to;
+  bool? hasMorePages;
+
+  Pagination({
+    this.currentPage,
+    this.perPage,
+    this.filteredCount,
+    this.from,
+    this.to,
+    this.hasMorePages,
+  });
+
+  factory Pagination.fromJson(Map<String, dynamic> json) => Pagination(
+    currentPage: json["current_page"],
+    perPage: json["per_page"],
+    filteredCount: json["filtered_count"],
+    from: json["from"],
+    to: json["to"],
+    hasMorePages: json["has_more_pages"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "current_page": currentPage,
+    "per_page": perPage,
+    "filtered_count": filteredCount,
+    "from": from,
+    "to": to,
+    "has_more_pages": hasMorePages,
+  };
 }
 
 class Retailer {
@@ -56,47 +118,57 @@ class Retailer {
   String? userId;
   String? retailerName;
   String? regMobileNumber;
-  num? dueAmount;
-  num? walletAmount;
-  String? executiveName;
-  String? status;
+  dynamic executiveId;
+  dynamic executiveName;
+  String? commissionPackage;
   int? isActive;
+  String? walletAmount;
+  String? dueAmount;
+  String? todayOnline;
+  String? todayTransfer;
 
   Retailer({
     this.id,
     this.userId,
     this.retailerName,
     this.regMobileNumber,
-    this.dueAmount,
-    this.walletAmount,
+    this.executiveId,
     this.executiveName,
-    this.status,
+    this.commissionPackage,
     this.isActive,
+    this.walletAmount,
+    this.dueAmount,
+    this.todayOnline,
+    this.todayTransfer,
   });
 
-  Retailer.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    retailerName = json['retailer_name'];
-    regMobileNumber = json['reg_mobile_number'];
-    dueAmount = json['due_amount'];
-    walletAmount = json['wallet_amount'];
-    executiveName = json['executive_name'];
-    status = json['status'];
-    isActive = json['is_active'];
-  }
+  factory Retailer.fromJson(Map<String, dynamic> json) => Retailer(
+    id: json["id"],
+    userId: json["user_id"],
+    retailerName: json["retailer_name"],
+    regMobileNumber: json["reg_mobile_number"],
+    executiveId: json["executive_id"],
+    executiveName: json["executive_name"],
+    commissionPackage: json["commission_package"],
+    isActive: json["is_active"],
+    walletAmount: json["wallet_amount"],
+    dueAmount: json["due_amount"],
+    todayOnline: json["today_online"],
+    todayTransfer: json["today_transfer"],
+  );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['user_id'] = userId;
-    data['retailer_name'] = retailerName;
-    data['reg_mobile_number'] = regMobileNumber;
-    data['due_amount'] = dueAmount;
-    data['wallet_amount'] = walletAmount;
-    data['executive_name'] = executiveName;
-    data['status'] = status;
-    data['is_active'] = isActive;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "user_id": userId,
+    "retailer_name": retailerName,
+    "reg_mobile_number": regMobileNumber,
+    "executive_id": executiveId,
+    "executive_name": executiveName,
+    "commission_package": commissionPackage,
+    "is_active": isActive,
+    "wallet_amount": walletAmount,
+    "due_amount": dueAmount,
+    "today_online": todayOnline,
+    "today_transfer": todayTransfer,
+  };
 }

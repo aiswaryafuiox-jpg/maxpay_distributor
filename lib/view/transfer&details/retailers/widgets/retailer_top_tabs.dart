@@ -59,29 +59,30 @@ class RetailerTopTabs extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             Expanded(
-              child: Obx(
-                () => buildTab(
-                  "${Get.find<RetailerController>().retailers.length}",
+              child: Obx(() {
+                final val = Get.find<RetailerController>().retailers.value;
+                return buildTab(
+                  "${val.activeCount ?? 0}",
                   SvgPicture.asset(AssetImages.profileUser),
+
                   AppColors.active1Bg,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    bottomLeft: Radius.circular(4),
-                  ),
-                ),
-              ),
+                  isSelected: true,
+                  borderRadius: const BorderRadius.only(),
+                );
+              }),
             ),
             Expanded(
-              child: Obx(
-                () => buildTab(
-                  Get.find<RetailerController>().retailers.length.toString(),
+              child: Obx(() {
+                final val = Get.find<RetailerController>().retailers.value;
+                return buildTab(
+                  "${val.inactiveCount ?? 0}",
                   SvgPicture.asset(AssetImages.profileUser),
 
                   AppColors.redClr,
                   isSelected: true,
                   borderRadius: const BorderRadius.only(),
-                ),
-              ),
+                );
+              }),
             ),
             Expanded(
               child: buildTab(

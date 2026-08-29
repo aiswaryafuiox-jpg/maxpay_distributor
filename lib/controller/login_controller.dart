@@ -6,6 +6,7 @@ import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:maxpay/core/utils/sim_util.dart';
 
 import '../core/constants/routes_path.dart';
 import '../domain/usecase/login_send_otp_usecase.dart';
@@ -61,8 +62,17 @@ class LoginController extends GetxController {
   }
 
   Future<void> sendOtp() async {
+    final phone = phoneController.text.trim();
+
+    // Verify SIM presence before proceeding
     isLoading.value = true;
-    final result = await loginUseCase(phoneController.text.trim());
+    final bool isSimValid = await SimUtil.verifySimPresent(phone, showToasts: true);
+    if (!isSimValid) {
+      isLoading.value = false;
+      return;
+    }
+
+    final result = await loginUseCase(phone);
     isLoading.value = false;
 
     result.fold(
@@ -71,8 +81,12 @@ class LoginController extends GetxController {
       },
       (response) {
         if (response.success == true) {
+          String toastMsg = "OTP Sent Successfully";
+          if (SimUtil.testNumbers.contains(phone)) {
+            toastMsg = "OTP: ${response.data?.otp}";
+          }
           Fluttertoast.showToast(
-            msg: "OTP Sent Successfully",
+            msg: toastMsg,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,

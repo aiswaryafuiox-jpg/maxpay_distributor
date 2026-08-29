@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
@@ -216,7 +217,7 @@ class SupportScreen extends StatelessWidget {
                       color: AppColors.clrPrimary,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: SvgPicture.asset(AssetImages.call),
+                    child: Icon(Ionicons.call, color: Colors.white),
                   ),
                 ),
             ],

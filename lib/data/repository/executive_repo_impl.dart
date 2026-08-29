@@ -16,9 +16,24 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
   ExecutiveRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, ExecutiveListResponseModel>> getExecutives() async {
+  Future<Either<Failure, ExecutiveListResponseModel>> getExecutives({
+    int page = 1,
+    String? isActive,
+    String? search,
+  }) async {
     try {
-      final response = await _apiService.get(ApiRoutes.getExecutives);
+      final queryParams = <String, dynamic>{'page': page};
+      if (isActive != null) {
+        queryParams['is_active'] = isActive;
+      }
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+
+      final response = await _apiService.get(
+        ApiRoutes.getExecutives,
+        queryParameters: queryParams,
+      );
       final model = ExecutiveListResponseModel.fromJson(response);
 
       if (model.code == 200 || model.code == 201) {
@@ -42,7 +57,7 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
     String id,
   ) async {
     try {
-      final formData = FormData.fromMap({'id': id});
+      final formData = FormData.fromMap({'id': int.parse(id)});
       final response = await _apiService.post(
         ApiRoutes.getExecutiveDetail,
         data: formData,

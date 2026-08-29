@@ -22,9 +22,20 @@ class RetailerRepositoryImpl implements RetailerRepository {
   RetailerRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, RetailerListResponseModel>> getRetailers() async {
+  Future<Either<Failure, RetailerListResponseModel>> getRetailers({int page = 1, String? isActive, String? search}) async {
     try {
-      final response = await _apiService.get(ApiRoutes.getRetailers);
+      final queryParams = <String, dynamic>{'page': page};
+      if (isActive != null) {
+        queryParams['is_active'] = isActive;
+      }
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+
+      final response = await _apiService.get(
+        ApiRoutes.getRetailers,
+        queryParameters: queryParams,
+      );
       final model = RetailerListResponseModel.fromJson(response);
       if (model.code == 200 || model.code == 201) {
         if (model.success == true) {
@@ -44,7 +55,7 @@ class RetailerRepositoryImpl implements RetailerRepository {
 
   @override
   Future<Either<Failure, RetailerDetailResponseModel>> getRetailerDetail(
-    String id,
+    int id,
   ) async {
     try {
       final formData = FormData.fromMap({"id": id});
@@ -147,7 +158,7 @@ class RetailerRepositoryImpl implements RetailerRepository {
 
   @override
   Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
-    String id,
+    int id,
   ) async {
     try {
       final formData = FormData.fromMap({'id': id});

@@ -58,13 +58,29 @@ class ExecutiveScreen extends StatelessWidget {
                         );
                       }
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: controller.executives.length,
-                        itemBuilder: (context, index) {
-                          final executive = controller.executives[index];
-                          return ExecutiveCard(executive: executive);
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!controller.isLoadMore.value &&
+                              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                            controller.fetchExecutives();
+                          }
+                          return false;
                         },
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: controller.executives.length + (controller.isLoadMore.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == controller.executives.length) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                            final executive = controller.executives[index];
+                            return ExecutiveCard(executive: executive);
+                          },
+                        ),
                       );
                     });
                   },
@@ -94,7 +110,7 @@ class ExecutiveFilterWidget extends StatelessWidget {
       child: Column(
         children: [
           DropdownButtonFormField<String>(
-            initialValue: 'active',
+            initialValue: Get.find<ExecutiveController>().currentStatusFilter ?? 'all',
             decoration: InputDecoration(
               fillColor: isDark ? AppColors.darkplceholder : AppColors.white,
               filled: true,
@@ -127,16 +143,24 @@ class ExecutiveFilterWidget extends StatelessWidget {
                 ),
               ),
             ),
-            items: ["active", 'inactive'].map((pkg) {
+            items: ["all", "active", 'inactive'].map((pkg) {
               return DropdownMenuItem<String>(
                 value: pkg,
                 child: Text(pkg.capitalize ?? 'Select'),
               );
             }).toList(),
-            onChanged: (v) {},
+            onChanged: (v) {
+              if (v != null) {
+                Get.find<ExecutiveController>().fetchExecutives(isRefresh: true, statusFilter: v);
+              }
+            },
           ),
           const SizedBox(height: 12),
-          SearchBox(),
+          SearchBox(
+            onChanged: (v) {
+              Get.find<ExecutiveController>().searchQuery.value = v;
+            },
+          ),
         ],
       ),
     );

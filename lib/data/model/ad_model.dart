@@ -4,24 +4,34 @@ class Advertisement {
   String? message;
   int? code;
 
-  Advertisement({this.success, this.data, this.message, this.code});
+  Advertisement({
+    this.success,
+    this.data,
+    this.message,
+    this.code,
+  });
 
   Advertisement.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? Data.fromJson(json['data'])
+        : null;
     message = json['message'];
     code = json['code'];
-    
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+
     data['success'] = success;
+
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+
     data['message'] = message;
     data['code'] = code;
+
     return data;
   }
 }
@@ -29,23 +39,30 @@ class Advertisement {
 class Data {
   List<Advertisements>? advertisements;
 
-  Data({this.advertisements});
+  Data({
+    this.advertisements,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['advertisements'] != null) {
       advertisements = <Advertisements>[];
+
       json['advertisements'].forEach((v) {
-        advertisements!.add(Advertisements.fromJson(v));
+        advertisements!.add(
+          Advertisements.fromJson(v),
+        );
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+
     if (advertisements != null) {
       data['advertisements'] =
           advertisements!.map((v) => v.toJson()).toList();
     }
+
     return data;
   }
 }
@@ -66,50 +83,87 @@ class Advertisements {
   String? displayImage;
   String? adImage;
   int? status;
+
+  // Backend sends "up" / "down"
+  String? imageScreen;
+
   String? createdAt;
   String? updatedAt;
 
-  Advertisements(
-      {this.id,
-      this.mobile,
-      this.name,
-      this.companyName,
-      this.adFor,
-      this.districtId,
-      this.pincodeId,
-      this.webLink,
-      this.youtubeLink,
-      this.contactNo,
-      this.fromDate,
-      this.toDate,
-      this.displayImage,
-      this.adImage,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Advertisements({
+    this.id,
+    this.mobile,
+    this.name,
+    this.companyName,
+    this.adFor,
+    this.districtId,
+    this.pincodeId,
+    this.webLink,
+    this.youtubeLink,
+    this.contactNo,
+    this.fromDate,
+    this.toDate,
+    this.displayImage,
+    this.adImage,
+    this.status,
+    this.imageScreen,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Advertisements.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    mobile = json['mobile'];
-    name = json['name'];
-    companyName = json['company_name'];
-    adFor = json['ad_for'];
-    districtId = json['district_id'];
-    pincodeId = json['pincode_id'];
-    webLink = json['web_link'];
-    youtubeLink = json['youtube_link'];
-    contactNo = json['contact_no'];
-    fromDate = json['from_date'];
-    toDate = json['to_date'];
-    displayImage = json['display_image'];
-    adImage = json['ad_image'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    id = json['id'] != null
+        ? int.tryParse(json['id'].toString())
+        : null;
+
+    mobile = json['mobile']?.toString();
+    name = json['name']?.toString();
+    companyName = json['company_name']?.toString();
+    adFor = json['ad_for']?.toString();
+
+    districtId = json['district_id'] != null
+        ? int.tryParse(
+            json['district_id'].toString(),
+          )
+        : null;
+
+    pincodeId = json['pincode_id'] != null
+        ? int.tryParse(
+            json['pincode_id'].toString(),
+          )
+        : null;
+
+    webLink = json['web_link']?.toString();
+    youtubeLink = json['youtube_link']?.toString();
+    contactNo = json['contact_no']?.toString();
+    fromDate = json['from_date']?.toString();
+    toDate = json['to_date']?.toString();
+
+    displayImage =
+        json['display_image']?.toString();
+
+    adImage =
+        json['ad_image']?.toString();
+
+    status = json['status'] != null
+        ? int.tryParse(
+            json['status'].toString(),
+          )
+        : null;
+
+    imageScreen =
+        json['image_screen']?.toString();
+
+    createdAt =
+        json['created_at']?.toString();
+
+    updatedAt =
+        json['updated_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+
     data['id'] = id;
     data['mobile'] = mobile;
     data['name'] = name;
@@ -125,8 +179,13 @@ class Advertisements {
     data['display_image'] = displayImage;
     data['ad_image'] = adImage;
     data['status'] = status;
+    data['image_screen'] = imageScreen;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     return data;
   }
 }
+
+
+
+

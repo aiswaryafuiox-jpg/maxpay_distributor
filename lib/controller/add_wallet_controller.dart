@@ -247,6 +247,8 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
             amount: amount,
             txtionId: response.txnId ?? '',
             url: response.upiLink ?? '',
+            phonepeLink: response.phonepeLink ?? '',
+            gpayLink: response.gpayLink ?? '',
           ),
         ).then((_) async {
           stopTimer();
@@ -325,6 +327,75 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
   //   isLoading.value = false;
   //   update();
   // }
+
+  String buildWorkingUpiUrl({
+    required String paymentLink,
+    required String amount,
+  }) {
+    final uri = Uri.tryParse(paymentLink);
+
+    if (uri == null) {
+      return '';
+    }
+
+    final params = uri.queryParameters;
+
+    final pa = params['pa'];
+    final pn = params['pn'];
+
+    if (pa == null || pa.isEmpty) {
+      return '';
+    }
+
+    final upiUri = Uri(
+      scheme: 'upi',
+      host: 'pay',
+      queryParameters: {
+        'pa': pa,
+        'pn': pn ?? 'AJ SYSTEMS & SERVICES',
+        'am': amount,
+        'cu': 'INR',
+      },
+    );
+
+    return upiUri.toString();
+  }
+
+  String convertToStandardUpiUrl(String backendUrl) {
+    try {
+      final uri = Uri.tryParse(backendUrl);
+
+      if (uri == null) {
+        return '';
+      }
+
+      final params = uri.queryParameters;
+
+      final pa = params['pa'];
+
+      if (pa == null || pa.isEmpty) {
+        debugPrint("UPI ID not found");
+        return '';
+      }
+
+      final pn = params['pn'] ?? 'AJ SYSTEMS AND SERVICES';
+
+      final amount = params['am'] ?? _lastAmount;
+
+      final upiUri = Uri(
+        scheme: 'upi',
+        host: 'pay',
+        queryParameters: {'pa': pa, 'pn': pn, 'am': amount, 'cu': 'INR'},
+      );
+
+      debugPrint("QR URL = ${upiUri.toString()}");
+
+      return upiUri.toString();
+    } catch (e) {
+      debugPrint("UPI conversion error: $e");
+      return '';
+    }
+  }
 
   Future<void> getWalletHistory() async {
     isLoading.value = true;
