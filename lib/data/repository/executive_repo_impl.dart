@@ -32,7 +32,7 @@ class ExecutiveRepositoryImpl implements ExecutiveRepository {
 
       final response = await _apiService.get(
         ApiRoutes.getExecutives,
-        queryParameters: queryParams,
+        params: queryParams,
       );
       final model = ExecutiveListResponseModel.fromJson(response);
 

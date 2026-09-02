@@ -221,6 +221,86 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
     );
   }
 
+  Future<void> checkIndividualPaymentStatus(String txnId, String amount) async {
+    if (txnId.isEmpty) {
+      return;
+    }
+
+    final isDark = Get.theme.brightness == Brightness.dark;
+
+    Get.dialog(
+      Dialog(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        child: SizedBox(
+          height: 120,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: .center,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(
+                "Checking payment status...",
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    int secondsElapsed = 0;
+    bool isSuccess = false;
+
+    while (secondsElapsed < 60) {
+      // If the user closed the loading dialog via the back button, stop polling.
+      if (!(Get.isDialogOpen ?? false)) {
+        return;
+      }
+
+      await Future.delayed(const Duration(seconds: 3));
+      secondsElapsed += 3;
+
+      try {
+        final result = await createQrUsecase.checkQrStatus(txnId: txnId);
+        result.fold((failure) {}, (status) {
+          if (status.toString().toLowerCase() == "success") {
+            isSuccess = true;
+          }
+        });
+
+        if (isSuccess) break;
+      } catch (e) {
+        // ignore error during polling
+      }
+    }
+
+    // Check again before showing result dialogs in case it was closed during the last delay
+    if (!(Get.isDialogOpen ?? false)) {
+      return;
+    }
+
+    if (Get.isDialogOpen ?? false) {
+      Get.back();
+    }
+
+    if (isSuccess) {
+      showSuccessDialog(amount);
+      if (Get.isRegistered<HomePageController>()) {
+        fetchWalletBalance();
+      }
+      getWalletHistory();
+    } else {
+      // Pending dialog is not defined here yet, but let's add a simple error toast for now
+      CustomToast.error("Payment status is still pending.");
+    }
+  }
+
   Future<void> createQr(String amount) async {
     isLoading.value = true;
     update();

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -6,13 +5,11 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maxpay/controller/bank_controller.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 
 import 'package:maxpay/global_widget/custom_app.dart';
@@ -94,7 +91,7 @@ class BankAccountCard extends StatelessWidget {
   void _openQrDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       builder: (_) {
         return QrPreviewDialog(account: account);
       },
@@ -173,7 +170,7 @@ class BankAccountCard extends StatelessWidget {
                       height: 42,
                       fit: BoxFit.contain,
 
-                      errorBuilder: (_, __, ___) {
+                      errorBuilder: (_, _, _) {
                         return Icon(
                           Icons.account_balance,
                           size: 42,
@@ -372,7 +369,7 @@ class BankLogoBadge extends StatelessWidget {
                     logoUrl!,
                     fit: BoxFit.contain,
 
-                    errorBuilder: (_, __, ___) {
+                    errorBuilder: (_, _, _) {
                       return _fallbackMark();
                     },
                   )
@@ -423,7 +420,7 @@ class BracketedQrBox extends StatelessWidget {
 
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.06),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.06),
 
             blurRadius: 4,
 

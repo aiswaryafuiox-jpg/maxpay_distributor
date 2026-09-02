@@ -32,6 +32,7 @@ import 'package:maxpay/view/favorite/favorite.dart';
 import 'package:maxpay/view/grade/grade_screen.dart';
 import 'package:maxpay/view/home/pages/home_page.dart';
 import 'package:maxpay/view/home/widgets/services_section.dart';
+import 'package:maxpay/view/internet/no_internet_screen.dart';
 import 'package:maxpay/view/kyc/kyc_screen.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_intro.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_scanning.dart';
@@ -353,5 +354,6 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.search, page: () => const SearchScreen()),
     GetPage(name: AppRoutes.notification, page: () => NotificationPage()),
+    GetPage(name: AppRoutes.noInternet, page: () => const NoInternetScreen()),
   ];
 }

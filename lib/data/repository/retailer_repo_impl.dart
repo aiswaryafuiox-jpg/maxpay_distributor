@@ -34,7 +34,7 @@ class RetailerRepositoryImpl implements RetailerRepository {
 
       final response = await _apiService.get(
         ApiRoutes.getRetailers,
-        queryParameters: queryParams,
+        params: queryParams,
       );
       final model = RetailerListResponseModel.fromJson(response);
       if (model.code == 200 || model.code == 201) {

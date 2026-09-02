@@ -71,4 +71,5 @@ class AppRoutes {
   static const String search = '/search';
     static const String bank='/bank';
   static const String notification = '/notification';
+   static const String noInternet='/noInternet';
 }

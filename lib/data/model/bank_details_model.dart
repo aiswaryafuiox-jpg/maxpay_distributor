@@ -11,7 +11,7 @@ class BankDetails {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
     message = json['message'];
@@ -19,13 +19,13 @@ class BankDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
-    data['message'] = this.message;
-    data['code'] = this.code;
+    data['message'] = message;
+    data['code'] = code;
     return data;
   }
 }
@@ -80,21 +80,21 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['bank_name'] = this.bankName;
-    data['account_type'] = this.accountType;
-    data['account_name'] = this.accountName;
-    data['account_number'] = this.accountNumber;
-    data['ifsc_code'] = this.ifscCode;
-    data['branch'] = this.branch;
-    data['upi_id'] = this.upiId;
-    data['qr_code'] = this.qrCode;
-    data['bank_logo'] = this.bankLogo;
-    data['description'] = this.description;
-    data['amount'] = this.amount;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['bank_name'] = bankName;
+    data['account_type'] = accountType;
+    data['account_name'] = accountName;
+    data['account_number'] = accountNumber;
+    data['ifsc_code'] = ifscCode;
+    data['branch'] = branch;
+    data['upi_id'] = upiId;
+    data['qr_code'] = qrCode;
+    data['bank_logo'] = bankLogo;
+    data['description'] = description;
+    data['amount'] = amount;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
