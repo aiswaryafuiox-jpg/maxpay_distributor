@@ -75,10 +75,12 @@ class ShareReceipt {
       // Close loader
       if (context.mounted) Navigator.pop(context);
 
-      await Share.shareXFiles(
-        [xFile],
-        text: 'Hello, here is your Transaction Receipt.',
-        subject: 'Transaction Receipt',
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [xFile],
+          text: 'Hello, here is your Transaction Receipt.',
+          subject: 'Transaction Receipt',
+        ),
       );
     } catch (e) {
       debugPrint('SHARE ERROR: $e');

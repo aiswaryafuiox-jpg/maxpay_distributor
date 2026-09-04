@@ -53,16 +53,18 @@ class RetailerListData {
 
   factory RetailerListData.fromJson(Map<String, dynamic> json) =>
       RetailerListData(
-        totalCount: json["total_count"],
+        totalCount: json["total_retailer"] ?? json["total_count"],
         activeCount: json["active_count"],
         inactiveCount: json["inactive_count"],
         pagination: json["pagination"] == null
             ? null
             : Pagination.fromJson(json["pagination"]),
-        retailers: json["retailers"] == null
+        retailers: (json["list"] ?? json["retailers"]) == null
             ? []
             : List<Retailer>.from(
-                json["retailers"]!.map((x) => Retailer.fromJson(x)),
+                (json["list"] ?? json["retailers"])!.map(
+                  (x) => Retailer.fromJson(x),
+                ),
               ),
       );
 
@@ -144,17 +146,17 @@ class Retailer {
 
   factory Retailer.fromJson(Map<String, dynamic> json) => Retailer(
     id: json["id"],
-    userId: json["user_id"],
-    retailerName: json["retailer_name"],
-    regMobileNumber: json["reg_mobile_number"],
+    userId: json["user_id"]?.toString(),
+    retailerName: json["retailer_name"]?.toString(),
+    regMobileNumber: json["reg_mobile_number"]?.toString(),
     executiveId: json["executive_id"],
-    executiveName: json["executive_name"],
-    commissionPackage: json["commission_package"],
+    executiveName: json["executive_name"]?.toString(),
+    commissionPackage: json["commission_package"]?.toString(),
     isActive: json["is_active"],
-    walletAmount: json["wallet_amount"],
-    dueAmount: json["due_amount"],
-    todayOnline: json["today_online"],
-    todayTransfer: json["today_transfer"],
+    walletAmount: json["wallet_amount"]?.toString(),
+    dueAmount: json["due_amount"]?.toString(),
+    todayOnline: json["today_online"]?.toString(),
+    todayTransfer: json["today_transfer"]?.toString(),
   );
 
   Map<String, dynamic> toJson() => {

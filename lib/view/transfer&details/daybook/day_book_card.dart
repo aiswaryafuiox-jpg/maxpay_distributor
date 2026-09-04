@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
 class DayBookCard extends StatelessWidget {
@@ -29,9 +30,7 @@ class DayBookCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF2F3349)
-            : AppColors.background,
+        color: isDark ? const Color(0xFF2F3349) : AppColors.background,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isDark
@@ -41,7 +40,6 @@ class DayBookCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-
           /// DATE & TIME
           Row(
             children: [
@@ -93,10 +91,7 @@ class DayBookCard extends StatelessWidget {
 
           /// TRANSACTION TYPE
           Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 8.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             decoration: BoxDecoration(
               color: const Color(0xffE8EDFF),
               borderRadius: BorderRadius.circular(4.r),
@@ -127,10 +122,7 @@ class DayBookCard extends StatelessWidget {
 
           /// RECEIVED AMOUNT
           Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 8.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             decoration: BoxDecoration(
               color: const Color(0xffE8FAEF),
               borderRadius: BorderRadius.circular(4.r),
@@ -147,7 +139,7 @@ class DayBookCard extends StatelessWidget {
                 ),
 
                 Text(
-                  receivedAmount,
+                  receivedAmount.currencyIndian,
                   style: TextHelper.max4.copyWith(
                     color: const Color(0xff00C853),
                     fontWeight: FontWeight.w700,
@@ -161,11 +153,7 @@ class DayBookCard extends StatelessWidget {
     );
   }
 
-  Widget _row(
-      BuildContext context,
-      String title,
-      String value,
-      ) {
+  Widget _row(BuildContext context, String title, String value) {
     final theme = Theme.of(context);
 
     return Row(
@@ -173,9 +161,7 @@ class DayBookCard extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: TextHelper.max4.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
+            style: TextHelper.max4.copyWith(color: theme.colorScheme.onSurface),
           ),
         ),
 

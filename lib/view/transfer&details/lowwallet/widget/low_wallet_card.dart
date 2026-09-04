@@ -23,9 +23,7 @@ class LowWalletCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkplceholder
-            : const Color(0xffF6F7FF),
+        color: isDark ? AppColors.darkplceholder : const Color(0xffF6F7FF),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isDark
@@ -36,7 +34,6 @@ class LowWalletCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// Retailer
           RichText(
             text: TextSpan(
@@ -47,9 +44,9 @@ class LowWalletCard extends StatelessWidget {
                 ),
                 TextSpan(
                   text: retailerName,
-                  style: TextHelper.max9(context).copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextHelper.max9(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -67,9 +64,9 @@ class LowWalletCard extends StatelessWidget {
                 ),
                 TextSpan(
                   text: "+91 $mobile",
-                  style: TextHelper.max9(context).copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextHelper.max9(
+                    context,
+                  ).copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -79,11 +76,10 @@ class LowWalletCard extends StatelessWidget {
 
           Row(
             children: [
-
               Text(
                 "Wallet Amount:",
                 style: TextHelper.max5.copyWith(
-                  color: AppColors.clrSecondary,
+                  color: isDark ? AppColors.white : AppColors.clrSecondary,
                   fontSize: 14,
                 ),
               ),
@@ -93,8 +89,8 @@ class LowWalletCard extends StatelessWidget {
               Text(
                 amount,
                 style: TextHelper.max10(context).copyWith(
-                  color: AppColors.clrSecondary,
-                  fontWeight: FontWeight.w900
+                  color: isDark ? AppColors.white : AppColors.clrSecondary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
@@ -105,10 +101,7 @@ class LowWalletCard extends StatelessWidget {
             child: SizedBox(
               width: 100,
               height: 30,
-              child: CommonButton(
-                title: "Add Wallet",
-                onTap: () {},
-              ),
+              child: CommonButton(title: "Add Wallet", onTap: () {}),
             ),
           ),
         ],

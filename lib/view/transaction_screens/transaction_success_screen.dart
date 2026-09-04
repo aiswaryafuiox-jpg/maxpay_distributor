@@ -49,7 +49,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       title = "Transaction Success";
     } else if (isPending) {
       bgColor = isDark ? const Color(0xFFFFF1DD) : const Color(0xFFFFF1DD);
-      title = "Transaction Pending";
+      title = "Transaction Processing";
     } else {
       bgColor = isDark ? const Color(0xFFFFE4E6) : const Color(0xFFFFE4E6);
       title = "Transaction Failed";
@@ -198,46 +198,49 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   const SizedBox(height: 10),
 
                   /// DATE FIELDS
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () =>
-                              _controller.selectDate(context, isFromDate: true),
-                          child: customField(
-                            context,
-                            hint: "DD/MM/YYYY",
-                            controller: _controller.fromDateController,
-                            enabled: false,
+                  if (isPending == false)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => _controller.selectDate(
+                              context,
+                              isFromDate: true,
+                            ),
+                            child: customField(
+                              context,
+                              hint: "DD/MM/YYYY",
+                              controller: _controller.fromDateController,
+                              enabled: false,
+                            ),
                           ),
                         ),
-                      ),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: theme.colorScheme.onSurface,
-                          size: 16,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            color: theme.colorScheme.onSurface,
+                            size: 16,
+                          ),
                         ),
-                      ),
 
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _controller.selectDate(
-                            context,
-                            isFromDate: false,
-                          ),
-                          child: customField(
-                            context,
-                            hint: "DD/MM/YYYY",
-                            controller: _controller.toDateController,
-                            enabled: false,
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => _controller.selectDate(
+                              context,
+                              isFromDate: false,
+                            ),
+                            child: customField(
+                              context,
+                              hint: "DD/MM/YYYY",
+                              controller: _controller.toDateController,
+                              enabled: false,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
                   const SizedBox(height: 10),
 

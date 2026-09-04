@@ -172,16 +172,92 @@ class _NewsTickerState extends State<NewsTicker> {
 }
 
 void showNewsPopup(String newsText) {
+  final isDark = Get.isDarkMode;
+
   Get.dialog(
-    AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      title: const Text("Latest News"),
-      content: SingleChildScrollView(
-        child: Text(newsText, style: TextStyle(fontSize: 14.sp)),
+    Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(20.w),
+            margin: EdgeInsets.only(top: 15.h, right: 15.w),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[900] : Colors.white,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: AppColors.clrPrimary, width: 1.5),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    // text: 'Title : ',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Latest News',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          color: isDark ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Divider(color: Colors.grey.shade400, thickness: 1),
+                SizedBox(height: 10.h),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      newsText,
+                      style: TextStyle(
+                        fontSize: 15.sp,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                padding: EdgeInsets.all(5.w),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDark ? Colors.grey[900]! : Colors.white,
+                    width: 2.5,
+                  ),
+                ),
+                child: Icon(Icons.close, color: Colors.white, size: 20.sp),
+              ),
+            ),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text("Close")),
-      ],
     ),
   );
 }

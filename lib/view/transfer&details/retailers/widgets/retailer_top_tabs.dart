@@ -84,14 +84,14 @@ class RetailerTopTabs extends StatelessWidget {
                 );
               }),
             ),
-            Expanded(
-              child: buildTab(
-                null,
-                SvgPicture.asset(AssetImages.profileUser),
+            // Expanded(
+            //   child: buildTab(
+            //     null,
+            //     SvgPicture.asset(AssetImages.profileUser),
 
-                AppColors.clrPrimary,
-              ),
-            ),
+            //     AppColors.clrPrimary,
+            //   ),
+            // ),
             Expanded(
               child: buildTab(
                 null,

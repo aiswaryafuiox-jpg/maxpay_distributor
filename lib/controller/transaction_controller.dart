@@ -1,7 +1,9 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/view/transaction_screens/widget/share_receipt.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
@@ -89,11 +91,7 @@ class TransactionController extends GetxController {
       (failure) {
         isReportLoading.value = false;
         AppLogger.logError("Failed to fetch report: ${failure.message}");
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         isReportLoading.value = false;
@@ -145,11 +143,7 @@ class TransactionController extends GetxController {
       (failure) {
         isProductsLoading.value = false;
         AppLogger.logError("Failed to fetch products: ${failure.message}");
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         isProductsLoading.value = false;
@@ -160,7 +154,7 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> fetchTransactionDetail(int id) async {
+  Future<void> fetchTransactionDetail(int id, [bool isView = false]) async {
     Get.dialog(
       const Center(child: CircularProgressIndicator()),
       barrierDismissible: false,
@@ -172,18 +166,18 @@ class TransactionController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (response) {
-        // Get.toNamed(AppRoutes.view, arguments: response);
-        ShareReceipt.shareScreenshot(
-          context: Get.context!,
-          data: response.data!,
-        );
+        //
+        if (isView) {
+          Get.toNamed(AppRoutes.view, arguments: response);
+        } else {
+          ShareReceipt.shareScreenshot(
+            context: Get.context!,
+            data: response.data!,
+          );
+        }
       },
     );
   }
@@ -201,22 +195,10 @@ class TransactionController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(successMessage);
       },
     );
   }

@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -37,7 +38,7 @@ class AutoTransferController extends GetxController {
 
     result.fold<void>(
       (Failure failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (AutoTransferDetailsModel response) {
         autoTransferData.value = response.data;
@@ -65,10 +66,10 @@ class AutoTransferController extends GetxController {
 
     result.fold(
       (Failure failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (UpdateAutoTransferModel response) {
-        Get.snackbar("Success", response.message ?? "Updated successfully");
+        CustomSnackbar.success(response.message ?? "Updated successfully");
       },
     );
 

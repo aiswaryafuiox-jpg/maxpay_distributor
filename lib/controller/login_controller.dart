@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -66,7 +67,10 @@ class LoginController extends GetxController {
 
     // Verify SIM presence before proceeding
     isLoading.value = true;
-    final bool isSimValid = await SimUtil.verifySimPresent(phone, showToasts: true);
+    final bool isSimValid = await SimUtil.verifySimPresent(
+      phone,
+      showToasts: true,
+    );
     if (!isSimValid) {
       isLoading.value = false;
       return;
@@ -85,6 +89,7 @@ class LoginController extends GetxController {
           if (SimUtil.testNumbers.contains(phone)) {
             toastMsg = "OTP: ${response.data?.otp}";
           }
+          AppLogger.logError({"phone": phone, "otp": response.data?.otp});
           Fluttertoast.showToast(
             msg: toastMsg,
             toastLength: Toast.LENGTH_SHORT,
@@ -206,13 +211,10 @@ class LoginController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove("token");
       Get.offAllNamed(AppRoutes.loginPhoneName);
-      Get.snackbar(
-        "Session Expired",
-        "Too many failed attempts. Please login again.",
-      );
+      CustomSnackbar.warning("Too many failed attempts. Please login again.");
       return false;
     } else {
-      Get.snackbar("Error", "$message. ${3 - mpinAttempts} attempts left.");
+      CustomSnackbar.error("$message. ${3 - mpinAttempts} attempts left.");
       return false;
     }
   }
@@ -223,7 +225,7 @@ class LoginController extends GetxController {
       final bool canAuthenticate =
           canAuthenticateWithBiometrics || await auth.isDeviceSupported();
       if (!canAuthenticate) {
-        Get.snackbar('Info', 'Biometrics not supported on this device.');
+        CustomSnackbar.warning('Biometrics not supported on this device.');
         return;
       }
 
@@ -242,7 +244,7 @@ class LoginController extends GetxController {
         Get.offAllNamed(AppRoutes.main);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Authentication failed: $e');
+      CustomSnackbar.error('Authentication failed: $e');
     }
   }
 

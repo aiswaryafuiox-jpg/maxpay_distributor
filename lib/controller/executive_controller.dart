@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:get/get.dart';
 import '../core/utils/logg_helper.dart';
 import '../data/model/executive/executive_list_response_model.dart';
@@ -98,11 +99,7 @@ class ExecutiveController extends GetxController {
       (failure) {
         isLoading.value = false;
         isLoadMore.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError("Failed to fetch executives: ${failure.message}");
       },
       (data) {
@@ -113,12 +110,20 @@ class ExecutiveController extends GetxController {
         if (currentPage == 1) {
           executives.value = newList;
           executiveCount.value = data.data?.totalCount ?? 0;
+          hasMorePages = newList.isNotEmpty;
         } else {
-          executives.addAll(newList);
+          final existingIds = executives.map((e) => e.id).toSet();
+          final uniqueNewList = newList
+              .where((e) => !existingIds.contains(e.id))
+              .toList();
+
+          executives.addAll(uniqueNewList);
+          hasMorePages = uniqueNewList.isNotEmpty;
         }
 
-        hasMorePages = newList.isNotEmpty;
-        if (hasMorePages) currentPage++;
+        if (hasMorePages) {
+          currentPage++;
+        }
 
         AppLogger.debugPrint(
           "Executives fetched successfully: ${executives.length}",
@@ -140,11 +145,7 @@ class ExecutiveController extends GetxController {
         AppLogger.logError(
           "Failed to fetch executive detail: ${failure.message}",
         );
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isDetailLoading.value = false;
@@ -186,20 +187,12 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingExecutive.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isUpdatingExecutive.value = false;
         isDirty.value = false;
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.success(successMessage);
 
         // Refresh the detail to sync any unreturned calculated values
         if (executiveDetail.value?.id != null) {
@@ -222,11 +215,7 @@ class ExecutiveController extends GetxController {
         AppLogger.logError(
           "Failed to fetch executive wallet details: ${failure.message}",
         );
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isAddWalletDetailsLoading.value = false;
@@ -246,16 +235,12 @@ class ExecutiveController extends GetxController {
         AppLogger.logError(
           "Failed to add executive wallet: ${failure.message}",
         );
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (message) {
         isAddWalletLoading.value = false;
         Get.back();
-        Get.snackbar("Success", message, snackPosition: SnackPosition.BOTTOM);
+        CustomSnackbar.success(message);
         // Refresh executives list to get updated balance
         fetchExecutives();
       },
@@ -269,20 +254,12 @@ class ExecutiveController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingExecutive.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isUpdatingExecutive.value = false;
         Get.back();
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.success(successMessage);
         fetchExecutives();
       },
     );

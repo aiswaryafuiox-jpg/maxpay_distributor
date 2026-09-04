@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/statement/statement_detail_model.dart';
 import 'package:maxpay/domain/usecase/statement/get_statement_detail_usecase.dart';
@@ -26,7 +27,7 @@ class StatementReadMoreController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (success) {
         statementDetail.value = success.data;

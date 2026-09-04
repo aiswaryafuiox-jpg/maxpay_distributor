@@ -12,8 +12,9 @@ import 'package:maxpay/core/utils/date_uttils.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/controller/profile_controller.dart';
+import 'package:shimmer/shimmer.dart';
 
-class HomeHeaderSection extends StatelessWidget {
+class HomeHeaderSection extends GetView<ProfileController> {
   const HomeHeaderSection({super.key});
 
   @override
@@ -26,8 +27,7 @@ class HomeHeaderSection extends StatelessWidget {
       final colorScheme = theme.colorScheme;
       final isDark = themeController.isDarkMode;
 
-      final profileController = Get.find<ProfileController>();
-      final profileData = profileController.profileData.value;
+      final profileData = controller.profileData.value;
 
       return Column(
         children: [
@@ -47,17 +47,28 @@ class HomeHeaderSection extends StatelessWidget {
                           child: NetworkImageWithLoader(
                             profileData?.profileImg ?? '',
                             radius: 20,
-                            errorWidget: Text(
-                              (profileData?.name != null &&
-                                      profileData!.name!.isNotEmpty)
-                                  ? profileData.name![0].toUpperCase()
-                                  : 'M',
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    color: AppColors.clrPrimary,
-                                    fontWeight: FontWeight.bold,
+                            errorWidget:
+                                controller.isLoading.value &&
+                                    (profileData?.name == null ||
+                                        profileData!.name!.isEmpty)
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.clrPrimary,
+                                    ),
+                                  )
+                                : Text(
+                                    (profileData?.name != null &&
+                                            profileData!.name!.isNotEmpty)
+                                        ? profileData!.name![0].toUpperCase()
+                                        : 'D',
+                                    style: Theme.of(context).textTheme.bodyLarge
+                                        ?.copyWith(
+                                          color: AppColors.clrPrimary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
-                            ),
                           ),
                         ),
 
@@ -80,18 +91,44 @@ class HomeHeaderSection extends StatelessWidget {
                                 ),
                               ),
 
-                              Text(
-                                profileData?.name ?? 'Loading...',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: colorScheme.onSurface.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
+                              controller.isLoading.value &&
+                                      (profileData?.name == null ||
+                                          profileData!.name!.isEmpty)
+                                  ? Padding(
+                                      padding: EdgeInsets.only(top: 4.h),
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        highlightColor: Colors.grey.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        child: Container(
+                                          height: 12.sp,
+                                          width: 100.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Text(
+                                      profileData?.name?.isNotEmpty == true
+                                          ? profileData!.name!
+                                          : 'Distributor',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: colorScheme.onSurface
+                                                .withValues(alpha: 0.7),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.sp,
+                                          ),
+                                    ),
                             ],
                           ),
                         ),

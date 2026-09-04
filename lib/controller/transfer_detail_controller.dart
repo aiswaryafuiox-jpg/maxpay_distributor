@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,7 +88,7 @@ class TransferDetailController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         transferDetails.assignAll(response.data ?? []);
@@ -128,7 +129,7 @@ class TransferDetailController extends GetxController {
     final result = await getTransferDetailListUseCase(t, f, to, s);
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         if (response.data?.list != null) {
@@ -158,13 +159,10 @@ class TransferDetailController extends GetxController {
     final result = await reverseWalletTransferUseCase(id);
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
-        Get.snackbar(
-          "Success",
-          response.message ?? "Transfer reversed successfully",
-        );
+        CustomSnackbar.success(response.message ?? "Transfer reversed successfully");
         fetchTransferDetailList(); // Refresh the list
         Get.find<AddWalletController>().fetchWalletBalance();
       },

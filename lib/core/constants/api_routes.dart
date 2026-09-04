@@ -1,6 +1,6 @@
 class ApiRoutes {
-  // static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
-  static const baseURL = "https://paylinkonline.in";
+  static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
+  // static const baseURL = "https://paylinkonline.in";
 
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
@@ -137,5 +137,5 @@ class ApiRoutes {
   static const String distributorUpdateMpin = '/api/distributor_update_mpin';
   static const String distributorPrivacyPolicy =
       '/api/distributor_privacy_policy';
-  static const bankdetail = "/get_bank_details";
+  static const bankdetail = "/api/distributor_get_bank_details";
 }

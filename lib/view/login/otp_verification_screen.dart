@@ -6,6 +6,8 @@ import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
 import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../controller/login_controller.dart';
 
 class ScreenOtpVerification extends StatefulWidget {
@@ -15,12 +17,101 @@ class ScreenOtpVerification extends StatefulWidget {
   State<ScreenOtpVerification> createState() => _ScreenOtpVerificationState();
 }
 
-class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
+class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
+    with WidgetsBindingObserver {
   final TextEditingController _otpController = TextEditingController();
+  Set<String> _pastedOtps = {};
+  String? _clipboardOtp;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _loadPastedOtps().then((_) {
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _checkClipboardForOtp();
+        });
+      }
+    });
+  }
+
+  Future<void> _loadPastedOtps() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String today = DateTime.now().toIso8601String().split('T').first;
+    final String storedDate = prefs.getString('pasted_otp_date') ?? '';
+
+    if (storedDate != today) {
+      await prefs.setStringList('pasted_otps', []);
+      await prefs.setString('pasted_otp_date', today);
+      _pastedOtps = {};
+    } else {
+      final List<String> storedOtps = prefs.getStringList('pasted_otps') ?? [];
+      _pastedOtps = storedOtps.toSet();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _otpController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkClipboardForOtp();
+    }
+  }
+
+  Future<void> _checkClipboardForOtp() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      final text = clipboardData?.text?.trim() ?? '';
+
+      if (text.isNotEmpty) {
+        final match = RegExp(r'\b\d{4}\b').firstMatch(text);
+        if (match != null) {
+          final otp = match.group(0)!;
+          // Prevent showing for the same OTP repeatedly
+          if (!_pastedOtps.contains(otp) && otp != _otpController.text) {
+            setState(() {
+              _clipboardOtp = otp;
+            });
+          } else if (_clipboardOtp != null) {
+            setState(() {
+              _clipboardOtp = null;
+            });
+          }
+        }
+      }
+    } catch (e) {
+      // Graceful degradation: do nothing if clipboard access fails
+    }
+  }
+
+  Future<void> _onPasteOtp() async {
+    if (_clipboardOtp != null) {
+      final otpToPaste = _clipboardOtp!;
+
+      _pastedOtps.add(otpToPaste);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('pasted_otps', _pastedOtps.toList());
+
+      setState(() {
+        _clipboardOtp = null;
+      });
+      _otpController.text = otpToPaste;
+
+      // Unfocus to prevent keyboard from popping up
+      if (mounted) {
+        FocusScope.of(context).unfocus();
+      }
+
+      // Clear the clipboard
+      await Clipboard.setData(const ClipboardData(text: ''));
+    }
   }
 
   void _verifyOtp() {
@@ -110,6 +201,8 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                         /// ðŸ”¹ OTP FIELD (Pinput)
                         Pinput(
                           length: 4,
+                          autofocus: false,
+                          readOnly: true,
                           controller: _otpController,
                           keyboardType: TextInputType.number,
                           onCompleted: (pin) => _verifyOtp(),
@@ -162,7 +255,51 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                           ),
                         ),
 
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 20.h),
+
+                        // Dynamic Paste OTP Button
+                        if (_clipboardOtp != null) ...[
+                          GestureDetector(
+                            onTap: _onPasteOtp,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 8.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.clrPrimary.withValues(
+                                  alpha: 0.1,
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: AppColors.clrPrimary,
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.paste,
+                                    size: 16.sp,
+                                    color: AppColors.clrPrimary,
+                                  ),
+                                  SizedBox(width: 8.w),
+                                  Text(
+                                    "Paste '$_clipboardOtp'",
+                                    style: TextStyle(
+                                      color: AppColors.clrPrimary,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14.sp,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
+                        ],
 
                         /// 🔹 Timer
                         ResendTimerWidget(

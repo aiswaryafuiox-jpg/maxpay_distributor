@@ -31,7 +31,8 @@ class _KycScreenState extends State<KycScreen> {
     super.initState();
     if (kycController.kycData.value != null) {
       _emailController.text = kycController.kycData.value!.email ?? '';
-      _whatsappController.text = kycController.kycData.value!.whatsappNumber ?? '';
+      _whatsappController.text =
+          kycController.kycData.value!.whatsappNumber ?? '';
     }
     ever(kycController.kycData, (data) {
       if (data != null) {
@@ -109,225 +110,251 @@ class _KycScreenState extends State<KycScreen> {
           return Padding(
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
 
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                    children: [
-                      /// MAIL ID
-                      Text(
-                        "Mail ID",
+                      children: [
+                        /// MAIL ID
+                        Text(
+                          "Mail ID",
 
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
-
-                      const SizedBox(height: 10),
-                      /// MAIL ID
-
-
-                      /// INPUT FIELD
-                      Container(
-                        height: 52,
-
-                        decoration: BoxDecoration(
-                          color: theme.brightness == Brightness.light
-                              ? AppColors.border
-                              : const Color(0xFF2F3349),
-
-                          borderRadius: BorderRadius.circular(10),
-
-                          border: Border.all(
-                            color: AppColors.darktextclr.withValues(alpha: 0.1),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
 
-                        child: TextFormField(
-                          controller: _emailController,
-                          style: TextStyle(color: theme.colorScheme.onSurface),
+                        const SizedBox(height: 10),
 
-                          decoration: InputDecoration(
-                            //hintText: "Enter your mail id",
+                        /// MAIL ID
 
-                            hintStyle: TextStyle(
-                              // color: theme.colorScheme.onSurfaceVariant,
-                                 color: isDark
-                      ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-                      : theme.colorScheme.onSurfaceVariant,
-                              fontSize: 14,
+                        /// INPUT FIELD
+                        Container(
+                          height: 52,
+
+                          decoration: BoxDecoration(
+                            color: theme.brightness == Brightness.light
+                                ? AppColors.border
+                                : const Color(0xFF2F3349),
+
+                            borderRadius: BorderRadius.circular(10),
+
+                            border: Border.all(
+                              color: AppColors.darktextclr.withValues(
+                                alpha: 0.1,
+                              ),
+                            ),
+                          ),
+
+                          child: TextFormField(
+                            controller: _emailController,
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface,
                             ),
 
-                            border: InputBorder.none,
+                            decoration: InputDecoration(
+                              //hintText: "Enter your mail id",
+                              hintStyle: TextStyle(
+                                // color: theme.colorScheme.onSurfaceVariant,
+                                color: isDark
+                                    ? const Color(
+                                        0xFFFFFFFF,
+                                      ).withValues(alpha: 0.7)
+                                    : theme.colorScheme.onSurfaceVariant,
+                                fontSize: 14,
+                              ),
 
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 15,
+                              border: InputBorder.none,
+
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 15,
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 22),
-                      /// MAIL ID
-                      Text(
-                        "WhatsApp Number",
+                        const SizedBox(height: 22),
 
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      ),
+                        /// MAIL ID
+                        Text(
+                          "WhatsApp Number",
 
-                      const SizedBox(height: 10),
-                      /// MAIL ID
-
-
-                      /// INPUT FIELD
-                      Container(
-                        height: 52,
-
-                        decoration: BoxDecoration(
-                          color: theme.brightness == Brightness.light
-                              ? AppColors.border
-                              : const Color(0xFF2F3349),
-
-                          borderRadius: BorderRadius.circular(10),
-
-                          border: Border.all(
-                            color: AppColors.darktextclr.withValues(alpha: 0.1),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
 
-                        child: TextFormField(
-                          controller: _whatsappController,
-                          keyboardType: TextInputType.phone,
-                          maxLength: 10,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(10),
-                          ],
-                          style: TextStyle(color: theme.colorScheme.onSurface),
+                        const SizedBox(height: 10),
 
-                          decoration: InputDecoration(
-                            counterText: "",
-                            hintStyle: TextStyle(
-                              // color: theme.colorScheme.onSurfaceVariant,
-                              color: isDark
-                                  ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-                                  : theme.colorScheme.onSurfaceVariant,
-                              fontSize: 14,
+                        /// MAIL ID
+
+                        /// INPUT FIELD
+                        Container(
+                          height: 52,
+
+                          decoration: BoxDecoration(
+                            color: theme.brightness == Brightness.light
+                                ? AppColors.border
+                                : const Color(0xFF2F3349),
+
+                            borderRadius: BorderRadius.circular(10),
+
+                            border: Border.all(
+                              color: AppColors.darktextclr.withValues(
+                                alpha: 0.1,
+                              ),
+                            ),
+                          ),
+
+                          child: TextFormField(
+                            controller: _whatsappController,
+                            keyboardType: TextInputType.phone,
+                            maxLength: 10,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface,
                             ),
 
-                            border: InputBorder.none,
+                            decoration: InputDecoration(
+                              counterText: "",
+                              hintStyle: TextStyle(
+                                // color: theme.colorScheme.onSurfaceVariant,
+                                color: isDark
+                                    ? const Color(
+                                        0xFFFFFFFF,
+                                      ).withValues(alpha: 0.7)
+                                    : theme.colorScheme.onSurfaceVariant,
+                                fontSize: 14,
+                              ),
 
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 15,
+                              border: InputBorder.none,
+
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 15,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 22),
+                        const SizedBox(height: 22),
 
+                        /// ADDRESS PROOF
+                        Text(
+                          "Cancelled Check",
 
-                      /// ADDRESS PROOF
-                      Text(
-                        "Cancelled Check",
-
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 10),
+                        const SizedBox(height: 10),
 
-                      UploadCard(
-                        file: _addressProofFile,
-                        onTap: () => _pickGalleryFile(
-                          (file) => _addressProofFile = file,
+                        UploadCard(
+                          file: _addressProofFile,
+                          imageUrl: kycController.kycData.value?.cancelledCheck,
+                          status:
+                              kycController.kycData.value?.cancelledCheckStatus,
+                          onTap: () => _pickGalleryFile(
+                            (file) => _addressProofFile = file,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 22),
+                        const SizedBox(height: 22),
 
-                      /// GST NO
-                      Text(
-                        "GST No",
+                        /// GST NO
+                        Text(
+                          "GST No",
 
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 10),
+                        const SizedBox(height: 10),
 
-                      UploadCard(
-                        file: _gstFile,
-                        onTap: () =>
-                            _pickGalleryFile((file) => _gstFile = file),
-                      ),
-
-                      const SizedBox(height: 22),
-
-                      /// PAN CARD
-                      Text(
-                        "Pan Card",
-
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface,
+                        UploadCard(
+                          file: _gstFile,
+                          imageUrl: kycController.kycData.value?.gstNo,
+                          status: kycController.kycData.value?.gstStatus,
+                          onTap: () =>
+                              _pickGalleryFile((file) => _gstFile = file),
                         ),
-                      ),
 
-                      const SizedBox(height: 10),
+                        const SizedBox(height: 22),
 
-                      UploadCard(
-                        file: _panCardFile,
-                        onTap: () =>
-                            _pickGalleryFile((file) => _panCardFile = file),
-                      ),
+                        /// PAN CARD
+                        Text(
+                          "Pan Card",
 
-                      const SizedBox(height: 40),
-                    ],
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        UploadCard(
+                          file: _panCardFile,
+                          imageUrl: kycController.kycData.value?.pan,
+                          status: kycController.kycData.value?.panStatus,
+                          onTap: () =>
+                              _pickGalleryFile((file) => _panCardFile = file),
+                        ),
+
+                        const SizedBox(height: 40),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              /// SUBMIT BUTTON
-              Obx(() => CommonButton(
-                title: kycController.isSubmitting.value ? "Submitting..." : "Submit", 
-                onTap: () {
-                  if (kycController.isSubmitting.value) return;
-                  
-                  if (_emailController.text.isEmpty || _whatsappController.text.isEmpty) {
-                    Get.snackbar("Error", "Please enter email and WhatsApp number");
-                    return;
-                  }
+                /// SUBMIT BUTTON
+                Obx(
+                  () => CommonButton(
+                    title: kycController.isSubmitting.value
+                        ? "Submitting..."
+                        : "Submit",
+                    onTap: () {
+                      if (kycController.isSubmitting.value) return;
 
-                  kycController.submitKyc(
-                    email: _emailController.text,
-                    whatsappNumber: _whatsappController.text,
-                    cancelledCheckPath: _addressProofFile?.path,
-                    gstNoPath: _gstFile?.path,
-                    panPath: _panCardFile?.path,
-                  );
-                },
-              )),
-            ],
-          ),
-        );
+                      if (_emailController.text.isEmpty ||
+                          _whatsappController.text.isEmpty) {
+                        Get.snackbar(
+                          "Error",
+                          "Please enter email and WhatsApp number",
+                        );
+                        return;
+                      }
+
+                      kycController.submitKyc(
+                        email: _emailController.text,
+                        whatsappNumber: _whatsappController.text,
+                        cancelledCheckPath: _addressProofFile?.path,
+                        gstNoPath: _gstFile?.path,
+                        panPath: _panCardFile?.path,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
         }),
       ),
     );
@@ -335,10 +362,18 @@ class _KycScreenState extends State<KycScreen> {
 }
 
 class UploadCard extends StatelessWidget {
-  const UploadCard({super.key, required this.onTap, this.file});
+  const UploadCard({
+    super.key,
+    required this.onTap,
+    this.file,
+    this.imageUrl,
+    this.status,
+  });
 
   final VoidCallback onTap;
   final PlatformFile? file;
+  final String? imageUrl;
+  final String? status;
 
   @override
   Widget build(BuildContext context) {
@@ -379,6 +414,25 @@ class UploadCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
+              ] else if (imageUrl != null && imageUrl!.isNotEmpty) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    imageUrl!,
+                    height: 90,
+                    width: 120,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 40,
+                        color: theme.colorScheme.onSurface.withValues(
+                          alpha: 0.5,
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ] else ...[
                 Icon(
                   Icons.cloud_upload_outlined,
@@ -397,7 +451,7 @@ class UploadCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   height: 1.5,
-                 color: isDark
+                  color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
                       : theme.colorScheme.onSurfaceVariant,
                 ),
@@ -429,6 +483,21 @@ class UploadCard extends StatelessWidget {
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: theme.colorScheme.onSurface,
+                  ),
+                ),
+              ] else if (status != null && status!.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  status!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: status!.toLowerCase().contains('pending')
+                        ? Colors.orange
+                        : (status!.toLowerCase().contains('verified')
+                              ? Colors.green
+                              : Colors.red),
                   ),
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -40,13 +41,7 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isOtpLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isOtpLoading.value = false;
@@ -69,11 +64,7 @@ class UpdatePinController extends GetxController {
   Future<void> onOtpVerify() async {
     final otp = otpController.text.trim();
     if (otp.length != 4) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid 4-digit OTP",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      CustomSnackbar.error("Please enter a valid 4-digit OTP");
       return;
     }
 
@@ -83,24 +74,12 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isOtpVerifying.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isOtpVerifying.value = false;
         Get.toNamed(AppRoutes.update);
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(successMessage);
       },
     );
   }
@@ -110,29 +89,17 @@ class UpdatePinController extends GetxController {
     final confirmPin = confirmPinController.text.trim();
 
     if (newPin.isEmpty || confirmPin.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Please enter and confirm your new M-PIN",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      CustomSnackbar.error("Please enter and confirm your new M-PIN");
       return;
     }
 
     if (newPin.length != 4 || confirmPin.length != 4) {
-      Get.snackbar(
-        "Error",
-        "M-PIN must be exactly 4 digits",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      CustomSnackbar.error("M-PIN must be exactly 4 digits");
       return;
     }
 
     if (newPin != confirmPin) {
-      Get.snackbar(
-        "Error",
-        "M-PINs do not match",
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      CustomSnackbar.error("M-PINs do not match");
       return;
     }
 
@@ -142,24 +109,12 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isLoading.value = false;
         Get.offAllNamed(AppRoutes.main);
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(successMessage);
       },
     );
   }

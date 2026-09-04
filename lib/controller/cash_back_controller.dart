@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/cashback/cash_back_model.dart';
@@ -68,7 +69,7 @@ class CashBackController extends GetxController {
       (failure) {
         isLoadingList.value = false;
         AppLogger.logError("Failed to fetch cashback list: ${failure.message}");
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isLoadingList.value = false;

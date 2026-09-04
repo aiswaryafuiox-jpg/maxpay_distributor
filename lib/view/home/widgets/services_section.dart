@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/home_controller.dart';
+import 'package:maxpay/controller/low_wallet_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
@@ -25,11 +26,15 @@ class MenuScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     final HomePageController homeController = Get.find<HomePageController>();
-    
+    final LowWalletController lowWalletController = Get.put(
+      LowWalletController(sl()),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       homeController.fetchPopupMessage("Dashboard");
+      lowWalletController.fetchLowWalletRetailers();
     });
-    final BannerController bannerController = Get.put(
+    Get.put(
       BannerController(bannerUsecase: sl(), advusecase: sl()),
     );
 
@@ -197,85 +202,88 @@ class MenuScreen extends StatelessWidget {
 
   /// ✅ Adapted from retailer app layout logic
   Widget _buildAdaptedLayout(BuildContext context) {
-    // Define the 12 static services just like productList
-    final List<Map<String, dynamic>> productList = [
-      {
-        'title': 'Wallet Credit',
-        'image': AssetImages.prepaid,
-        'color': AppColors.box1,
-        'route': AppRoutes.withdrawrequest1,
-      },
-      {
-        'title': 'Retailers',
-        'image': AssetImages.dth,
-        'color': AppColors.box2,
-        'route': AppRoutes.retailer,
-      },
-      {
-        'title': 'Low Wallet',
-        'image': AssetImages.fastag,
-        'color': AppColors.box3,
-        'route': AppRoutes.lowWallet,
-      },
-      {
-        'title': 'Auto Transfer',
-        'image': AssetImages.gas,
-        'color': AppColors.box4,
-        'route': AppRoutes.autoTransferScreen,
-      },
-
-      {
-        'title': 'Executive',
-        'image': AssetImages.transactions1,
-        'color': AppColors.box1,
-        'route': AppRoutes.executive,
-      },
-      {
-        'title': 'Transfer Detail',
-        'image': AssetImages.promoFrame,
-        'color': AppColors.box3,
-        'route': AppRoutes.transferDetail,
-      },
-
-      {
-        'title': 'Request Pending',
-        'image': AssetImages.water,
-        'color': AppColors.box4,
-        'route': AppRoutes.requestWalletpending,
-      },
-      {
-        'title': 'Due Amount',
-        'image': AssetImages.landline,
-        'color': AppColors.box3,
-        'route': AppRoutes.outstanding,
-      },
-      {
-        'title': 'Day Book',
-        'image': AssetImages.broadband,
-        'color': AppColors.box2,
-        'route': AppRoutes.dayBook,
-      },
-      {
-        'title': 'Pay-out Details',
-        'image': AssetImages.statement,
-        'color': AppColors.box1,
-        'route': AppRoutes.payOutDetails,
-      },
-      {
-        'title': 'Pay-out',
-        'image': AssetImages.paymentStatus,
-        'color': AppColors.box2,
-        'route': AppRoutes.payOutStatus,
-      },
-      {
-        'title': 'Statement',
-        'image': AssetImages.dthRefresh,
-        'color': AppColors.box1,
-        'route': AppRoutes.statement,
-      },
-    ];
-
     return Obx(() {
+      final LowWalletController controller = Get.find<LowWalletController>();
+
+      // Define the 12 static services just like productList
+      final List<Map<String, dynamic>> productList = [
+        {
+          'title': 'Wallet Credit',
+          'image': AssetImages.prepaid,
+          'color': AppColors.box1,
+          'route': AppRoutes.withdrawrequest1,
+        },
+        {
+          'title': 'Retailers',
+          'image': AssetImages.dth,
+          'color': AppColors.box2,
+          'route': AppRoutes.retailer,
+        },
+        {
+          'title': 'Low Wallet',
+          'image': AssetImages.fastag,
+          'color': AppColors.box3,
+          'route': AppRoutes.lowWallet,
+          'badge': controller.retailers.length,
+        },
+        {
+          'title': 'Auto Transfer',
+          'image': AssetImages.gas,
+          'color': AppColors.box4,
+          'route': AppRoutes.autoTransferScreen,
+        },
+
+        {
+          'title': 'Executive',
+          'image': AssetImages.transactions1,
+          'color': AppColors.box1,
+          'route': AppRoutes.executive,
+        },
+        {
+          'title': 'Transfer Detail',
+          'image': AssetImages.promoFrame,
+          'color': AppColors.box3,
+          'route': AppRoutes.transferDetail,
+        },
+
+        {
+          'title': 'Request Pending',
+          'image': AssetImages.water,
+          'color': AppColors.box4,
+          'route': AppRoutes.requestWalletpending,
+        },
+        {
+          'title': 'Due Amount',
+          'image': AssetImages.landline,
+          'color': AppColors.box3,
+          'route': AppRoutes.outstanding,
+        },
+        {
+          'title': 'Day Book',
+          'image': AssetImages.broadband,
+          'color': AppColors.box2,
+          'route': AppRoutes.dayBook,
+        },
+        {
+          'title': 'Pay-out Details',
+          'image': AssetImages.statement,
+          'color': AppColors.box1,
+          'route': AppRoutes.payOutDetails,
+        },
+        {
+          'title': 'Pay-out',
+          'image': AssetImages.paymentStatus,
+          'color': AppColors.box2,
+          'route': AppRoutes.payOutStatus,
+        },
+        {
+          'title': 'Statement',
+          'image': AssetImages.dthRefresh,
+          'color': AppColors.box1,
+          'route': AppRoutes.statement,
+        },
+      ];
+
       final bannerController = Get.find<BannerController>();
       final allAds = bannerController.advdata.value?.data?.advertisements ?? [];
 
@@ -500,6 +508,7 @@ class MenuScreen extends StatelessWidget {
   ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: .start,
       children: [
         if (productList.isNotEmpty)
           _dynamicServiceItem(context, productList[0], 0),
@@ -524,6 +533,7 @@ class MenuScreen extends StatelessWidget {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: .start,
       children: [
         for (
           int i = startIndex;
@@ -624,6 +634,7 @@ class MenuScreen extends StatelessWidget {
       item['title'],
       item['image'],
       item['color'],
+      badgeCount: item['badge']?.toString(),
       onTap: () {
         if (item['route'] != null && item['route'].toString().isNotEmpty) {
           Get.toNamed(item['route']);
@@ -638,6 +649,7 @@ class MenuScreen extends StatelessWidget {
     String image,
     Color bgColor, {
     VoidCallback? onTap,
+    String? badgeCount,
   }) {
     final theme = Theme.of(context);
 
@@ -651,17 +663,43 @@ class MenuScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 56.w,
-                height: 56.w,
-                padding: EdgeInsets.all(12.w),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(14.r),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(image, fit: BoxFit.contain),
-                ),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 56.w,
+                    height: 56.w,
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(image, fit: BoxFit.contain),
+                    ),
+                  ),
+                  if (badgeCount != null && badgeCount.isNotEmpty)
+                    Positioned(
+                      top: -4.w,
+                      right: -4.w,
+                      child: Container(
+                        padding: EdgeInsets.all(4.w),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: Text(
+                          badgeCount,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
 
               SizedBox(height: 4.h),

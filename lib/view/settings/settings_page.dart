@@ -7,7 +7,6 @@ import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
-import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -26,7 +25,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isActive = true;
-  String _appVersion = '1.0.0';
+  String _appVersion = '';
 
   @override
   void initState() {
@@ -43,13 +42,13 @@ class _SettingsPageState extends State<SettingsPage> {
       final packageInfo = await PackageInfo.fromPlatform();
       if (mounted) {
         setState(() {
-          _appVersion = packageInfo.version;
+          _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
         });
       }
     } catch (_) {}
   }
 
-  Future<void> _showStatusDialog() async {
+  /* Future<void> _showStatusDialog() async {
     final action = isActive ? "inactive" : "active";
 
     final bool? result = await showDialog<bool>(
@@ -127,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
         isActive = !isActive;
       });
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -301,15 +300,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
-                    _buildMenuTile(
-                      context,
-                      'Account ',
-                      () {
-                        _showStatusDialog();
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                      '(active/inactive)',
-                    ),
+                    // _buildMenuTile(
+                    //   context,
+                    //   'Account ',
+                    //   () {
+                    //     _showStatusDialog();
+                    //   },
+                    //   SvgPicture.asset(AssetImages.acc, width: 24.w),
+                    //   '(active/inactive)',
+                    // ),
                     _buildMenuTile(
                       context,
                       authController.isFingerPrint.value == 1
@@ -435,15 +434,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
 
-                    /// 🔹 VERSION TEXT
-                    Text(
-                      'Latest Version $_appVersion',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.sp,
-                        fontFamily: 'Poppins',
+                    if (_appVersion.isNotEmpty)
+                      Text(
+                        'Latest Version $_appVersion',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14.sp,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
-                    ),
                     SizedBox(height: 45.h),
                   ],
                 ),

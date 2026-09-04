@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -101,11 +102,7 @@ class SearchTransactionController extends GetxController {
       (failure) {
         isLoading.value = false;
         AppLogger.logError("Search transactions failed: ${failure.message}");
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         isLoading.value = false;

@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -72,7 +73,7 @@ class RegChargeController extends GetxController {
     result.fold(
       (failure) {
         items.clear();
-        Get.snackbar('Error', failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (success) {
         final data = success.data;

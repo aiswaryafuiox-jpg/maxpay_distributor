@@ -211,54 +211,6 @@ class AddWalletScreenMain extends GetView<AddWalletController> {
     );
   }
 
-  // ======================================================================
-  // CONVERT BACKEND LINK TO WORKING STANDARD UPI LINK
-  // ======================================================================
-
-  String _buildWorkingUpiUrl({
-    required String backendLink,
-    required String amount,
-  }) {
-    try {
-      final uri = Uri.tryParse(backendLink);
-
-      if (uri == null) {
-        debugPrint("Invalid backend URL");
-        return '';
-      }
-
-      final params = uri.queryParameters;
-
-      final pa = params['pa'];
-      final pn = params['pn'];
-
-      if (pa == null || pa.trim().isEmpty) {
-        debugPrint("UPI ID (pa) not found");
-        return '';
-      }
-
-      final upiUri = Uri(
-        scheme: 'upi',
-        host: 'pay',
-        queryParameters: {
-          'pa': pa,
-          'pn': pn ?? 'AJ SYSTEMS & SERVICES',
-          'am': amount,
-          'cu': 'INR',
-        },
-      );
-
-      final result = upiUri.toString();
-
-      debugPrint("Generated working UPI URL = $result");
-
-      return result;
-    } catch (e) {
-      debugPrint("UPI URL conversion error = $e");
-
-      return '';
-    }
-  }
 }
 
 // ==========================================================================

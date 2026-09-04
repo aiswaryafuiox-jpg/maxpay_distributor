@@ -39,8 +39,8 @@ class InitialBinding extends Bindings {
       permanent: true,
     );
 
-    Get.lazyPut<ProfileController>(
-      () => ProfileController(
+    Get.put<ProfileController>(
+      ProfileController(
         sl<GetProfileUseCase>(),
         sl<UpdateProfileUseCase>(),
         sl<VerifyUpdateProfileOtpUseCase>(),
@@ -48,7 +48,7 @@ class InitialBinding extends Bindings {
         sl<UpdateStatusSendOtpUseCase>(),
         sl<VerifyUpdateStatusOtpUseCase>(),
       ),
-      fenix: true,
+      permanent: true,
     );
 
     Get.lazyPut<RetailerController>(

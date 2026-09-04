@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -32,7 +33,7 @@ class _IntroPageState extends State<IntroPage> {
           Padding(
             padding: EdgeInsets.only(right: 8.w),
             child: TextButton.icon(
-              onPressed: () => Get.toNamed(AppRoutes.loginPhoneName),
+              onPressed: () => Get.offAllNamed(AppRoutes.loginPhoneName),
               iconAlignment: IconAlignment.end,
               icon: Icon(
                 Icons.skip_next,
@@ -74,12 +75,17 @@ class _IntroPageState extends State<IntroPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 40.h),
-                        Center(
-                          child: Image.asset(
-                            data['image'],
-                            height: 280.h,
-                            width: 300.w,
-                            fit: BoxFit.contain,
+                        FadeInDown(
+                          key: ValueKey('img_$index'),
+                          duration: const Duration(milliseconds: 600),
+                          from: 30,
+                          child: Center(
+                            child: Image.asset(
+                              data['image'],
+                              height: 280.h,
+                              width: 300.w,
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                         SizedBox(height: 40.h),
@@ -98,25 +104,37 @@ class _IntroPageState extends State<IntroPage> {
                           ),
                         ),
                         SizedBox(height: 60.h),
-                        Text(
-                          data['title'],
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 22.sp,
-                            color: theme.textTheme.bodyLarge!.color,
-                            letterSpacing: .01,
+                        FadeInUp(
+                          key: ValueKey('title_$index'),
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 100),
+                          from: 30,
+                          child: Text(
+                            data['title'],
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.sp,
+                              color: theme.textTheme.bodyLarge!.color,
+                              letterSpacing: .01,
+                            ),
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        Text(
-                          data['description'],
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16.sp,
-                            color: AppColors.clrTextgrey,
-                            height: 1.5,
+                        FadeInUp(
+                          key: ValueKey('desc_$index'),
+                          duration: const Duration(milliseconds: 600),
+                          delay: const Duration(milliseconds: 200),
+                          from: 30,
+                          child: Text(
+                            data['description'],
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16.sp,
+                              color: AppColors.clrTextgrey,
+                              height: 1.5,
+                            ),
                           ),
                         ),
                         SizedBox(height: 40.h),
@@ -165,7 +183,7 @@ class _IntroPageState extends State<IntroPage> {
                         curve: Curves.easeInOut,
                       );
                     } else {
-                      Get.toNamed(AppRoutes.loginPhoneName);
+                      Get.offAllNamed(AppRoutes.loginPhoneName);
                       // context.go(AppRoutes.welcome);
                     }
                   },

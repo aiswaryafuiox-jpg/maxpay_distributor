@@ -58,16 +58,18 @@ class ExecutiveListData {
 
   factory ExecutiveListData.fromJson(Map<String, dynamic> json) =>
       ExecutiveListData(
-        totalCount: json["total_count"],
+        totalCount: json["total_executive"] ?? json["total_count"],
         activeCount: json["active_count"],
         inactiveCount: json["inactive_count"],
         pagination: json["pagination"] == null
             ? null
             : Pagination.fromJson(json["pagination"]),
-        executives: json["executives"] == null
+        executives: (json["list"] ?? json["executives"]) == null
             ? []
             : List<Executive>.from(
-                json["executives"]!.map((x) => Executive.fromJson(x)),
+                (json["list"] ?? json["executives"])!.map(
+                  (x) => Executive.fromJson(x),
+                ),
               ),
       );
 
@@ -107,14 +109,14 @@ class Executive {
 
   factory Executive.fromJson(Map<String, dynamic> json) => Executive(
     id: json["id"],
-    userId: json["user_id"],
-    executiveName: json["executive_name"],
-    regMobileNumber: json["reg_mobile_number"],
+    userId: json["user_id"]?.toString(),
+    executiveName: json["executive_name"]?.toString(),
+    regMobileNumber: json["reg_mobile_number"]?.toString(),
     isActive: json["is_active"],
-    walletAmount: json["wallet_amount"],
-    dueAmount: json["due_amount"],
-    todayOnline: json["today_online"],
-    todayTransfer: json["today_transfer"],
+    walletAmount: json["wallet_amount"]?.toString(),
+    dueAmount: json["due_amount"]?.toString(),
+    todayOnline: json["today_online"]?.toString(),
+    todayTransfer: json["today_transfer"]?.toString(),
   );
 
   Map<String, dynamic> toJson() => {

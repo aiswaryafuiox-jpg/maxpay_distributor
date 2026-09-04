@@ -199,6 +199,8 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
         allowMultiple: false,
       );
 
+      if (!mounted) return;
+
       if (result != null && result.files.isNotEmpty) {
         setState(() {
           _pickedFile = result.files.first;
@@ -245,29 +247,29 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
 
             children: [
               const SizedBox(height: 20),
-              Obx(
-                () => Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Due Amount",
-                        style: TextHelper.max16.copyWith(fontSize: 16),
-                      ),
-                      const SizedBox(height: 4),
-                      _controller.isLoading.value
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Due Amount",
+                      style: TextHelper.max16.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 4),
+                    Obx(
+                      () => _controller.isLoading.value
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
                               _controller.walletBalance.value.currencyIndian,
                               style: TextHelper.lato12.copyWith(fontSize: 18),
                             ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),

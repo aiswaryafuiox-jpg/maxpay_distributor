@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -88,7 +89,7 @@ class WalletController extends GetxController {
       (failure) {
         walletCreditItems.clear();
         totalCreditAmount.value = '0.00';
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         final data = response.data;

@@ -131,8 +131,8 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     buildLabel("Last Transfer Amount", isDark),
                     SizedBox(height: 8.h),
                     TextFormField(
-                      initialValue: (details.lastTransferDateTime ?? ' 0.00')
-                          .currencyIndian,
+                      initialValue:
+                          (details.lastTransferAmount ?? 0.00).currencyIndian,
                       readOnly: true,
                       decoration: fieldDecoration(context, "", isDark),
                     ),

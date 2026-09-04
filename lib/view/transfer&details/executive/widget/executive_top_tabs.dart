@@ -82,13 +82,7 @@ class ExecutiveTopTabs extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: buildTab(
-                null,
-                SvgPicture.asset(AssetImages.profileUser),
-                AppColors.clrPrimary,
-              ),
-            ),
+
             Expanded(
               child: buildTab(
                 null,

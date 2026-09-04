@@ -248,7 +248,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               buildLabel("Due Amount", isDark, context),
               buildField(
                 context,
-                 (detail.dueAmount ?? 0.00).currencyIndian,
+                (detail.dueAmount ?? 0.00).currencyIndian,
                 valueColor: Colors.red,
                 isDigitsOnly: true,
                 readOnly: true,
@@ -269,7 +269,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
               SizedBox(height: 14.h),
 
-              buildLabel("Live Wallet Amount", isDark, context),
+              buildLabel("Low Wallet Amount", isDark, context),
               buildField(
                 context,
                 "${detail.lowWalletAmount ?? 0}",

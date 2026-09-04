@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
+import 'package:maxpay/controller/day_book_controller.dart';
 import 'package:maxpay/controller/executive_controller.dart';
 import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
@@ -97,30 +98,13 @@ import '../di/service_locator.dart';
 
 class AppPages {
   static final pages = [
-    GetPage(
-      name: AppRoutes.splash,
-      page: () => const MainSplashScreen(),
-      binding: BindingsBuilder(() {
-        Get.lazyPut<ProfileController>(
-          () => ProfileController(
-            sl<GetProfileUseCase>(),
-            sl<UpdateProfileUseCase>(),
-            sl<VerifyUpdateProfileOtpUseCase>(),
-            sl<ResendUpdateProfileOtpUseCase>(),
-            sl<UpdateStatusSendOtpUseCase>(),
-            sl<VerifyUpdateStatusOtpUseCase>(),
-          ),
-          fenix: true,
-        );
-      }),
-    ),
+    GetPage(name: AppRoutes.splash, page: () => const MainSplashScreen()),
     GetPage(name: AppRoutes.intro, page: () => const IntroPage()),
     GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
     GetPage(name: AppRoutes.selectSim, page: () => const SelectSimPage()),
     GetPage(
       name: AppRoutes.loginPhoneName,
       page: () => const LoginPhoneNamePage(),
-      binding: InitialBinding(),
     ),
     GetPage(
       name: AppRoutes.otpVerification,
@@ -186,6 +170,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.lazyPut(
           () => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+          fenix: true,
         );
       }),
     ),
@@ -320,7 +305,11 @@ class AppPages {
       page: () => StatementReadMoreScreen(),
     ),
     GetPage(name: AppRoutes.outstanding, page: () => const OutstandingScreen()),
-    GetPage(name: AppRoutes.dayBook, page: () => const DayBookScreen()),
+    GetPage(
+      name: AppRoutes.dayBook,
+      page: () => const DayBookScreen(),
+      binding: BindingsBuilder(() => DayBookController(sl(), sl(), sl())),
+    ),
     GetPage(
       name: AppRoutes.regChargeCredit,
       page: () => const RegChargeCreditScreen(),

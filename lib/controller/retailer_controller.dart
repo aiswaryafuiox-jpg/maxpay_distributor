@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
@@ -104,11 +105,7 @@ class RetailerController extends GetxController {
       (failure) {
         isLoading.value = false;
         isLoadMore.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError("Failed to fetch retailers: ${failure.message}");
       },
       (data) {
@@ -120,9 +117,15 @@ class RetailerController extends GetxController {
 
         if (currentPage == 1) {
           retailers.value = newRetailersData;
+          hasMorePages = newRetailers.isNotEmpty;
         } else {
           final currentList = retailers.value.retailers ?? [];
-          currentList.addAll(newRetailers);
+          final existingIds = currentList.map((e) => e.id).toSet();
+          final uniqueNewList = newRetailers
+              .where((e) => !existingIds.contains(e.id))
+              .toList();
+
+          currentList.addAll(uniqueNewList);
           retailers.value = RetailerListData(
             totalCount:
                 newRetailersData.totalCount ?? retailers.value.totalCount,
@@ -133,9 +136,10 @@ class RetailerController extends GetxController {
             pagination: newRetailersData.pagination,
             retailers: currentList,
           );
+
+          hasMorePages = uniqueNewList.isNotEmpty;
         }
 
-        hasMorePages = newRetailersData.pagination?.hasMorePages ?? false;
         if (hasMorePages) {
           currentPage++;
         }
@@ -155,11 +159,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isDetailLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError(
           "Failed to fetch retailer detail: ${failure.message}",
         );
@@ -179,11 +179,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isPackagesLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError(
           "Failed to fetch commission packages: ${failure.message}",
         );
@@ -205,21 +201,13 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isCreatingRetailer.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError("Failed to create retailer: ${failure.message}");
       },
       (data) async {
         isCreatingRetailer.value = false;
         Get.back(); // Navigate back
-        Get.snackbar(
-          "Success",
-          data.message ?? "Retailer created successfully",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.success(data.message ?? "Retailer created successfully");
         AppLogger.debugPrint("Retailer created successfully");
         await fetchRetailers(isRefresh: true); // Refresh the list
       },
@@ -233,21 +221,13 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingRetailer.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError("Failed to update retailer: ${failure.message}");
       },
       (data) async {
         isUpdatingRetailer.value = false;
         Get.back(); // Navigate back
-        Get.snackbar(
-          "Success",
-          data.message ?? "Retailer updated successfully",
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.success(data.message ?? "Retailer updated successfully");
         AppLogger.debugPrint("Retailer updated successfully");
         await fetchRetailers(isRefresh: true); // Refresh the list
       },
@@ -261,11 +241,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isAddWalletLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError(
           "Failed to fetch add wallet details: ${failure.message}",
         );
@@ -288,11 +264,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isAddWalletLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-        );
+        CustomSnackbar.error(failure.message);
         AppLogger.logError("Failed to add wallet: ${failure.message}");
       },
       (data) {
@@ -303,13 +275,7 @@ class RetailerController extends GetxController {
           isRefresh: true,
         ); // Refresh the list to reflect new balances
         Get.back(); // Go back from Add Wallet screen
-        Get.snackbar(
-          "Success",
-          data.message ?? "Wallet transferred successfully",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: const Color(0xFF4CAF50), // Green for success
-          colorText: const Color(0xFFFFFFFF),
-        );
+        CustomSnackbar.success(data.message ?? "Wallet transferred successfully");
       },
     );
   }

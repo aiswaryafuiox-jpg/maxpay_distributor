@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -57,7 +58,7 @@ class LoginHistoryController extends GetxController {
         isLoading.value = false;
         errorMessage.value = failure.message;
         AppLogger.logError("Failed to fetch login history: ${failure.message}");
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isLoading.value = false;

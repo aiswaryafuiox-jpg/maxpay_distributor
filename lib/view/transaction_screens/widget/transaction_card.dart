@@ -209,7 +209,7 @@ class TransactionCard extends StatelessWidget {
                     onTap: () {
                       if (item.id != null) {
                         Get.find<TransactionController>()
-                            .fetchTransactionDetail(item.id!);
+                            .fetchTransactionDetail(item.id!, true);
                       }
                     },
                     isCompact: true,
@@ -221,7 +221,6 @@ class TransactionCard extends StatelessWidget {
                       if (item.id != null) {
                         Get.find<TransactionController>()
                             .fetchTransactionDetail(item.id!);
-                        
                       }
                     },
                     isCompact: true,

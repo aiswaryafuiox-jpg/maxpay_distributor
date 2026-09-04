@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
       child: MediaQuery.withClampedTextScaling(
         maxScaleFactor: 1.15,
         child: Container(
-          padding: EdgeInsets.all(8.r),
+          padding: EdgeInsets.all(6.r),
           decoration: BoxDecoration(
             color:
                 bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
@@ -69,7 +69,7 @@ class StatCard extends StatelessWidget {
             children: [
               /// IMAGE / ICON
               SizedBox(
-                height: 36.h,
+                height: 38.h,
                 child: Center(child: imageWidget),
               ),
               if (needSpacingbwImage) SizedBox(height: 5.h),
@@ -83,7 +83,7 @@ class StatCard extends StatelessWidget {
                     TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w700,
-                      fontSize: 10.sp,
+                      fontSize: 9.sp,
                       color: textColor ?? theme.colorScheme.onSurface,
                     ),
               ),
@@ -99,7 +99,7 @@ class StatCard extends StatelessWidget {
                       TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         height: 1.2,
                         color: valueColor,
                       ),

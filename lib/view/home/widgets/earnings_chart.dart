@@ -21,9 +21,15 @@ class EarningsChart extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkFilterBorder : Colors.white,
         borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: (isDark ? AppColors.activeBg : AppColors.darkFilterBorder)
+              .withValues(alpha: 0.19),
+          width: .5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+            color: (isDark ? AppColors.activeBg : AppColors.darkFilterBorder)
+                .withValues(alpha: 0.19),
             blurRadius: 16,
             offset: const Offset(0, 5),
           ),
@@ -178,7 +184,7 @@ class EarningsChart extends StatelessWidget {
             SizedBox(height: 12.h),
 
             SizedBox(
-              height: 185.h,
+              height: 150.h,
               child: Stack(
                 children: [
                   BarChart(
