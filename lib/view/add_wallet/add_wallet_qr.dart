@@ -17,7 +17,6 @@ class AddWalletScreen extends GetView<AddWalletController> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: const CommonAppBar(title: "Add Wallet"),
@@ -85,15 +84,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
 
             /// SUBMIT BUTTON
             Center(
-              child: CommonButton(
-                title: "Submit",
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const AddWalletPopup(),
-                  );
-                },
-              ),
+              child: CommonButton(title: "Submit", onTap: () {}),
             ),
 
             const SizedBox(height: 28),
@@ -108,7 +99,8 @@ class AddWalletScreen extends GetView<AddWalletController> {
                 return Center(child: CircularProgressIndicator());
               }
 
-              if (controller.walletQrHistory.value.data?.list?.isEmpty ?? true) {
+              if (controller.walletQrHistory.value.data?.list?.isEmpty ??
+                  true) {
                 return Center(child: Text("No Transactions"));
               }
               return Column(

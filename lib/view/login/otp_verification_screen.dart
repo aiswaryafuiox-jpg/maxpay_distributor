@@ -185,7 +185,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
 
                         /// ðŸ”¹ Subtitle
                         Text(
-                          "Please type the verification code\nsent to your phone number",
+                          "Please paste the verification code\nsent to your phone number",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Poppins',
