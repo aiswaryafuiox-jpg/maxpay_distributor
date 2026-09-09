@@ -194,6 +194,9 @@ class LoginController extends GetxController {
             "last_active_time",
             DateTime.now().toIso8601String(),
           );
+          CustomToast.success(
+            "M Pin Verified Successfully", //2722
+          );
           await Get.find<ProfileController>().fetchProfile();
           Get.offAllNamed(AppRoutes.main);
           return true;

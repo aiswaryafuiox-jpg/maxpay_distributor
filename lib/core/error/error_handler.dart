@@ -3,9 +3,9 @@ import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 
 class DioErrorHandler {
-  static Failure handle(dynamic error) {
+  static Failure handle(dynamic error, [String? endpoint]) {
     String message = "Something went wrong";
-    AppLogger.logError("error message: $error");
+    AppLogger.logError("error message: $error ${endpoint ?? ''}");
     AppLogger.logError("error message: ${error.runtimeType}");
     if (error is DioException) {
       AppLogger.logError("error response data: ${error.response?.data}");

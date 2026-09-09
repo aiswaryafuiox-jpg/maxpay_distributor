@@ -127,121 +127,39 @@ class AddWalletScreenMain extends GetView<AddWalletController> {
               ),
 
               const SizedBox(height: 18),
-              ElevatedButton(
-                onPressed: () {
-                  String deviceID = ""; // initialize variable
 
-                  if (Platform.isAndroid) {
-                    deviceID =
-                        "AndroidSH2"; // Android-specific deviceId, supported options are "AndroidSH1" & "AndroidSH2"
-                  } else if (Platform.isIOS) {
-                    deviceID =
-                        "iOSSH2"; // iOS-specific deviceId, supported options are "iOSSH1" & "iOSSH2"
-                  }
-
-                  var reqJson = {
-                    "features": {
-                      "enableAbortResponse": true,
-                      "enableExpressPay": false,
-                      "enableInstrumentDeRegistration": true,
-                      "enableMerTxnDetails": true,
-                    },
-                    "consumerData": {
-                      "deviceId": deviceID,
-                      "token":
-                          "a7356fb644fa98999a45d62361c80a574ff24f96b59669381593edbb97ef4feb0ea427d19e79b8d4ef5d82d38bb0eae890615b5054c702695deef11ec771b751",
-                      "paymentMode": "all",
-                      "merchantLogoUrl":
-                          "https://paylinkonline.in/assets/img/side_bar_logo.png", //provided merchant logo will be displayed
-                      "merchantId": "L3348",
-                      "currency": "INR",
-                      "consumerId": "c964634",
-                      "consumerMobileNo": "9876543210",
-                      "consumerEmailId": "test@test.com",
-                      "txnId": "1684835158539", //Unique merchant transaction ID
-                      "items": [
-                        {"itemId": "first", "amount": "10", "comAmt": "0"},
-                      ],
-                      "customStyle": {
-                        "PRIMARY_COLOR_CODE":
-                            "#de7518", //merchant primary color code
-                        "SECONDARY_COLOR_CODE":
-                            "#FFFFFF", //provide merchant's suitable color code
-                        "BUTTON_COLOR_CODE_1":
-                            "#2d8c8c", //merchant"s button background color code
-                        "BUTTON_COLOR_CODE_2":
-                            "#FFFFFF", //provide merchant's suitable color code for button text
-                      },
-                    },
-                  };
-
-                  _wlchekc.on(
-                    WeiplCheckoutFlutter.wlResponse,
-                    responseCallback,
-                    errorCallback,
-                  );
-                  _wlchekc.open(reqJson);
-                },
-                child: const Text("Proceed"),
-              ),
               Center(
                 child: CommonButton(
                   title: "Submit",
                   onTap: () async {
-                    if (Platform.isIOS) {
-                      // iOS code
-                      bool status = await _wlchekc.checkInstalledUpiApp(
-                        "gpay://upi/",
-                      ); //UPI Schemes :- "phonepe://upi/" OR "gpay://upi/" OR "paytm://".
-                      showAlertDialog(context, "WL SDK Response", "$status");
-                    } else if (Platform.isAndroid) {
-                      // android code
-                      Map<dynamic, dynamic> response = await _wlchekc
-                          .upiIntentAppsList();
-                      showAlertDialog(context, "WL SDK Response", "$response");
-                    } else {
-                      showAlertDialog(
-                        context,
-                        "WL SDK Response",
-                        "Feature is not available for selected platform.",
+                    final amount = controller.amountController.text.trim();
+
+                    if (amount.isEmpty) {
+                      Get.snackbar(
+                        "Alert",
+                        "Please Enter Amount",
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
                       );
+                      return;
                     }
+
+                    final parsedAmount = double.tryParse(amount);
+
+                    if (parsedAmount == null || parsedAmount <= 0) {
+                      Get.snackbar(
+                        "Alert",
+                        "Please Enter a Valid Amount",
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+
+                    await controller.createQr(amount);
                   },
                 ),
               ),
-
-              // Center(
-              //   child: CommonButton(
-              //     title: "Submit",
-              //     onTap: () async {
-              //       final amount = controller.amountController.text.trim();
-
-              //       if (amount.isEmpty) {
-              //         Get.snackbar(
-              //           "Alert",
-              //           "Please Enter Amount",
-              //           backgroundColor: Colors.red,
-              //           colorText: Colors.white,
-              //         );
-              //         return;
-              //       }
-
-              //       final parsedAmount = double.tryParse(amount);
-
-              //       if (parsedAmount == null || parsedAmount <= 0) {
-              //         Get.snackbar(
-              //           "Alert",
-              //           "Please Enter a Valid Amount",
-              //           backgroundColor: Colors.red,
-              //           colorText: Colors.white,
-              //         );
-              //         return;
-              //       }
-
-              //       await controller.createQr(amount);
-              //     },
-              //   ),
-              // ),
               const SizedBox(height: 28),
 
               // ----------------------------------------------------------

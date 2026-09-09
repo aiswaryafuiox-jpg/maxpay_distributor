@@ -20,9 +20,9 @@ class SuccessScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isTablet = Responsive.isTablet(context);
-    final args = Get.arguments as Map<String, String>;
-    final title = args['title'];
-    final message = args['message'];
+    final args = Get.arguments as Map<String, String>?;
+    final title = args?['title'];
+    final message = args?['message'];
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
