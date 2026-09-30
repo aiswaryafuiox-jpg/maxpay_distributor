@@ -4,7 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 class CustomToast {
   CustomToast(String s);
 
-
   static void success(String message) {
     Fluttertoast.showToast(
       msg: message,
@@ -18,6 +17,11 @@ class CustomToast {
 
   /// ERROR TOAST
   static void error(String message) {
+    if (message.trim().toLowerCase() == 'Unauthenticated' ||
+        message.trim().toLowerCase() == 'unauthenticated.') {
+      return;
+    }
+
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,

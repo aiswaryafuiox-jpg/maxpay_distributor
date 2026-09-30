@@ -32,7 +32,22 @@ class _CashbackScreenState extends State<CashbackScreen> {
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
 
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0, bottom: 10.0, top: 4.0),
+              child: Text(
+                "Product",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: theme.brightness == Brightness.dark
+                      ? AppColors.textclr
+                      : Colors.black87,
+                ),
+              ),
+            ),
+
             /// 🔵 Modern Filter Dropdown
             Container(
               decoration: BoxDecoration(
@@ -40,17 +55,10 @@ class _CashbackScreenState extends State<CashbackScreen> {
                     ? Colors.white
                     : AppColors.darkplceholder,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
                 border: Border.all(
                   color: theme.brightness == Brightness.dark
                       ? AppColors.darkFilterBorder
-                      : Colors.transparent,
+                      : Colors.grey.withValues(alpha: 0.2),
                 ),
               ),
               child: Obx(() {
@@ -157,6 +165,7 @@ class _CashbackScreenState extends State<CashbackScreen> {
                       cashbackColor: cashbackColor,
                       productName: item.productName ?? "Unknown",
                       productLogo: item.productLogo ?? "",
+                      commissionType: item.commissionType ?? "",
                     );
                   },
                 );
@@ -174,6 +183,7 @@ class CashbackTile extends StatelessWidget {
   final Color cashbackColor;
   final String productName;
   final String productLogo;
+  final String commissionType;
 
   const CashbackTile({
     super.key,
@@ -181,6 +191,7 @@ class CashbackTile extends StatelessWidget {
     required this.cashbackColor,
     required this.productName,
     required this.productLogo,
+    required this.commissionType,
   });
 
   @override
@@ -188,101 +199,77 @@ class CashbackTile extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bool isNegative = cashbackColor == const Color(0xFFFF0000);
-    final Color badgeBgColor = isNegative
-        ? const Color(0xFFFF0000).withValues(alpha: 0.1)
-        : const Color(0xFF00C261).withValues(alpha: 0.1);
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
-        color: !isDark ? Colors.white : AppColors.darkplceholder,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: !isDark
-            ? [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [],
-        border: isDark
-            ? Border.all(color: AppColors.darkFilterBorder)
-            : Border.all(color: Colors.grey.withValues(alpha: 0.05), width: 1),
+        color: !isDark ? const Color(0xFFF7F8FC) : AppColors.darkplceholder,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           /// Product Logo
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
-            ),
-            child: CircleAvatar(
-              radius: 22,
-              backgroundColor: Colors.transparent,
-              backgroundImage: productLogo.isNotEmpty
-                  ? NetworkImage(productLogo)
-                  : null,
-              child: productLogo.isEmpty
-                  ? Text(
+          SizedBox(
+            width: 38,
+            height: 38,
+            child: productLogo.isNotEmpty
+                ? Image.network(
+                    productLogo,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.broken_image, color: Colors.grey),
+                  )
+                : CircleAvatar(
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.1,
+                    ),
+                    child: Text(
                       productName.isNotEmpty ? productName[0] : "?",
                       style: TextStyle(
                         color: theme.colorScheme.primary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
                       ),
-                    )
-                  : null,
-            ),
+                    ),
+                  ),
           ),
 
-          const SizedBox(width: 14),
+          const SizedBox(width: 16),
 
           /// Name
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  productName,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Cashback",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.colorScheme.onSurfaceVariant.withValues(
-                      alpha: 0.8,
-                    ),
-                  ),
-                ),
-              ],
+            child: Text(
+              productName,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onSurface,
+              ),
             ),
           ),
 
-          /// Cashback Badge
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: badgeBgColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              cashback,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: cashbackColor,
+          /// Cashback Details
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                commissionType,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: isDark ? Colors.white70 : const Color(0xFF757575),
+                ),
               ),
-            ),
+              const SizedBox(height: 4),
+              Text(
+                cashback,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: cashbackColor,
+                ),
+              ),
+            ],
           ),
         ],
       ),

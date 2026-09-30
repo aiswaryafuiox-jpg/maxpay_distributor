@@ -15,6 +15,7 @@ import 'package:maxpay/data/model/ad_model.dart';
 import 'package:maxpay/global_widget/wallet_balance_card.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 import 'package:maxpay/core/extensions/string_ext.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 
 import '../../nav_page/navbar.dart';
 
@@ -34,9 +35,7 @@ class MenuScreen extends StatelessWidget {
       homeController.fetchPopupMessage("Dashboard");
       lowWalletController.fetchLowWalletRetailers();
     });
-    Get.put(
-      BannerController(bannerUsecase: sl(), advusecase: sl()),
-    );
+    Get.put(BannerController(bannerUsecase: sl(), advusecase: sl()));
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -205,6 +204,14 @@ class MenuScreen extends StatelessWidget {
     return Obx(() {
       final LowWalletController controller = Get.find<LowWalletController>();
 
+      bool isExecutive = false;
+      if (Get.isRegistered<ProfileController>()) {
+        final profile = Get.find<ProfileController>().profileData.value;
+        if (profile?.userType?.toLowerCase() == 'executive') {
+          isExecutive = true;
+        }
+      }
+
       // Define the 12 static services just like productList
       final List<Map<String, dynamic>> productList = [
         {
@@ -233,12 +240,13 @@ class MenuScreen extends StatelessWidget {
           'route': AppRoutes.autoTransferScreen,
         },
 
-        {
-          'title': 'Executive',
-          'image': AssetImages.transactions1,
-          'color': AppColors.box1,
-          'route': AppRoutes.executive,
-        },
+        if (!isExecutive)
+          {
+            'title': 'Executive',
+            'image': AssetImages.transactions1,
+            'color': AppColors.box1,
+            'route': AppRoutes.executive,
+          },
         {
           'title': 'Transfer Detail',
           'image': AssetImages.promoFrame,
@@ -252,18 +260,20 @@ class MenuScreen extends StatelessWidget {
           'color': AppColors.box4,
           'route': AppRoutes.requestWalletpending,
         },
-        {
-          'title': 'Due Amount',
-          'image': AssetImages.landline,
-          'color': AppColors.box3,
-          'route': AppRoutes.outstanding,
-        },
-        {
-          'title': 'Day Book',
-          'image': AssetImages.broadband,
-          'color': AppColors.box2,
-          'route': AppRoutes.dayBook,
-        },
+        if (!isExecutive) ...[
+          {
+            'title': 'Due Amount',
+            'image': AssetImages.landline,
+            'color': AppColors.box3,
+            'route': AppRoutes.outstanding,
+          },
+          {
+            'title': 'Day Book',
+            'image': AssetImages.broadband,
+            'color': AppColors.box2,
+            'route': AppRoutes.dayBook,
+          },
+        ],
         {
           'title': 'Pay-out Details',
           'image': AssetImages.statement,

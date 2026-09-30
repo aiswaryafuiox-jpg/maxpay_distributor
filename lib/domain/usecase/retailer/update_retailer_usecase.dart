@@ -8,7 +8,9 @@ class UpdateRetailerUseCase {
 
   UpdateRetailerUseCase(this.repository);
 
-  Future<Either<Failure, UpdateRetailerResponseModel>> call(UpdateRetailerParams params) {
+  Future<Either<Failure, UpdateRetailerResponseModel>> call(
+    UpdateRetailerParams params,
+  ) {
     return repository.updateRetailer(params);
   }
 }
@@ -22,7 +24,8 @@ class UpdateRetailerParams {
   final String address;
   final String gstNo;
   final String pincode;
-  final String executiveId;
+  final String? executiveid;
+
   final String registrationCharge;
   final String lowWalletAmount;
   final String autoTransferAmount;
@@ -40,7 +43,6 @@ class UpdateRetailerParams {
     required this.address,
     required this.gstNo,
     required this.pincode,
-    required this.executiveId,
     required this.registrationCharge,
     required this.lowWalletAmount,
     required this.autoTransferAmount,
@@ -48,10 +50,11 @@ class UpdateRetailerParams {
     required this.autoTransfer,
     required this.status,
     required this.transaction,
+    this.executiveid,
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'id': id,
       'retailer_name': retailerName,
       'reg_mobile_number': regMobileNumber,
@@ -60,7 +63,6 @@ class UpdateRetailerParams {
       'address': address,
       'gst_no': gstNo,
       'pincode': pincode,
-      'executive_id': executiveId,
       'registration_charge': registrationCharge,
       'low_wallet_amount': lowWalletAmount,
       'auto_transfer_amount': autoTransferAmount,
@@ -69,5 +71,9 @@ class UpdateRetailerParams {
       'status': status,
       'transaction': transaction,
     };
+    if (executiveid != null && executiveid!.isNotEmpty) {
+      map['executive_id'] = executiveid;
+    }
+    return map;
   }
 }

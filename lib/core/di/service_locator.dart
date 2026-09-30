@@ -7,6 +7,7 @@ import 'package:maxpay/controller/pending_wallet_request_controller.dart';
 import 'package:maxpay/controller/bank_controller.dart';
 import 'package:maxpay/domain/repository/bank_detail_repository.dart';
 import 'package:maxpay/data/repository/bank_detail_repoo_impl.dart';
+import 'package:maxpay/domain/repository/wallet_request_repository.dart';
 import 'package:maxpay/domain/usecase/bank_detail_usecase.dart';
 import 'package:maxpay/data/repository/home_card_repo_impl.dart';
 import 'package:maxpay/data/repository/outstanding_repo_impl.dart';
@@ -20,6 +21,7 @@ import 'package:maxpay/domain/repository/today_transaction_repo.dart';
 import 'package:maxpay/domain/repository/wallet_credit_list_repo.dart';
 import 'package:maxpay/domain/repository/web_login_repo.dart';
 import 'package:maxpay/data/repository/web_login_repo_impl.dart';
+import 'package:maxpay/domain/usecase/wallet_request_usecase.dart';
 import 'package:maxpay/domain/usecase/web_login_usecase.dart';
 import 'package:maxpay/domain/usecase/web_logout_usecase.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
@@ -196,6 +198,10 @@ import 'package:maxpay/domain/usecase/settings/bulk_package_change_usecase.dart'
 import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/data/repository/add_wallet_balance_repo_impl.dart';
+import 'package:maxpay/data/repository/wallet_request_repo_impl.dart';
+import 'package:maxpay/domain/repository/wallet_request_repository.dart';
+import 'package:maxpay/domain/usecase/wallet_request_usecase.dart';
+
 import 'package:maxpay/domain/repository/add_wallet_balance_repo.dart';
 import 'package:maxpay/domain/usecase/get_add_wallet_balance_usecase.dart';
 import 'package:maxpay/data/repository/create_qr_repo_impl.dart';
@@ -501,16 +507,18 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetNewsUseCase(sl()));
   sl.registerLazySingleton(() => GetBannerUseCase(sl()));
   sl.registerLazySingleton(() => AdvertisementUsecase(sl()));
-  
+
   sl.registerLazySingleton<FaqRepository>(() => FaqRepoImpl(sl()));
   sl.registerLazySingleton(() => GetFaqUseCase(sl()));
-  
+
   sl.registerLazySingleton<FaqReplyRepository>(() => FaqReplyRepoImpl(sl()));
   sl.registerLazySingleton(() => FaqReplyUseCase(sl()));
-  
-  sl.registerLazySingleton<PopupMessageRepository>(() => PopupMessageRepoImpl(sl()));
+
+  sl.registerLazySingleton<PopupMessageRepository>(
+    () => PopupMessageRepoImpl(sl()),
+  );
   sl.registerLazySingleton(() => GetPopupMessageUseCase(sl()));
-  
+
   sl.registerLazySingleton(() => GetGraphUseCase(sl()));
   sl.registerLazySingleton<GetKycUseCase>(() => GetKycUseCase(sl()));
   sl.registerLazySingleton<SubmitKycUseCase>(() => SubmitKycUseCase(sl()));
@@ -570,8 +578,12 @@ Future<void> init() async {
   );
 
   // Home Page
-  sl.registerFactory(() => HomePageController(sl(), sl(), sl(), sl(), sl(), sl()));
-  sl.registerFactory(() => BannerController(bannerUsecase: sl(), advusecase: sl()));
+  sl.registerFactory(
+    () => HomePageController(sl(), sl(), sl(), sl(), sl(), sl()),
+  );
+  sl.registerFactory(
+    () => BannerController(bannerUsecase: sl(), advusecase: sl()),
+  );
   sl.registerFactory(() => GraphController(sl()));
 
   // Login
@@ -679,6 +691,11 @@ Future<void> init() async {
   sl.registerFactory(() => AppLifecycleController());
 
   // Add Wallet Balance & QR
+  sl.registerLazySingleton<WalletRequestRepository>(
+    () => WalletRequestRepoImpl(sl()),
+  );
+  sl.registerLazySingleton(() => WalletRequestUsecase(sl()));
+
   sl.registerLazySingleton<AddWalletBalanceRepository>(
     () => AddWalletBalanceRepoImpl(sl()),
   );
@@ -689,7 +706,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateQrRepository>(() => CreateQrRepoImpl(sl()));
   sl.registerLazySingleton<CreateQrUsecase>(() => CreateQrUsecase(sl()));
 
-  sl.registerFactory(() => AddWalletController(sl(), sl()));
+  sl.registerFactory(() => AddWalletController(sl(), sl(), sl()));
 
   // Statement
   sl.registerLazySingleton<StatementRepository>(
@@ -726,9 +743,7 @@ Future<void> init() async {
   sl.registerLazySingleton<BankDetailRepository>(
     () => BankDetailRepooImpl(sl()),
   );
-  sl.registerLazySingleton<BankDetailUsecase>(
-    () => BankDetailUsecase(sl()),
-  );
+  sl.registerLazySingleton<BankDetailUsecase>(() => BankDetailUsecase(sl()));
   sl.registerFactory(() => BankDetailController(bankdetailusecase: sl()));
   sl.registerLazySingleton<WebLoginRepository>(
     () => WebLoginRepositoryImpl(apiService: sl()),

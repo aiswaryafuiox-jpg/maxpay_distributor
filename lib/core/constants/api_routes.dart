@@ -37,6 +37,8 @@ class ApiRoutes {
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String requestWallet = "/api/distributor_wallet_request";
+
   static const String getExecutives = "/api/distributor_executives";
   static const String getExecutiveDetail = "/api/distributor_executive_detail";
   static const String getExecutiveCommissionPackages =
@@ -137,5 +139,7 @@ class ApiRoutes {
   static const String distributorUpdateMpin = '/api/distributor_update_mpin';
   static const String distributorPrivacyPolicy =
       '/api/distributor_privacy_policy';
-  static const bankdetail = "/api/distributor_get_bank_details";
+  static const bankdetail = "/api/get_bank_details";
+
+  static const verifyWorldlinePayment = "/distributor_verify_worldline_payment";
 }

@@ -29,7 +29,7 @@ class UpdatePinPage extends StatelessWidget {
           children: [
             SizedBox(height: 30.h),
             Text(
-              "New M-Pin (4 digits only)",
+              "New M-Pin (6 digits only)",
               style: TextHelper.pin.copyWith(
                 color: Theme.of(context).colorScheme.onSurface,
               ),

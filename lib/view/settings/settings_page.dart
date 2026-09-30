@@ -133,8 +133,13 @@ class _SettingsPageState extends State<SettingsPage> {
     final themeController = Get.find<ThemeController>();
     final updatePinController = Get.put(sl<UpdatePinController>());
     final authController = Get.find<LoginController>();
+    final profileController = Get.find<ProfileController>();
+    
+
     return Obx(() {
       final isDark = themeController.isDarkMode;
+      final isExecutive =
+          profileController.profileData.value?.userType == "executive";
       return Container(
         decoration: BoxDecoration(
           image: isDark
@@ -283,23 +288,25 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
-                    _buildMenuTile(
-                      context,
-                      'Commission Settings',
-                      () {
-                        Get.toNamed(AppRoutes.commission);
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                    ),
+                    if (isExecutive == false) ...[
+                      _buildMenuTile(
+                        context,
+                        'Commission Settings',
+                        () {
+                          Get.toNamed(AppRoutes.commission);
+                        },
+                        SvgPicture.asset(AssetImages.acc, width: 24.w),
+                      ),
 
-                    _buildMenuTile(
-                      context,
-                      'Bulk Package Update',
-                      () {
-                        Get.toNamed(AppRoutes.bulkPackageCharge);
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                    ),
+                      _buildMenuTile(
+                        context,
+                        'Bulk Package Update',
+                        () {
+                          Get.toNamed(AppRoutes.bulkPackageCharge);
+                        },
+                        SvgPicture.asset(AssetImages.acc, width: 24.w),
+                      ),
+                    ],
                     // _buildMenuTile(
                     //   context,
                     //   'Account ',
@@ -309,26 +316,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     //   SvgPicture.asset(AssetImages.acc, width: 24.w),
                     //   '(active/inactive)',
                     // ),
-                    _buildMenuTile(
-                      context,
-                      authController.isFingerPrint.value == 1
-                          ? 'Update Fingerprint'
-                          : 'Add Fingerprint',
-                      () {
-                        Get.toNamed(
-                          AppRoutes.biometricsIntro,
-                          arguments: {
-                            'is_update':
-                                authController.isFingerPrint.value == 1,
-                          },
-                        );
-                      },
-                      Icon(
-                        Icons.fingerprint,
-                        size: 24.w,
-                        color: AppColors.clrPrimary,
-                      ),
-                    ),
+                   
+
+                   
                     _buildMenuTile(
                       context,
                       'Grade',
@@ -342,7 +332,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     }, SvgPicture.asset(AssetImages.kyc, width: 24.w)),
                     _buildMenuTile(
                       context,
-                      'Update M-Pin',
+                      'Change M Pin',
                       () {
                         if (!updatePinController.isOtpLoading.value) {
                           updatePinController.sendOtp();
@@ -361,6 +351,80 @@ class _SettingsPageState extends State<SettingsPage> {
                               width: 24.w,
                             ),
                     ),
+  _buildMenuTile(
+                            context,
+                            'Forgot M Pin',
+                            () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.r),
+                                    ),
+                                    title: Text(
+                                      'Contact Support',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: Text(
+                                      'To reset your M PIN, please contact support.',
+                                      style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Get.back(); // close dialog
+                                        },
+                                        child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).platform ==
+                                                  TargetPlatform.iOS
+                                              ? AppColors.clrPrimary
+                                              : AppColors.clrPrimary,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Get.back(); // close dialog
+                                          Get.toNamed(
+                                            AppRoutes.support,
+                                            arguments: {'showBack': true},
+                                          ); // move to support
+                                        },
+                                        child: Text(
+                                          'Continue',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            SvgPicture.asset(
+                              AssetImages.updatePin,
+                              width: 24.w,
+                            ),
+                          ),
+
                     _buildMenuTile(
                       context,
                       'Bank Details',

@@ -20,7 +20,7 @@ class CashBackController extends GetxController {
   var isLoadingList = false.obs;
 
   var productTypes = <CashBackProductType>[].obs;
-  var selectedProductTypeId = ''.obs;
+  var selectedProductTypeId = '1'.obs;
 
   var cashBackList = <CashBackItem>[].obs;
 
@@ -48,9 +48,12 @@ class CashBackController extends GetxController {
           productTypes.value = data.data!;
           // if we want to auto-load the first product type, we could do it here
           if (productTypes.isNotEmpty) {
-            selectedProductTypeId.value =
-                productTypes.first.id?.toString() ?? "";
-            fetchCashBackList();
+            productTypes.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+            if (selectedProductTypeId.value.isEmpty) {
+              selectedProductTypeId.value =
+                  productTypes.first.id?.toString() ?? "1";
+              fetchCashBackList();
+            }
           }
         }
       },

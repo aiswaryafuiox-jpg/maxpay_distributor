@@ -266,7 +266,7 @@ class AppPages {
       name: AppRoutes.addwallet,
       page: () => const AddWalletScreenMain(),
       binding: BindingsBuilder(
-        () => Get.lazyPut(() => AddWalletController(sl(), sl())),
+        () => Get.lazyPut(() => AddWalletController(sl(), sl(),sl())),
       ),
     ),
     GetPage(name: AppRoutes.veirfypin, page: () => const PinCodeEnterPage()),
@@ -308,7 +308,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.walletBalance,
       binding: BindingsBuilder(
-        () => Get.lazyPut(() => AddWalletController(sl(), sl())),
+        () => Get.lazyPut(() => AddWalletController(sl(), sl(),sl())),
       ),
       page: () => const WalletBalanceScreen(),
     ),

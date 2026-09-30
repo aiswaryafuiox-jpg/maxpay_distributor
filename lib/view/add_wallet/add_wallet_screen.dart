@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
+import 'package:maxpay/controller/bank_controller.dart';
+import 'package:maxpay/data/model/bank_details_model.dart' as bank_model;
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/extensions/currency.dart';
@@ -14,168 +16,6 @@ import 'package:maxpay/view/nav_page/navbar_provider.dart';
 
 import '../../global_widget/commom_button.dart';
 
-// class AddWalletScreen extends StatefulWidget {
-//   const AddWalletScreen({super.key});
-
-//   @override
-//   State<AddWalletScreen> createState() => _AddWalletScreenState();
-// }
-
-// class _AddWalletScreenState extends State<AddWalletScreen> {
-//   final AddWalletController _controller = Get.put(sl<AddWalletController>());
-
-//   final TextEditingController amountController = TextEditingController();
-//   final TextEditingController bankController = TextEditingController();
-//   final TextEditingController utrController = TextEditingController();
-//   final TextEditingController descriptionController = TextEditingController();
-//   final TextEditingController receiptController = TextEditingController();
-
-//   String? paymentType;
-
-//   final List<String> paymentTypes = [
-//     "IMPS",
-//     "Bank Transfer",
-//     "Cash Deposit",
-//     "Others",
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-//     return Scaffold(
-//       backgroundColor: isDark
-//           ? Theme.of(context).scaffoldBackgroundColor
-//           : Colors.white,
-//       appBar: const CommonAppBar(title: "Add Wallet", showBack: false),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16),
-//         child: Column(
-//           children: [
-//             /// Due Amount Card
-// Obx(
-//   () => Container(
-//     width: double.infinity,
-//     padding: const EdgeInsets.symmetric(vertical: 14),
-//     decoration: BoxDecoration(
-//       color: Colors.red,
-//       borderRadius: BorderRadius.circular(10),
-//     ),
-//     child: Column(
-//       children: [
-//         Text(
-//           "Due Amount",
-//           style: TextHelper.max16.copyWith(fontSize: 16),
-//         ),
-//         const SizedBox(height: 4),
-//         _controller.isLoading.value
-//             ? const CircularProgressIndicator(color: Colors.white)
-//             : Text(
-//                 _controller.walletBalance.value.currencyIndian,
-//                 style: TextHelper.lato12.copyWith(fontSize: 18),
-//               ),
-//       ],
-//     ),
-//   ),
-// ),
-
-//             const SizedBox(height: 20),
-
-//             _label("Amount"),
-//             _textField(amountController, "Enter Amount"),
-
-//             const SizedBox(height: 15),
-
-//             _label("Payment Type"),
-//             DropdownButtonFormField<String>(
-//               initialValue: paymentType,
-//               decoration: _decoration("Select"),
-//               dropdownColor: isDark ? const Color(0xff2F3349) : Colors.white,
-//               items: paymentTypes.map((e) {
-//                 return DropdownMenuItem(
-//                   value: e,
-//                   child: Text(
-//                     e,
-//                     style: TextHelper.max2.copyWith(
-//                       color: isDark ? Colors.white : Colors.black,
-//                     ),
-//                   ),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 setState(() {
-//                   paymentType = value;
-//                 });
-//               },
-//             ),
-
-//             const SizedBox(height: 15),
-
-//             _label("Bank Name"),
-//             _textField(bankController, "Enter Bank Name"),
-
-//             const SizedBox(height: 15),
-
-//             _label("UTR No"),
-//             _textField(utrController, "Enter UTR No"),
-
-//             const SizedBox(height: 15),
-
-//             _label("Description"),
-//             _textField(descriptionController, "Write Here", maxLines: 3),
-//             const SizedBox(height: 15),
-//             _label("Receipt"),
-//             _textField(receiptController, "Enter"),
-//             const SizedBox(height: 30),
-//             SizedBox(
-//               width: 170,
-//               child: CommonButton(title: "Submit", onTap: () {}),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _label(String text) {
-//     return Align(
-//       alignment: Alignment.centerLeft,
-//       child: Padding(
-//         padding: const EdgeInsets.only(bottom: 6),
-//         child: Text(text, style: TextHelper.max2),
-//       ),
-//     );
-//   }
-
-//   Widget _textField(
-//     TextEditingController controller,
-//     String hint, {
-//     int maxLines = 1,
-//   }) {
-//     return TextField(
-//       controller: controller,
-//       maxLines: maxLines,
-//       decoration: _decoration(hint),
-//     );
-//   }
-
-//   InputDecoration _decoration(String hint) {
-//     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-//     return InputDecoration(
-//       hintText: hint,
-//       hintStyle: TextHelper.max2.copyWith(color: Colors.grey),
-//       filled: true,
-//       fillColor: isDark ? const Color(0xff2F3349) : const Color(0xffF7F8FA),
-//       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-//       border: OutlineInputBorder(
-//         borderRadius: BorderRadius.circular(10),
-//         borderSide: BorderSide.none,
-//       ),
-//     );
-//   }
-// }
-
 class AddWalletScreen extends StatefulWidget {
   const AddWalletScreen({super.key});
 
@@ -184,10 +24,16 @@ class AddWalletScreen extends StatefulWidget {
 }
 
 class _WalletRequestScreenState extends State<AddWalletScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _bankNameController = TextEditingController();
   final TextEditingController _utrController = TextEditingController();
+  final BankDetailController _bankController = Get.put(
+    sl<BankDetailController>(),
+  );
+  bank_model.Data? _selectedBank;
   final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _receiptController = TextEditingController();
   final AddWalletController _controller = Get.put(sl<AddWalletController>());
   String? _paymentType;
   PlatformFile? _pickedFile;
@@ -204,6 +50,7 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
       if (result != null && result.files.isNotEmpty) {
         setState(() {
           _pickedFile = result.files.first;
+          _receiptController.text = result.files.first.path ?? '';
         });
       }
     } catch (e) {
@@ -217,397 +64,388 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
     _bankNameController.dispose();
     _utrController.dispose();
     _descriptionController.dispose();
+    _receiptController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: CommonAppBar(
-        title: 'Add Wallet',
+        title: 'Wallet Request',
         onBack: () {
           Get.find<NavbarController>().setIndex(0);
         },
       ),
-      body: SafeArea(
+      body: Form(
+        key: _formKey,
         child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.fromLTRB(
-            16.w,
-            0,
-            16.w,
-            MediaQuery.viewInsetsOf(context).bottom + 24.h,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
-              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
                 decoration: BoxDecoration(
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Column(
                   children: [
                     Text(
                       "Due Amount",
-                      style: TextHelper.max16.copyWith(fontSize: 16),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Poppins',
+                      ),
                     ),
-                    const SizedBox(height: 4),
-                    Obx(
-                      () => _controller.isLoading.value
+                    SizedBox(height: 4.h),
+                    Obx(() {
+                      return _controller.isLoading.value
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
                               _controller.walletBalance.value.currencyIndian,
-                              style: TextHelper.lato12.copyWith(fontSize: 18),
-                            ),
-                    ),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                    }),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-              _WalletFieldLabel(label: 'Amount'),
-              _WalletTextField(
+              SizedBox(height: 22.h),
+
+              /// Amount
+              buildLabel(context, "Amount"),
+              buildTextField(
+                context: context,
                 controller: _amountController,
-                hintText: 'Enter Amount',
+                hint: "Enter Amount",
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: 14.h),
+              SizedBox(height: 16.h),
 
-              _WalletFieldLabel(label: 'Payment Type'),
-              _PaymentTypeField(
-                value: _paymentType,
-                onChanged: (value) {
-                  setState(() => _paymentType = value);
-                },
-              ),
-              SizedBox(height: 14.h),
-
-              _WalletFieldLabel(label: 'Bank Name'),
-              _WalletTextField(
-                controller: _bankNameController,
-                hintText: 'Enter Bank Name',
-              ),
-              SizedBox(height: 14.h),
-
-              _WalletFieldLabel(label: 'UTR No'),
-              _WalletTextField(
-                controller: _utrController,
-                hintText: 'Enter UTR No',
-              ),
-              SizedBox(height: 14.h),
-
-              _WalletFieldLabel(label: 'Description'),
-              _WalletTextField(
-                controller: _descriptionController,
-                hintText: 'Write Here',
-                maxLines: 4,
-              ),
-              SizedBox(height: 14.h),
-
-              _WalletFieldLabel(label: 'Upload'),
-              SizedBox(height: 6.h),
-              _UploadBox(pickedFile: _pickedFile, onTap: _pickFile),
-
-              SizedBox(height: 24.h),
-              Center(
-                child: CommonButton(title: 'Submit', onTap: () {}),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _WalletFieldLabel extends StatelessWidget {
-  const _WalletFieldLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 7.h),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.onSurface,
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Poppins',
-        ),
-      ),
-    );
-  }
-}
-
-class _WalletTextField extends StatelessWidget {
-  const _WalletTextField({
-    required this.controller,
-    required this.hintText,
-    this.keyboardType,
-    this.maxLines = 1, // ✅ Added label
-  });
-
-  final TextEditingController controller;
-  final String hintText;
-  final TextInputType? keyboardType;
-
-  final int maxLines;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return SizedBox(
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        style: TextStyle(
-          color: theme.colorScheme.onSurface,
-          fontSize: 14.sp,
-          fontFamily: 'Poppins',
-        ),
-        decoration: InputDecoration(
-          hintText: hintText,
-
-          hintStyle: TextStyle(
-            color: isDark ? AppColors.textclr : const Color(0xFFB8B8B8),
-            fontSize: 14.sp,
-            fontFamily: 'Poppins',
-          ),
-          filled: true,
-          fillColor: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: maxLines == 1 ? 12.w : 12.h,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(
-              color: AppColors.totalborde2.withValues(alpha: 0.5),
-              width: 1.w,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(
-              color: AppColors.totalborde2.withValues(alpha: 0.5),
-              width: 1.w,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: AppColors.clrPrimary, width: 1.w),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PaymentTypeField extends StatelessWidget {
-  const _PaymentTypeField({required this.value, required this.onChanged});
-
-  final String? value;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return SizedBox(
-      height: 52.h,
-      child: DropdownButtonFormField<String>(
-        initialValue: value,
-        icon: Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: isDark ? AppColors.textclr : const Color(0xFFB8B8B8),
-          size: 22.sp,
-        ),
-        dropdownColor: isDark ? AppColors.darkplceholder : Colors.white,
-        style: TextStyle(
-          color: theme.colorScheme.onSurface,
-          fontSize: 14.sp,
-          fontFamily: 'Poppins',
-        ),
-        decoration: InputDecoration(
-          hintText: 'Select',
-          hintStyle: TextStyle(
-            color: isDark ? AppColors.textclr : const Color(0xFFB8B8B8),
-            fontSize: 14.sp,
-            fontFamily: 'Poppins',
-          ),
-          filled: true,
-          fillColor: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
-          contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(
-              color: AppColors.totalborde2.withValues(alpha: 0.5),
-              width: 1.w,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(
-              color: AppColors.totalborde2.withValues(alpha: 0.5),
-              width: 1.w,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: AppColors.clrPrimary, width: 1.w),
-          ),
-        ),
-        items: const [
-          DropdownMenuItem(value: 'UPI', child: Text('UPI')),
-          DropdownMenuItem(
-            value: 'Bank Transfer',
-            child: Text('Bank Transfer'),
-          ),
-          DropdownMenuItem(value: 'Cash Deposit', child: Text('Cash Deposit')),
-        ],
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-class _UploadBox extends StatelessWidget {
-  const _UploadBox({this.pickedFile, required this.onTap});
-
-  final PlatformFile? pickedFile;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: CustomPaint(
-        painter: _DashedBorderPainter(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.12)
-              : const Color(0xFFE4E4E4),
-          radius: 8.r,
-        ),
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          decoration: BoxDecoration(
-            color: isDark ? AppColors.darkplceholder : AppColors.lightbg2,
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (pickedFile != null && pickedFile!.path != null) ...[
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Image.file(
-                    File(pickedFile!.path!),
-                    height: 60.h,
-                    width: 80.w,
-                    fit: BoxFit.cover,
-                  ),
+              /// Payment Type
+              buildLabel(context, "Payment Type"),
+              DropdownButtonFormField<String>(
+                dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                initialValue: _paymentType,
+                decoration: inputDecoration(context, "Select"),
+                style: TextStyle(
+                  color: theme.colorScheme.onSurface,
+                  fontFamily: 'Poppins',
                 ),
-                SizedBox(height: 8.h),
-                Text(
-                  pickedFile!.name,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-              ] else ...[
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  size: 23.sp,
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
                   color: theme.colorScheme.onSurface,
                 ),
-                SizedBox(height: 7.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 22.w),
-                  child: Text(
-                    'Browse and chose the files you want to upload\nfrom your Device',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
-                      fontSize: 12.sp,
-                      height: 1.25,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please select payment type";
+                  }
+                  return null;
+                },
+                items: const [
+                  DropdownMenuItem(value: "received", child: Text("Received")),
+                 
+                  DropdownMenuItem(
+                    value: "UPI Transfer",
+                    child: Text("UPI Transfer"),
+                  ),
+                  DropdownMenuItem(
+                    value: "Stock Exchange",
+                    child: Text("Stock Exchange"),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _paymentType = value;
+                  });
+                },
+              ),
+              SizedBox(height: 16.h),
+
+              /// Bank Name
+              buildLabel(context, "Bank Name"),
+              Obx(() {
+                final banks = _bankController.bankData.value?.data ?? [];
+                return DropdownButtonFormField<bank_model.Data>(
+                  dropdownColor: isDark
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.white,
+                  initialValue: _selectedBank,
+                  decoration: inputDecoration(context, "Select Bank"),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontFamily: 'Poppins',
+                  ),
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  validator: (value) {
+                    if (value == null) {
+                      return "Please select bank";
+                    }
+                    return null;
+                  },
+                  items: banks.map((bank) {
+                    return DropdownMenuItem<bank_model.Data>(
+                      value: bank,
+                      child: Text(bank.bankName ?? ''),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedBank = value;
+                    });
+                  },
+                );
+              }),
+              SizedBox(height: 16.h),
+
+              /// UTR
+              buildLabel(context, "UTR No"),
+              buildTextField(
+                context: context,
+                controller: _utrController,
+                hint: "Enter UTR No",
+              ),
+              SizedBox(height: 16.h),
+
+              /// Description
+              buildLabel(context, "Description"),
+              buildTextField(
+                context: context,
+                controller: _descriptionController,
+                hint: "Write Here",
+                maxLines: 3,
+              ),
+              SizedBox(height: 16.h),
+
+              /// Upload
+              buildLabel(context, "Upload"),
+              GestureDetector(
+                onTap: _pickFile,
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20.h,
+                    horizontal: 20.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1E1E1E)
+                        : const Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(10.r),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: _pickedFile != null && _pickedFile!.path != null
+                      ? Column(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.r),
+                              child: Image.file(
+                                File(_pickedFile!.path!),
+                                height: 160.h,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            SizedBox(height: 10.h),
+                            Text(
+                              "Image Selected",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.green,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            Icon(
+                              Icons.cloud_upload_outlined,
+                              size: 32.sp,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                            SizedBox(height: 12.h),
+                            Text(
+                              "Browse and choose the files you want to upload from your device",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                            SizedBox(height: 18.h),
+                            Container(
+                              width: 36.w,
+                              height: 36.h,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: const Icon(Icons.add, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+              SizedBox(height: 30.h),
+
+              /// Submit Button
+              Center(
+                child: SizedBox(
+                  width: 140.w,
+                  height: 46.h,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // if (!_formKey.currentState!.validate()) {
+                      //   return;
+                      // }
+                      if (_pickedFile == null) {
+                        Get.snackbar(
+                          "Error",
+                          "Please upload receipt image",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
+                      if (_pickedFile == null) {
+                        Get.snackbar(
+                          "Error",
+                          "Please upload Receipt",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
+                      await _controller.createWalletRequest(
+                        amount: _amountController.text.trim(),
+                        paymenttype: _paymentType ?? "",
+                        utrno: _utrController.text.trim(),
+                        bankid: (_selectedBank?.id ?? 1).toString(),
+                        description: _descriptionController.text.trim(),
+                        receipt: _pickedFile!.path!,
+                      );
+
+                      // Optionally pop or clear fields
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1CA3BA),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    ),
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-              ],
-              SizedBox(height: 8.h),
-              Container(
-                width: 30.w,
-                height: 30.w,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF007E63),
-                  borderRadius: BorderRadius.circular(3.r),
-                ),
-                child: Icon(Icons.add, color: Colors.white, size: 20.sp),
               ),
+              SizedBox(height: 20.h),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class _DashedBorderPainter extends CustomPainter {
-  const _DashedBorderPainter({required this.color, required this.radius});
-
-  final Color color;
-  final double radius;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke;
-
-    final rect = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      Radius.circular(radius),
+  /// Label
+  Widget buildLabel(BuildContext context, String text) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 6.h),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 15.sp,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Poppins',
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      ),
     );
-    final path = Path()..addRRect(rect);
-
-    for (final metric in path.computeMetrics()) {
-      double distance = 0;
-      const dashWidth = 5.0;
-      const dashGap = 4.0;
-
-      while (distance < metric.length) {
-        final next = distance + dashWidth;
-        canvas.drawPath(metric.extractPath(distance, next), paint);
-        distance = next + dashGap;
-      }
-    }
   }
 
-  @override
-  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) {
-    return oldDelegate.color != color || oldDelegate.radius != radius;
+  /// TextField
+  Widget buildTextField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required String hint,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+  }) {
+    return TextFormField(
+      controller: controller,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontSize: 15,
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "Please enter this field";
+        }
+        return null;
+      },
+      decoration: inputDecoration(context, hint),
+    );
+  }
+
+  /// Input Decoration
+  InputDecoration inputDecoration(BuildContext context, String hint) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+        fontSize: 14.sp,
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w400,
+      ),
+      filled: true,
+      fillColor: isDark ? AppColors.darkFilterBorder : const Color(0xFFF2F2F2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        borderSide: const BorderSide(color: Color(0xFF1CA3BA)),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+    );
   }
 }

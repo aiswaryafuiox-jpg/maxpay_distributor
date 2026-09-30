@@ -155,7 +155,7 @@ class RetailerRepositoryImpl implements RetailerRepository {
       return Left(DioErrorHandler.handle(e));
     }
   }
-
+  
   @override
   Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
     int id,

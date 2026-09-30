@@ -7,7 +7,6 @@ import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
 import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../controller/login_controller.dart';
 
 class ScreenOtpVerification extends StatefulWidget {
@@ -20,6 +19,10 @@ class ScreenOtpVerification extends StatefulWidget {
 class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
     with WidgetsBindingObserver {
   final TextEditingController _otpController = TextEditingController();
+  final FocusNode otpFocusNode = FocusNode();
+
+  String? _clipboardOtp;
+  Set<String> _pastedOtps = {};
 
   @override
   void initState() {
@@ -31,7 +34,38 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _otpController.dispose();
+    otpFocusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkClipboardForOtp();
+    }
+  }
+
+  Future<void> _checkClipboardForOtp() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      final text = clipboardData?.text;
+
+      if (text != null && text.isNotEmpty) {
+        final regExp = RegExp(r'\b\d{4}\b');
+        final match = regExp.firstMatch(text);
+
+        if (match != null) {
+          final otp = match.group(0);
+          if (otp != null && !_pastedOtps.contains(otp)) {
+            setState(() {
+              _clipboardOtp = otp;
+            });
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Clipboard error: $e");
+    }
   }
 
   void _verifyOtp() {
@@ -57,7 +91,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
             ),
             child: Column(
               children: [
-                /// ðŸ”¹ HEADER / BACK BUTTON
+                /// 🔹 HEADER / BACK BUTTON
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
@@ -89,7 +123,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
                       children: [
                         SizedBox(height: isTablet ? 40.h : 20.h),
 
-                        /// ðŸ”¹ Title
+                        /// 🔹 Title
                         Text(
                           'Verification code',
                           textAlign: TextAlign.center,
@@ -103,9 +137,9 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
 
                         SizedBox(height: 12.h),
 
-                        /// ðŸ”¹ Subtitle
+                        /// 🔹 Subtitle
                         Text(
-                          "Please paste the verification code\nsent to your phone number",
+                          "Please enter the verification code\nsent to your phone number",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Poppins',
@@ -118,14 +152,14 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
 
                         SizedBox(height: 40.h),
 
-                        /// ðŸ”¹ OTP FIELD (Pinput)
+                        /// 🔹 OTP FIELD (Pinput)
                         Pinput(
                           length: 4,
-                          autofocus: false,
-                          toolbarEnabled: true,
-                          enableInteractiveSelection: true,
                           controller: _otpController,
-                          keyboardType: TextInputType.none,
+                          enabled: true,
+                          showCursor: true,
+                          keyboardType: TextInputType.number,
+                          onTap: () => otpFocusNode.requestFocus(),
                           onCompleted: (pin) => _verifyOtp(),
                           mainAxisAlignment: MainAxisAlignment.center,
                           submittedPinTheme: PinTheme(
@@ -178,8 +212,6 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
 
                         SizedBox(height: 20.h),
 
-                        // Dynamic Paste OTP Button
-
                         /// 🔹 Timer
                         ResendTimerWidget(
                           onResend: () {
@@ -187,6 +219,10 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
                             controller.sendOtp();
                           },
                         ),
+
+                        SizedBox(height: 20.h),
+
+                        // 🔹 Paste Button
                       ],
                     ),
                   ),

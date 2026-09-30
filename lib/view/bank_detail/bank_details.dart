@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ionicons/flutter_ionicons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/bank_controller.dart';
+import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -317,7 +319,7 @@ class _CopyIconButton extends StatelessWidget {
         child: SizedBox(
           width: 14,
           height: 14,
-          child: Icon(Ionicons.copy_outline),
+          child: Icon(Ionicons.copy_outline, size: 18),
         ),
       ),
     );
@@ -672,32 +674,32 @@ class _QrPreviewDialogState extends State<QrPreviewDialog> {
               Container(
                 width: double.infinity,
 
-                height: 42,
+                height: 55,
 
                 padding: const EdgeInsets.symmetric(horizontal: 8),
 
-                alignment: Alignment.center,
+                alignment: Alignment.centerLeft,
 
                 color: kHeaderBlue,
 
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-
-                  child: Text(
-                    // FULL ACCOUNT NAME
-                    'Account Name : $fullAccountName',
-
-                    textAlign: TextAlign.center,
-
-                    maxLines: 1,
-
+                child: Text.rich(
+                  TextSpan(
+                    text: 'Account Name: \n',
                     style: const TextStyle(
                       color: Colors.white,
-
-                      fontSize: 14,
-
-                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
                     ),
+                    children: [
+                      TextSpan(
+                        text: fullAccountName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -759,7 +761,7 @@ class _QrPreviewDialogState extends State<QrPreviewDialog> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        child: Icon(Ionicons.share),
+                        child: Icon(Ionicons.share, size: 18),
                       ),
                     ),
                   ),

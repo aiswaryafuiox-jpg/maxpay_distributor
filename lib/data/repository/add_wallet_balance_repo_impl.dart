@@ -29,7 +29,9 @@ class AddWalletBalanceRepoImpl implements AddWalletBalanceRepository {
         );
       }
     } catch (e) {
-      return Left(DioErrorHandler.handle(e));
+      return Left(
+        DioErrorHandler.handle(e, ApiRoutes.distributorWalletBalance),
+      );
     }
   }
 }

@@ -48,6 +48,11 @@ class CustomSnackbar {
   }
 
   static void error(String message, {String? title}) {
+    if (message.trim().toLowerCase() == 'unauthenticated' || 
+        message.trim().toLowerCase() == 'unauthenticated.') {
+      return;
+    }
+
     Get.snackbar(
       title ?? "Error",
       message,

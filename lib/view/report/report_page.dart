@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/theme.dart';
@@ -14,9 +15,12 @@ class ReportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
+    final profileController = Get.find<ProfileController>();
 
     return Obx(() {
       final isDark = themeController.isDarkMode;
+      final isExecutive =
+          profileController.profileData.value?.userType == "executive";
 
       return Container(
         decoration: isDark
@@ -39,7 +43,7 @@ class ReportPage extends StatelessWidget {
                     context,
                     'Online Transaction',
                     () {
-                     // Get.toNamed(AppRoutes.myearning);
+                      // Get.toNamed(AppRoutes.myearning);
                       Get.toNamed(AppRoutes.onlineTransaction);
                     },
                     SvgPicture.asset(AssetImages.earnings, width: 24.w),
@@ -53,30 +57,32 @@ class ReportPage extends StatelessWidget {
                     },
                     SvgPicture.asset(AssetImages.wallet, width: 24.w),
                   ),
-                  _buildMenuTile(
-                    context,
-                    'API Payout Details',
-                    () {
-                      Get.toNamed(AppRoutes.payoutDetails);
-                    },
-                    SvgPicture.asset(AssetImages.refunds, width: 24.w),
-                  ),
-                  _buildMenuTile(
-                    context,
-                    'Payout Request',
-                    () {
-                      Get.toNamed(AppRoutes.payoutRequest);
-                    },
-                    SvgPicture.asset(AssetImages.cashback, width: 24.w),
-                  ),
-                  _buildMenuTile(
-                    context,
-                    'Payment Request ',
-                    () {
-                      Get.toNamed(AppRoutes.paymentRequest);
-                    },
-                    SvgPicture.asset(AssetImages.statements, width: 24.w),
-                  ),
+                  if (isExecutive == false) ...[
+                    _buildMenuTile(
+                      context,
+                      'API Payout Details',
+                      () {
+                        Get.toNamed(AppRoutes.payoutDetails);
+                      },
+                      SvgPicture.asset(AssetImages.refunds, width: 24.w),
+                    ),
+                    _buildMenuTile(
+                      context,
+                      'Payout Request',
+                      () {
+                        Get.toNamed(AppRoutes.payoutRequest);
+                      },
+                      SvgPicture.asset(AssetImages.cashback, width: 24.w),
+                    ),
+                    _buildMenuTile(
+                      context,
+                      'Payment Request ',
+                      () {
+                        Get.toNamed(AppRoutes.paymentRequest);
+                      },
+                      SvgPicture.asset(AssetImages.statements, width: 24.w),
+                    ),
+                  ],
                 ],
               ),
             ),

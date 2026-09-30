@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
+import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
+import 'package:maxpay/controller/login_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
@@ -13,6 +15,7 @@ import 'package:maxpay/view/home/widgets/earnings_chart.dart';
 import 'package:maxpay/view/home/widgets/home_header.dart';
 import 'package:maxpay/view/home/widgets/news_ticker.dart';
 import 'package:maxpay/view/home/widgets/stat_card.dart';
+import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:maxpay/view/transaction_screens/transaction_success_screen.dart';
 
 class HomePageScreen extends StatelessWidget {
@@ -165,6 +168,7 @@ class HomePageScreen extends StatelessWidget {
                                                     AddWalletController(
                                                       sl(),
                                                       sl(),
+                                                      sl(),
                                                     ),
                                                   );
                                             return StatCard(
@@ -219,7 +223,134 @@ class HomePageScreen extends StatelessWidget {
                                           BlinkingZoomCard(
                                             child: StatCard(
                                               onTap: () {
-                                                Get.toNamed(AppRoutes.menu);
+                                                final authController =
+                                                    Get.find<LoginController>();
+                                                if (authController
+                                                        .isPin
+                                                        .value ==
+                                                    1) {
+                                                  final storage =
+                                                      authController.storage;
+                                                  final lastTxTime = storage
+                                                      .getString(
+                                                        "last_transaction_verify_time",
+                                                      );
+                                                  final lastActiveTime = storage
+                                                      .getString(
+                                                        "last_active_time",
+                                                      );
+                                                  final timeToUse =
+                                                      (lastTxTime != null &&
+                                                          lastTxTime.isNotEmpty)
+                                                      ? lastTxTime
+                                                      : lastActiveTime;
+                                                  bool needsPin = false;
+
+                                                  if (timeToUse != null &&
+                                                      timeToUse.isNotEmpty) {
+                                                    final lastTime =
+                                                        DateTime.parse(
+                                                          timeToUse,
+                                                        );
+                                                    final crossed =
+                                                        AppLifecycleController.hasCrossedPinTime(
+                                                          lastTime,
+                                                          DateTime.now(),
+                                                        );
+                                                    if (crossed) {
+                                                      needsPin = true;
+                                                    }
+                                                  } else {
+                                                    needsPin = true;
+                                                  }
+
+                                                  if (needsPin) {
+                                                    Get.toNamed(
+                                                      AppRoutes.enterPin,
+                                                      arguments: {
+                                                        'isFromTransaction':
+                                                            true,
+                                                      },
+                                                    );
+                                                  } else {
+                                                    Get.toNamed(AppRoutes.menu);
+                                                  }
+                                                } else {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                15.r,
+                                                              ),
+                                                        ),
+                                                        title: Text(
+                                                          'M Pin Not Created',
+                                                          style: TextStyle(
+                                                            fontSize: 18.sp,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        content: Text(
+                                                          'Please set a M Pin to continue to transactions.',
+                                                          style: TextStyle(
+                                                            fontSize: 14.sp,
+                                                          ),
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Get.back();
+                                                            },
+                                                            child: Text(
+                                                              'Cancel',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontSize: 16.sp,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              backgroundColor:
+                                                                  AppColors
+                                                                      .clrPrimary,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      8.r,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+                                                              Get.back();
+                                                              Get.toNamed(
+                                                                AppRoutes
+                                                                    .pinCodeCreation,
+                                                                arguments: {
+                                                                  'isFromTransaction':
+                                                                      true,
+                                                                },
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              'Set M Pin',
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 16.sp,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                }
                                               },
                                               title: 'Transfer & Details',
                                               titletextStyle: TextStyle(

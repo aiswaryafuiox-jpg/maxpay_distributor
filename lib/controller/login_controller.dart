@@ -137,11 +137,8 @@ class LoginController extends GetxController {
           isPin.value = response.data!.isPin ?? 0;
           isFingerPrint.value = response.data!.isFingerPrint ?? 0;
 
-          if (isPin.value == 1) {
-            Get.toNamed(AppRoutes.enterPin);
-          } else {
-            Get.toNamed(AppRoutes.pinCodeCreation);
-          }
+          await Get.find<ProfileController>().fetchProfile();
+          Get.offAllNamed(AppRoutes.main);
         } else {
           CustomToast.error(response.message ?? "Invalid OTP");
         }
@@ -169,7 +166,8 @@ class LoginController extends GetxController {
 
           isPin.value = 1;
 
-          Get.toNamed(AppRoutes.successScreen);
+          await Get.find<ProfileController>().fetchProfile();
+          Get.offAllNamed(AppRoutes.main);
         } else {
           CustomToast.error(response.message ?? "Failed to create PIN");
         }

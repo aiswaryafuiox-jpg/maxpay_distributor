@@ -45,6 +45,8 @@ class BannerController extends GetxController {
       },
       (data) {
         bannerData.value = data;
+        bannerData.refresh();
+        currentIndex.value = 0;
         isLoading.value = false;
 
         startAutoSlide();
@@ -61,6 +63,8 @@ class BannerController extends GetxController {
       },
       (data) {
         advdata.value = data;
+        advdata.refresh();
+        currentAdvIndex.value = 0;
       },
     );
   }

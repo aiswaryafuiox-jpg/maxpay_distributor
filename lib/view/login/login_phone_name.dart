@@ -9,6 +9,7 @@ import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:maxpay/core/utils/responsive.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import '../../controller/login_controller.dart';
@@ -55,6 +56,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                           ? AssetImages.splashLogoDark
                           : AssetImages.splashLogo,
                       width: 200.w,
+                      height: 200.h,
                     ),
                   ),
                   SizedBox(height: 30.h),

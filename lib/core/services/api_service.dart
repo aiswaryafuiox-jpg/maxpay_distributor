@@ -155,9 +155,7 @@ class ApiService {
       // API ERROR
       // ==========================================================
 
-      final message = e.response?.data is Map
-          ? e.response?.data['message']?.toString()
-          : null;
+      final message = e.response?.data is Map ? e.response?.data : null;
 
       log(
         "DioException: "
@@ -165,7 +163,8 @@ class ApiService {
         "${message ?? e.type}",
       );
 
-      throw AppException(message ?? "Something went wrong");
+      // Rethrow the DioException so DioErrorHandler.handle can parse the response natively.
+      rethrow;
     } catch (e) {
       log("UNKNOWN ERROR => $e");
       throw AppException("Unexpected error occurred");

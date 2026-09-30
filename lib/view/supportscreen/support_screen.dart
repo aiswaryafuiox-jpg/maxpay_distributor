@@ -11,6 +11,7 @@ import 'package:maxpay/controller/support_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../nav_page/navbar_provider.dart';
+import 'package:maxpay/core/utils/theme.dart';
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
@@ -18,7 +19,11 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final themeController = Get.isRegistered<ThemeController>()
+        ? Get.find<ThemeController>()
+        : Get.put(ThemeController(Get.find()));
+
+    final isDark = themeController.isDarkMode;
     final supportController = Get.put(sl<SupportController>());
 
     return Scaffold(

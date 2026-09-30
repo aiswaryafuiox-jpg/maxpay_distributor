@@ -1,32 +1,51 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/data/model/create_qr_response_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:screen_protector/screen_protector.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 
-class AddWalletPopup extends StatelessWidget {
-  final String amount;
-  final String url;
-  final String? phonepeLink;
-  final String? gpayLink;
-  final String txtionId;
+class AddWalletPopup extends StatefulWidget {
+  final Ekqr? ekqrData;
+  final Worldline? bankData;
 
   const AddWalletPopup({
     super.key,
-    required this.amount,
-    required this.url,
-    required this.txtionId,
-    required this.phonepeLink,
-    this.gpayLink,
+    required this.ekqrData,
+    required this.bankData,
   });
 
   @override
+  State<AddWalletPopup> createState() => _AddWalletPopupState();
+}
+
+class _AddWalletPopupState extends State<AddWalletPopup> {
+  @override
+  void initState() {
+    super.initState();
+    _disableScreenshot();
+  }
+
+  Future<void> _disableScreenshot() async {
+    await ScreenProtector.preventScreenshotOn();
+  }
+
+  @override
+  void dispose() {
+    ScreenProtector.preventScreenshotOff();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ekqrData = widget.ekqrData;
+    final bankData = widget.bankData;
     final theme = Theme.of(context);
 
     final isDark = theme.brightness == Brightness.dark;
@@ -88,12 +107,7 @@ class AddWalletPopup extends StatelessWidget {
               // ----------------------------------------------------------
               // QR CODE
               // ----------------------------------------------------------
-              GestureDetector(
-                onTap: () async {
-                  // Allow user to tap QR itself
-                  // and open the UPI payment app.
-                  await openUpiPayment(url);
-                },
+              AbsorbPointer(
                 child: Container(
                   width: 220,
                   height: 220,
@@ -105,7 +119,7 @@ class AddWalletPopup extends StatelessWidget {
                   ),
                   child: Center(
                     child: QrImageView(
-                      data: url,
+                      data: ekqrData?.upiLink ?? '',
                       version: QrVersions.auto,
                       size: 210,
                       backgroundColor: Colors.white,
@@ -167,7 +181,7 @@ class AddWalletPopup extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        amount.currencyIndian,
+                        ekqrData?.amount?.currencyIndian ?? "0.00",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -204,129 +218,56 @@ class AddWalletPopup extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 12,
-                          height: 12,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Checking payment status...",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: isDark ? Colors.grey[400] : Colors.grey[600],
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 );
               }),
-
               const SizedBox(height: 20),
 
               // ----------------------------------------------------------
               // NOTE
               // ----------------------------------------------------------
-              const Text(
-                "Scan this QR code using "
-                "PhonePe, Google Pay or any UPI app.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.clrPrimary.withValues(alpha: .5),
+                  surfaceTintColor: AppColors.clrPrimary.withValues(alpha: .5),
+                  foregroundColor: Colors.black,
+                  side: BorderSide(color: Colors.white, style: .solid),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  // shadowColor: Colors.white,
+                  elevation: 5,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+                onPressed: () async {
+                  final controller = Get.find<AddWalletController>();
+                  if (bankData != null) {
+                    controller.startWorldlinePayment(bankData);
+                  }
+                },
+                label: Text(
+                  "Pay With UPI",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.background,
+                    fontSize: 16,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+                iconAlignment: .end,
+                icon: CachedNetworkImage(
+                  imageUrl:
+                      'https://images.icon-icons.com/2699/PNG/512/upi_logo_icon_170312.png',
+                  height: 24,
+                  // errorBuilder: (context, error, stackTrace) =>
+                  //     const Icon(Ionicons.logo_paypal, size: 24),
                 ),
               ),
 
-              const SizedBox(height: 16),
-
-              // ----------------------------------------------------------
-              // UPI BUTTONS (Currently hidden)
-              // ----------------------------------------------------------
-              /*
-              Row(
-                children: [
-                  // GPay
-                  if (gpayLink != null && gpayLink!.trim().isNotEmpty)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () async {
-                        final controller = Get.find<AddWalletController>();
-
-                        final gpayUrl = controller.buildWorkingUpiUrl(
-                          paymentLink: gpayLink!,
-                          amount: amount,
-                        );
-
-                        if (gpayUrl.isEmpty) {
-                          CustomToast.error("Invalid GPay payment link");
-                          return;
-                        }
-
-                        await controller.openSpecificUpiApp(
-                          packageName: "com.google.android.apps.nbu.paisa.user",
-                          url: gpayUrl,
-                        );
-                      },
-                      child: Image.asset(
-                        'assets/images/gpay.png',
-                        height: 24,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.payment, size: 24),
-                      ),
-                    ),
-
-                  if (gpayLink != null &&
-                      gpayLink!.trim().isNotEmpty &&
-                      phonepeLink != null &&
-                      phonepeLink!.trim().isNotEmpty)
-                    const SizedBox(width: 12),
-
-                  // PhonePe
-                  if (phonepeLink != null && phonepeLink!.trim().isNotEmpty)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF5F259F),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {
-                        Get.find<AddWalletController>().openSpecificUpiApp(
-                          packageName: "com.phonepe.app",
-                          url: phonepeLink!,
-                        );
-                      },
-                      child: Image.asset(
-                        'assets/images/phonepe.png',
-                        height: 24,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(
-                              Icons.account_balance_wallet,
-                              size: 24,
-                              color: Colors.white,
-                            ),
-                      ),
-                    ),
-                ],
-              ),
-              */
               const SizedBox(height: 10),
             ],
           ),

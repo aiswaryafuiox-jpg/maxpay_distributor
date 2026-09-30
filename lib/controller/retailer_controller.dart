@@ -61,6 +61,7 @@ class RetailerController extends GetxController {
   void onInit() {
     super.onInit();
     fetchRetailers();
+    fetchCommissionPackages();
     debounce(
       searchQuery,
       (_) => fetchRetailers(isRefresh: true),
@@ -275,7 +276,9 @@ class RetailerController extends GetxController {
           isRefresh: true,
         ); // Refresh the list to reflect new balances
         Get.back(); // Go back from Add Wallet screen
-        CustomSnackbar.success(data.message ?? "Wallet transferred successfully");
+        CustomSnackbar.success(
+          data.message ?? "Wallet transferred successfully",
+        );
       },
     );
   }

@@ -42,6 +42,7 @@ class RetailerDetailData {
   String? address;
   String? gstNo;
   String? pincode;
+  String? executiveId;
   String? executiveName;
   num? walletBalance;
   num? dueAmount;
@@ -68,6 +69,7 @@ class RetailerDetailData {
     this.executiveName,
     this.walletBalance,
     this.dueAmount,
+    this.executiveId,
     this.registrationCharge,
     this.lowWalletAmount,
     this.packageName,
@@ -101,6 +103,7 @@ class RetailerDetailData {
     createdAt = json['created_at'];
     status = json['status'];
     isActive = json['is_active'];
+    executiveId = json['executive_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -126,6 +129,7 @@ class RetailerDetailData {
     data['created_at'] = createdAt;
     data['status'] = status;
     data['is_active'] = isActive;
+    data['executive_id'] = executiveId;
     return data;
   }
 }

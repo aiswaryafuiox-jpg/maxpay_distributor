@@ -207,7 +207,6 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -239,7 +238,7 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
               /// PIN INPUT (Pinput)
               Center(
                 child: Pinput(
-                  length: 4,
+                  length: 6,
                   controller: _pinController,
                   focusNode: _focusNode,
                   autofocus: true,
@@ -336,13 +335,13 @@ class _PinCodeCreationPageState extends State<PinCodeCreationPage> {
                         // Close keyboard
                         FocusScope.of(context).unfocus();
 
-                        if (_pinController.text.length == 4) {
+                        if (_pinController.text.length == 6) {
                           final controller = Get.find<LoginController>();
                           controller.createPin(_pinController.text);
                         } else {
                           Get.snackbar(
                             "Error",
-                            "Please enter a valid 4-digit PIN",
+                            "Please enter a valid 6-digit PIN",
                           );
                         }
                       },

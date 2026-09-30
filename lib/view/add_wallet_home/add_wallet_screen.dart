@@ -14,7 +14,6 @@ import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/add_wallet_home/widge/add_wallet_widget.dart';
-import 'package:weipl_checkout_flutter/weipl_checkout_flutter.dart';
 
 class AddWalletScreenMain extends GetView<AddWalletController> {
   const AddWalletScreenMain({super.key});
@@ -23,192 +22,196 @@ class AddWalletScreenMain extends GetView<AddWalletController> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final WeiplCheckoutFlutter _wlchekc = WeiplCheckoutFlutter();
+
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: const CommonAppBar(title: "Add Wallet"),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ----------------------------------------------------------
-              // IMAGE
-              // ----------------------------------------------------------
-              Container(
-                height: 240.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      offset: Offset.zero,
-                      blurRadius: 1,
+        child: RefreshIndicator(
+          onRefresh: () => controller.getWalletHistory(),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ----------------------------------------------------------
+                // IMAGE
+                // ----------------------------------------------------------
+                Container(
+                  height: 240.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        offset: Offset.zero,
+                        blurRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      AssetImages.addwallet,
+                      fit: BoxFit.fitHeight,
                     ),
-                  ],
-                ),
-                child: Center(
-                  child: Image.asset(
-                    AssetImages.addwallet,
-                    fit: BoxFit.fitHeight,
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // ----------------------------------------------------------
-              // AMOUNT TITLE
-              // ----------------------------------------------------------
-              Text(
-                "Amount",
-                style: TextHelper.max9(context).copyWith(fontFamily: 'Poppins'),
-              ),
-
-              const SizedBox(height: 8),
-
-              TextFormField(
-                controller: controller.amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+                // ----------------------------------------------------------
+                // AMOUNT TITLE
+                // ----------------------------------------------------------
+                Text(
+                  "Amount",
+                  style: TextHelper.max9(
+                    context,
+                  ).copyWith(fontFamily: 'Poppins'),
                 ),
-                style: TextStyle(color: colorScheme.onSurface),
-                decoration: InputDecoration(
-                  hintText: "Enter Amount",
 
-                  prefixIcon: SizedBox(
-                    width: 40,
-                    child: Center(
-                      child: Text(
-                        "₹",
-                        style: TextHelper.max9(
-                          context,
-                        ).copyWith(fontSize: 25, fontWeight: FontWeight.w500),
+                const SizedBox(height: 8),
+
+                TextFormField(
+                  controller: controller.amountController,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  style: TextStyle(color: colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: "Enter Amount",
+
+                    prefixIcon: SizedBox(
+                      width: 40,
+                      child: Center(
+                        child: Text(
+                          "₹",
+                          style: TextHelper.max9(
+                            context,
+                          ).copyWith(fontSize: 25, fontWeight: FontWeight.w500),
+                        ),
                       ),
                     ),
-                  ),
 
-                  hintStyle: TextStyle(
-                    color: theme.colorScheme.onTertiaryFixedVariant,
-                    fontFamily: 'Poppins',
-                    fontSize: 14.sp,
-                  ),
+                    hintStyle: TextStyle(
+                      color: theme.colorScheme.onTertiaryFixedVariant,
+                      fontFamily: 'Poppins',
+                      fontSize: 14.sp,
+                    ),
 
-                  filled: true,
+                    filled: true,
 
-                  fillColor: theme.brightness == Brightness.dark
-                      ? AppColors.darkplceholder
-                      : AppColors.background,
+                    fillColor: theme.brightness == Brightness.dark
+                        ? AppColors.darkplceholder
+                        : AppColors.background,
 
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 14,
-                  ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 14,
+                    ),
 
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
 
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
 
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 18),
+                const SizedBox(height: 18),
 
-              Center(
-                child: CommonButton(
-                  title: "Submit",
-                  onTap: () async {
-                    final amount = controller.amountController.text.trim();
+                Center(
+                  child: CommonButton(
+                    title: "Submit",
+                    onTap: () async {
+                      final amount = controller.amountController.text.trim();
 
-                    if (amount.isEmpty) {
-                      Get.snackbar(
-                        "Alert",
-                        "Please Enter Amount",
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
+                      if (amount.isEmpty) {
+                        Get.snackbar(
+                          "Alert",
+                          "Please Enter Amount",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
 
-                    final parsedAmount = double.tryParse(amount);
+                      final parsedAmount = double.tryParse(amount);
 
-                    if (parsedAmount == null || parsedAmount <= 0) {
-                      Get.snackbar(
-                        "Alert",
-                        "Please Enter a Valid Amount",
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                      return;
-                    }
+                      if (parsedAmount == null || parsedAmount <= 0) {
+                        Get.snackbar(
+                          "Alert",
+                          "Please Enter a Valid Amount",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
 
-                    await controller.createQr(amount);
-                  },
+                      await controller.createQr(amount);
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 28),
+                const SizedBox(height: 28),
 
-              // ----------------------------------------------------------
-              // RECENT TRANSACTIONS
-              // ----------------------------------------------------------
-              Text(
-                "Recent Transactions",
-                style: TextHelper.max10(
-                  context,
-                ).copyWith(fontFamily: 'Poppins'),
-              ),
+                // ----------------------------------------------------------
+                // RECENT TRANSACTIONS
+                // ----------------------------------------------------------
+                Text(
+                  "Recent Transactions",
+                  style: TextHelper.max10(
+                    context,
+                  ).copyWith(fontFamily: 'Poppins'),
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                if (controller.walletQrHistory.value.data?.list?.isEmpty ??
-                    true) {
-                  return const Center(child: Text("No Transactions"));
-                }
+                  if (controller.walletQrHistory.value.data?.list?.isEmpty ??
+                      true) {
+                    return const Center(child: Text("No Transactions"));
+                  }
 
-                return Column(
-                  children: [
-                    ...(controller.walletQrHistory.value.data?.list ?? []).map((
-                      e,
-                    ) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: transactionCard(
-                          context: context,
-                          txnId: e.transactionId ?? '',
-                          dateTime: e.dateTime ?? '',
-                          status: e.status?.capitalize ?? '',
-                          statusColor: e.status == 'pending'
-                              ? Colors.orange
-                              : e.status == 'failed'
-                              ? Colors.red
-                              : Colors.green,
-                          amount: e.amount?.toString() ?? '',
-                        ),
-                      );
-                    }),
-                  ],
-                );
-              }),
-            ],
+                  return Column(
+                    children: [
+                      ...(controller.walletQrHistory.value.data?.list ?? [])
+                          .map((e) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: transactionCard(
+                                context: context,
+                                txnId: e.transactionId ?? '',
+                                dateTime: e.dateTime ?? '',
+                                status: e.status?.capitalize ?? '',
+                                statusColor: e.status == 'pending'
+                                    ? Colors.orange
+                                    : e.status == 'failed'
+                                    ? Colors.red
+                                    : Colors.green,
+                                amount: e.amount?.toString() ?? '',
+                              ),
+                            );
+                          }),
+                    ],
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),

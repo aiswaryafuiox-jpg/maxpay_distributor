@@ -93,7 +93,7 @@ class UpdatePinController extends GetxController {
       return;
     }
 
-    if (newPin.length != 4 || confirmPin.length != 4) {
+    if (newPin.length != 6 || confirmPin.length != 6) {
       CustomSnackbar.error("M-PIN must be exactly 4 digits");
       return;
     }

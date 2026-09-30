@@ -22,12 +22,11 @@ class CreateQrRepoImpl implements CreateQrRepository {
         data: {'amount': amount},
       );
       final modelResponse = CreateQrResponseModel.fromJson(response);
-      if (modelResponse.code == 200) {
+      if (modelResponse.success ?? false) {
         return Right(modelResponse);
       } else {
-        return Left(
-          ServerFailure(modelResponse.message ?? 'Failed to create QR'),
-        );
+        String errorMsg = parseValidationError(response);
+        return Left(ServerFailure(errorMsg));
       }
     } catch (e) {
       return Left(DioErrorHandler.handle(e));
@@ -41,11 +40,9 @@ class CreateQrRepoImpl implements CreateQrRepository {
         ApiRoutes.distributorCheckAddWalletQrStatus,
         data: {'txn_id': txnId},
       );
-      if (response['code'] == 200) {
+      if (response['success'] == true && response['code'] == 200) {
         final status =
-            response['data']?['status']?.toString() ??
-            response['status']?.toString() ??
-            'pending';
+            response['data']?['status']?.toString().toLowerCase() ?? 'pending';
         return Right(status);
       } else {
         return Left(
@@ -72,4 +69,32 @@ class CreateQrRepoImpl implements CreateQrRepository {
     //   return Left(DioErrorHandler.handle(e));
     // }
   }
+}
+
+String parseValidationError(Map<String, dynamic> responseData) {
+  String finalMessage = responseData["message"]?.toString() ?? "Server error occurred.";
+
+  if (responseData["errors"] != null && responseData["errors"] is Map) {
+    final errorsMap = responseData["errors"] as Map;
+    final List<String> errorMessages = [];
+    
+    // Iterate through each field's error list in the "errors" map
+    for (var value in errorsMap.values) {
+      if (value is List) {
+        for (var e in value) {
+          errorMessages.add(e.toString());
+        }
+      } else {
+        errorMessages.add(value.toString());
+      }
+    }
+
+    if (errorMessages.isNotEmpty) {
+      // Joins all error lines, resulting in:
+      // "The address field is required.\nThe selected commission package is invalid."
+      finalMessage = errorMessages.join('\n');
+    }
+  }
+
+  return finalMessage;
 }

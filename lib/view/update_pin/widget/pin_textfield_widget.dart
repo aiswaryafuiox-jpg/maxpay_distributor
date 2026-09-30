@@ -19,7 +19,7 @@ class PinTextFieldWidget extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.number,
-      maxLength: 4,
+      maxLength: 6,
       style: TextHelper.max1,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       decoration: InputDecoration(

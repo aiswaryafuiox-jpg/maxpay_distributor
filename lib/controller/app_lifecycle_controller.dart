@@ -6,8 +6,6 @@ import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/sim_util.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLifecycleController extends GetxController
@@ -24,6 +22,11 @@ class AppLifecycleController extends GetxController
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
+  }
+
+  /// Returns true if the app has been inactive for at least 1 minute
+  static bool hasCrossedPinTime(DateTime lastActive, DateTime current) {
+    return current.difference(lastActive).inMinutes >= 1;
   }
 
   /// Returns true if the time interval between [lastActive] and [current]
@@ -65,10 +68,7 @@ class AppLifecycleController extends GetxController
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
       // Save last active time when the app goes into the background
-      await prefs.setString(
-        _keyLastActive,
-        DateTime.now().toIso8601String(),
-      );
+      await prefs.setString(_keyLastActive, DateTime.now().toIso8601String());
       AppLogger.logError(
         "Saved last active time: ${DateTime.now().toIso8601String()}",
       );
@@ -77,19 +77,26 @@ class AppLifecycleController extends GetxController
       final loggedInPhone = prefs.getString("logged_in_phone");
 
       // 1. Verify SIM binding if user is logged in
-      if (token != null && token.isNotEmpty && loggedInPhone != null && loggedInPhone.isNotEmpty) {
+      if (token != null &&
+          token.isNotEmpty &&
+          loggedInPhone != null &&
+          loggedInPhone.isNotEmpty) {
         final bool isSimValid = await SimUtil.verifySimPresent(loggedInPhone);
         if (!isSimValid) {
-          AppLogger.logError("SIM Binding Failed on Resume. Calling backend logout API and clearing data.");
-          CustomToast.error("The already logged number doesn't exist in device");
-          
+          AppLogger.logError(
+            "SIM Binding Failed on Resume. Calling backend logout API and clearing data.",
+          );
+          CustomToast.error(
+            "The already logged number doesn't exist in device",
+          );
+
           if (Get.isRegistered<LoginController>()) {
             await Get.find<LoginController>().forceLogout();
           } else {
             await prefs.clear();
             Get.offAllNamed(AppRoutes.intro);
           }
-          return; // Stop further checks
+          return;
         }
       }
 
@@ -99,21 +106,36 @@ class AppLifecycleController extends GetxController
         if (lastActiveStr != null) {
           final lastActive = DateTime.tryParse(lastActiveStr);
           if (lastActive != null) {
-            final crossed = hasCrossedLogoutTime(lastActive, DateTime.now());
+            final now = DateTime.now();
+            final crossedLogout = hasCrossedLogoutTime(lastActive, now);
+            final crossedPin = hasCrossedPinTime(lastActive, now);
             AppLogger.logError(
-              "App resumed. Last active: $lastActive, Current: ${DateTime.now()}. Crossed boundary: $crossed",
+              "App resumed. Last active: $lastActive, Current: $now. Crossed logout boundary: $crossedLogout, Crossed pin boundary: $crossedPin",
             );
 
-            if (crossed) {
+            if (crossedLogout) {
               AppLogger.logError(
                 "Logout boundary crossed. Automatically logging out.",
               );
-              
+
               if (Get.isRegistered<LoginController>()) {
                 await Get.find<LoginController>().forceLogout();
               } else {
                 await prefs.remove("token");
                 Get.offAllNamed(AppRoutes.loginPhoneName);
+              }
+            } else if (crossedPin) {
+              AppLogger.logError(
+                "Pin timeout crossed. Showing Enter Pin screen.",
+              );
+              final authController = Get.isRegistered<LoginController>()
+                  ? Get.find<LoginController>()
+                  : null;
+              if (authController != null && authController.isPin.value == 1) {
+                if (Get.currentRoute != AppRoutes.enterPin &&
+                    Get.currentRoute != AppRoutes.veirfypin) {
+                  Get.toNamed(AppRoutes.enterPin);
+                }
               }
             }
           }

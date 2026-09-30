@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/login_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
@@ -149,28 +148,7 @@ class _MainSplashScreenState extends State<MainSplashScreen>
 
     /// Old User -> PIN Created
     if (isPin == 1) {
-      final lastActiveStr = storage.getString("last_active_time");
-      if (lastActiveStr != null) {
-        final lastActive = DateTime.tryParse(lastActiveStr);
-        if (lastActive != null) {
-          if (!AppLifecycleController.hasCrossedLogoutTime(
-            lastActive,
-            DateTime.now(),
-          )) {
-            AppLogger.logError(
-              "Cold start: did not cross logout boundaries. Navigating straight to home.",
-            );
-            Get.offAllNamed(AppRoutes.main);
-            return;
-          }
-        }
-      }
-
-      if (isFingerPrint == 1) {
-        Get.offAllNamed(AppRoutes.veirfypin);
-      } else {
-        Get.offAllNamed(AppRoutes.enterPin);
-      }
+      Get.offAllNamed(AppRoutes.main);
       return;
     }
 
