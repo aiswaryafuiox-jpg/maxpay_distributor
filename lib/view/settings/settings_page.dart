@@ -446,7 +446,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _buildMenuTile(
                       context,
-                      'Rating & Review',
+                      'update & Review',
                       () {
                         //Get.toNamed(AppRoutes.profile);
                       },

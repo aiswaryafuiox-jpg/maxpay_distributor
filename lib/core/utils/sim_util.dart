@@ -4,10 +4,10 @@ class SimUtil {
     '9751222553',
     '9876541302',
     '6369497195',
+    '9361663531',
   ];
 
   /// Verifies if the [registeredPhone] is currently present in the device's SIM slots.
-  /// Uses the new custom MethodChannel 'sim_verification' implemented in MainActivity.kt
   static Future<bool> verifySimPresent(
     String registeredPhone, {
     bool showToasts = false,
