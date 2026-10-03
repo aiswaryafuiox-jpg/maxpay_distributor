@@ -1,34 +1,27 @@
+import 'package:flutter/foundation.dart' as foundation;
 import 'dart:convert';
 import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
-
 
 class AppLogger {
   static String _formatValue(dynamic value) {
     if (value is Map || value is List) {
       try {
         return const JsonEncoder.withIndent('  ').convert(value);
-      } catch (e) {
+      } catch (_) {
         return value.toString();
       }
-    } else if (value is String) {
-      return value;
-    } else if (value is num) {
-      return value.toString();
-    } else {
-      return value.toString();
     }
+    return value.toString();
   }
 
   static void debugPrint(dynamic value) {
-    if (kDebugMode) {
-      debugPrint(_formatValue(value));
+    if (foundation.kDebugMode) {
+      foundation.debugPrint(_formatValue(value));
     }
   }
 
   static void logError(dynamic value) {
-    if (kDebugMode) {
+    if (foundation.kDebugMode) {
       log(_formatValue(value));
     }
   }

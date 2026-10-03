@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:get/get.dart';
 import '../../../controller/executive_controller.dart';
@@ -151,7 +153,7 @@ class _ExeAddWalletScreenState extends State<ExeAddWalletScreen> {
                     buildLabel("Last Transfer Date & Time", isDark),
                     SizedBox(height: 8.h),
                     TextFormField(
-                      initialValue: details.lastTransferDateTime ?? "-",
+                      initialValue: formatTransactionDate(details.lastTransferDateTime ?? "-"),
                       readOnly: true,
                       decoration: fieldDecoration(context, "", isDark),
                     ),
@@ -199,6 +201,7 @@ class _ExeAddWalletScreenState extends State<ExeAddWalletScreen> {
                           snackPosition: SnackPosition.BOTTOM,
                         );
                       }
+                      Get.find<AddWalletController>().fetchWalletBalance();
                     },
                   ),
                 ),

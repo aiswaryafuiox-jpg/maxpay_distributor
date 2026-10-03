@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 
 import 'package:get/get.dart';
@@ -108,11 +111,15 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final profileController = Get.find<ProfileController>();
+    final retailerController = Get.put(sl<RetailerController>());
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: const CommonAppBar(title: "View Details"),
       body: Obx(() {
+        final isExecutive =
+            profileController.profileData.value?.userType == "executive";
         if (_controller.isDetailLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -245,14 +252,16 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
               SizedBox(height: 14.h),
 
-              buildLabel("Due Amount", isDark, context),
-              buildField(
-                context,
-                 (detail.dueAmount ?? 0.00).currencyIndian,
-                valueColor: Colors.red,
-                isDigitsOnly: true,
-                readOnly: true,
-              ),
+              if (isExecutive == false) ...[
+                buildLabel("Due Amount", isDark, context),
+                buildField(
+                  context,
+                  (detail.dueAmount ?? 0.00).currencyIndian,
+                  valueColor: Colors.red,
+                  isDigitsOnly: true,
+                  readOnly: true,
+                ),
+              ],
 
               SizedBox(height: 14.h),
 
@@ -269,7 +278,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
               SizedBox(height: 14.h),
 
-              buildLabel("Live Wallet Amount", isDark, context),
+              buildLabel("Low Wallet Amount", isDark, context),
               buildField(
                 context,
                 "${detail.lowWalletAmount ?? 0}",
@@ -288,11 +297,17 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               SizedBox(height: 6.h),
 
               DropdownButtonFormField<String>(
-                initialValue:
-                    selectedPackage ??
-                    (["Silver", "Gold"].contains(detail.packageName)
-                        ? detail.packageName
-                        : "Silver"),
+                initialValue: () {
+                  final packages = retailerController.commissionPackages
+                      .map((e) => e.packageName)
+                      .where((e) => e != null)
+                      .toSet();
+                  String? val = selectedPackage ?? detail.packageName;
+                  if (packages.contains(val)) return val;
+                  if (packages.contains(val?.toLowerCase()))
+                    return val?.toLowerCase();
+                  return null;
+                }(),
                 style: TextStyle(
                   fontSize: 14.sp, // Selected value font size
                   color: Theme.of(context).colorScheme.onSurface,
@@ -329,10 +344,14 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                     borderSide: BorderSide(color: AppColors.clrPrimary),
                   ),
                 ),
-                items: const [
-                  DropdownMenuItem(value: "Silver", child: Text("Silver")),
-                  DropdownMenuItem(value: "Gold", child: Text("Gold")),
-                ],
+                items: retailerController.commissionPackages
+                    .map((e) => e.packageName)
+                    .where((e) => e != null)
+                    .toSet()
+                    .map(
+                      (e) => DropdownMenuItem(value: e, child: Text(e ?? "")),
+                    )
+                    .toList(),
                 onChanged: (val) {
                   setState(() {
                     selectedPackage = val;
@@ -350,9 +369,9 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               DropdownButtonFormField<String>(
                 initialValue:
                     selectedAutoTransfer ??
-                    (["Auto", "Manual"].contains(detail.autoTransfer)
+                    (["Active", "Inactive"].contains(detail.autoTransfer)
                         ? detail.autoTransfer
-                        : "Auto"),
+                        : "Active"),
                 style: TextStyle(
                   fontSize: 14.sp, // Selected value font size
                   color: Theme.of(context).colorScheme.onSurface,
@@ -378,8 +397,8 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                   ),
                 ),
                 items: const [
-                  DropdownMenuItem(value: "Auto", child: Text("Auto")),
-                  DropdownMenuItem(value: "Manual", child: Text("Manual")),
+                  DropdownMenuItem(value: "Active", child: Text("Active")),
+                  DropdownMenuItem(value: "Inactive", child: Text("Inactive")),
                 ],
                 onChanged: (val) {
                   setState(() {
@@ -528,8 +547,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                                     editedFields['pincode'] ??
                                     detail.pincode?.toString() ??
                                     "",
-                                executiveId:
-                                    "1", // Hardcoded fallback or empty string
+                                executiveid: detail.executiveId?.toString(),
                                 registrationCharge:
                                     editedFields['registrationCharge'] ??
                                     detail.registrationCharge?.toString() ??
@@ -551,11 +569,11 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                                 autoTransfer:
                                     selectedAutoTransfer ??
                                     ([
-                                          "Auto",
-                                          "Manual",
+                                          "Active",
+                                          "Inactive",
                                         ].contains(detail.autoTransfer)
-                                        ? detail.autoTransfer ?? "Auto"
-                                        : "Auto"),
+                                        ? detail.autoTransfer ?? "Active"
+                                        : "Active"),
                                 status:
                                     selectedStatus ??
                                     ([

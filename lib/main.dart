@@ -12,6 +12,7 @@ import 'core/constants/routes_path.dart';
 import 'core/di/service_locator.dart' as di;
 import 'core/router/app_router.dart';
 import 'core/utils/theme.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
 
     return ScreenUtilInit(
-      designSize: const Size(375, 812),
+      designSize: const Size(393, 891),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
@@ -56,6 +57,13 @@ class MyApp extends StatelessWidget {
 
           themeMode: themeController.themeMode,
           initialRoute: AppRoutes.splash,
+          routingCallback: (routing) {
+            if (routing != null && !routing.isBottomSheet! && !routing.isDialog!) {
+              if (Get.isRegistered<AddWalletController>()) {
+                Get.find<AddWalletController>().fetchWalletBalance();
+              }
+            }
+          },
           getPages: AppPages.pages,
           builder: (context, child) {
             return MediaQuery(

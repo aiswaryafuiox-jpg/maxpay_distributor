@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/data/model/low_wallet_retailers_model.dart';
@@ -24,7 +25,7 @@ class LowWalletController extends GetxController {
     
     result.fold(
       (Failure failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (LowWalletRetailersModel response) {
         if (response.data?.list != null) {

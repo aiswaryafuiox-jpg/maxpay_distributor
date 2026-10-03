@@ -30,7 +30,7 @@ class _ExeViewDetailsScreenState extends State<ExeViewDetailsScreen> {
   late TextEditingController autoTransferAmountController;
 
   String selectedPackage = "Select";
-  String autoTransfer = "Auto";
+  String autoTransfer = "Enable";
   String status = "Active";
 
   @override
@@ -62,7 +62,8 @@ class _ExeViewDetailsScreenState extends State<ExeViewDetailsScreen> {
       selectedPackage = detail.commissionPackage!;
     }
     if (detail?.autoTransfer != null &&
-        (detail!.autoTransfer == "Auto" || detail.autoTransfer == "Manual")) {
+        (detail!.autoTransfer == "Enable" ||
+            detail.autoTransfer == "Disable")) {
       autoTransfer = detail.autoTransfer!;
     }
     if (detail?.status != null &&
@@ -235,7 +236,10 @@ class _ExeViewDetailsScreenState extends State<ExeViewDetailsScreen> {
             SizedBox(height: 14.h),
 
             buildLabel("Wallet Balance", isDark, context),
-            buildReadOnlyField(context, "₹${detail?.walletBalance ?? 0.00}"),
+            buildReadOnlyField(
+              context,
+              (detail?.walletBalance ?? 0.00).currencyIndian,
+            ),
 
             SizedBox(height: 14.h),
 
@@ -324,8 +328,8 @@ class _ExeViewDetailsScreenState extends State<ExeViewDetailsScreen> {
                 ),
               ),
               items: const [
-                DropdownMenuItem(value: "Auto", child: Text("Auto")),
-                DropdownMenuItem(value: "Manual", child: Text("Manual")),
+                DropdownMenuItem(value: "Enable", child: Text("Enable")),
+                DropdownMenuItem(value: "Disable", child: Text("Disable")),
               ],
               onChanged: (val) {
                 if (val != null) {

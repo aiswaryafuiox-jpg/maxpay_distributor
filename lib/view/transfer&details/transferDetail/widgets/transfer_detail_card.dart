@@ -11,6 +11,7 @@ class TransferDetailCard extends StatelessWidget {
   final String userName;
   final String regMobNo;
   final String amount;
+  final bool isReversible;
   final VoidCallback? onReverseIconTap;
 
   const TransferDetailCard({
@@ -22,6 +23,7 @@ class TransferDetailCard extends StatelessWidget {
     required this.userName,
     required this.regMobNo,
     required this.amount,
+    this.isReversible = true,
     this.onReverseIconTap,
   });
 
@@ -32,15 +34,14 @@ class TransferDetailCard extends StatelessWidget {
 
     final bool isReverse = transactionType.toLowerCase() == "reverse";
 
-    final Color statusColor =
-    isReverse ? Color(0xFFEE0023) : Color(0xFF00BC62);
+    final Color statusColor = isReverse
+        ? const Color(0xFFEE0023)
+        : const Color(0xFF00BC62);
 
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF2F3349)
-            : AppColors.background,
+        color: isDark ? const Color(0xFF2F3349) : AppColors.background,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isDark
@@ -50,18 +51,19 @@ class TransferDetailCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          /// TOP ROW (UNCHANGED)
+          /// TOP ROW
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Transaction ID: TXN6453564",
-                style: TextHelper.max1.copyWith(
-
-                  fontWeight: FontWeight.w500,
-                  color: isDark
-                      ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-                      : AppColors.darktextclr,
+              Expanded(
+                child: Text(
+                  "TXN ID: $transactionId",
+                  style: TextHelper.max1.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: isDark
+                        ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
+                        : AppColors.darktextclr,
+                  ),
                 ),
               ),
 
@@ -81,7 +83,7 @@ class TransferDetailCard extends StatelessWidget {
                   const SizedBox(height: 5),
 
                   Text(
-                    "2026-11-29 14:38:43",
+                    dateTime,
                     style: TextHelper.max1.copyWith(
                       fontSize: 12,
                       color: isDark
@@ -111,36 +113,24 @@ class TransferDetailCard extends StatelessWidget {
             "Transaction Type",
             transactionType,
             valueColor: statusColor,
-            showReverseIcon: !isReverse,
+            showReverseIcon: isReversible && !isReverse,
             onReverseTap: onReverseIconTap,
           ),
 
           SizedBox(height: 14.h),
 
           /// User Type
-          _latoRow(
-            context,
-            "User Type",
-            userType,
-          ),
+          _latoRow(context, "User Type", userType),
 
           SizedBox(height: 14.h),
 
           /// User Name
-          _latoRow(
-            context,
-            "User Name",
-            userName,
-          ),
+          _latoRow(context, "User Name", userName),
 
           SizedBox(height: 14.h),
 
           /// Reg Mob
-          _latoRow(
-            context,
-            "Reg.Mob No",
-            regMobNo,
-          ),
+          _latoRow(context, "Reg.Mob No", regMobNo),
 
           SizedBox(height: 14.h),
 
@@ -159,14 +149,14 @@ class TransferDetailCard extends StatelessWidget {
 
   /// TRANSACTION TYPE
   Widget _row(
-      BuildContext context,
-      String title,
-      String value, {
-        Color? valueColor,
-        bool isAmount = false,
-        bool showReverseIcon = false,
-        VoidCallback? onReverseTap,
-      }) {
+    BuildContext context,
+    String title,
+    String value, {
+    Color? valueColor,
+    bool isAmount = false,
+    bool showReverseIcon = false,
+    VoidCallback? onReverseTap,
+  }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -189,11 +179,7 @@ class TransferDetailCard extends StatelessWidget {
                 SizedBox(width: 6.w),
                 GestureDetector(
                   onTap: onReverseTap,
-                  child: Icon(
-                    Icons.sync,
-                    color: Colors.red,
-                    size: 18.w,
-                  ),
+                  child: Icon(Icons.sync, color: Colors.red, size: 18.w),
                 ),
               ],
             ],
@@ -221,8 +207,7 @@ class TransferDetailCard extends StatelessWidget {
             style: TextHelper.max4.copyWith(
               color: valueColor ?? theme.colorScheme.onSurface,
               fontSize: 16,
-              fontWeight:
-              isAmount ? FontWeight.w700 : FontWeight.w600,
+              fontWeight: isAmount ? FontWeight.w700 : FontWeight.w600,
             ),
           ),
         ),
@@ -232,12 +217,12 @@ class TransferDetailCard extends StatelessWidget {
 
   /// USER TYPE ONWARDS (LATO STYLE)
   Widget _latoRow(
-      BuildContext context,
-      String title,
-      String value, {
-        Color? valueColor,
-        bool isAmount = false,
-      }) {
+    BuildContext context,
+    String title,
+    String value, {
+    Color? valueColor,
+    bool isAmount = false,
+  }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 

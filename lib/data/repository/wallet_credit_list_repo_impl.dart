@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import '../../core/constants/api_routes.dart';
 import '../../core/error/failure.dart';
@@ -39,16 +40,12 @@ class WalletCreditListRepoImpl implements WalletCreditListRepository {
           return Left(ServerFailure(model.message ?? 'Unknown server error'));
         }
       } else {
-        return Left(ServerFailure(model.message ?? 'Server error: ${model.code}'));
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

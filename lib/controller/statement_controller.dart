@@ -1,3 +1,5 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/statement/statement_descriptions_model.dart';
 import 'package:maxpay/data/model/statement/statement_list_model.dart';
@@ -24,6 +26,8 @@ class StatementController extends GetxController {
 
   RxList<StatementItem> transactions = <StatementItem>[].obs;
 
+  Timer? _debounceTimer;
+
   @override
   void onInit() {
     super.onInit();
@@ -36,7 +40,11 @@ class StatementController extends GetxController {
     fetchStatementList();
   }
 
-
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    super.onClose();
+  }
 
   Future<void> fetchDescriptions() async {
     isLoading.value = true;
@@ -45,7 +53,7 @@ class StatementController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (success) {
         descriptions.value = success.data ?? [];
@@ -66,7 +74,10 @@ class StatementController extends GetxController {
 
   void updateSearchQuery(String query) {
     searchQuery.value = query;
-    fetchStatementList();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchStatementList();
+    });
   }
 
   Future<void> fetchStatementList() async {
@@ -83,7 +94,7 @@ class StatementController extends GetxController {
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (success) {
         transactions.value = success.data?.list ?? [];

@@ -1,10 +1,18 @@
 class ApiRoutes {
-  static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
-  // static const comURL = "https://beforeafternutrition.fuiox.com/storage";
+  // static const baseURL = "http://139.59.91.7/test_paylinkonline.in/public";
+  static const baseURL = "https://paylinkonline.in";
 
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
   static const String loginSendOtp = "/api/distributor_login_sendotp";
+  static const String getNews = "/api/distributor_get_news";
+  static const String getBanners = "/api/distributor_get_banner";
+  static const String getAdvertisement = "/api/distributor_get_advertisement";
+  static const String getPopupMessage = "/api/distributor_get_popup_message";
+  static const String getFaq = "/api/distributor_get_faq";
+  static const String getFaqReply = "/api/distributor_faq_reply";
+  static const String getGraph = "/api/distributor_graph";
+  static const String distributorGetIp = "/api/distributor_get_ip";
   static const String verifyOtp = "/api/distributor_login_verifyOtp";
   static const String createPin = "/api/distributor_create_pin";
   static const String verifyPin = "/api/distributor_verify_pin";
@@ -29,11 +37,15 @@ class ApiRoutes {
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String requestWallet = "/api/distributor_wallet_request";
+
   static const String getExecutives = "/api/distributor_executives";
   static const String getExecutiveDetail = "/api/distributor_executive_detail";
-  static const String getExecutiveCommissionPackages = "/api/distributor_executive_commission_packages";
+  static const String getExecutiveCommissionPackages =
+      "/api/distributor_executive_commission_packages";
   static const String updateExecutive = "/api/distributor_update_executive";
-  static const String distributorCreateExecutive = "/api/distributor_create_executive";
+  static const String distributorCreateExecutive =
+      "/api/distributor_create_executive";
   static const String addExecutiveWalletDetails =
       "/api/distributor_add_executive_wallet_details";
   static const String addExecutiveWallet =
@@ -43,10 +55,9 @@ class ApiRoutes {
   static const String transactionReport = "/api/distributor_transaction_report";
   static const String transactionDetail = "/api/distributor_transaction_detail";
 
-
   static const distributorHomeCard = "/api/distributor_home_card";
-  static const distributorTodayTransactionAmount = "/api/distributor_today_transaction_amount";
-
+  static const distributorTodayTransactionAmount =
+      "/api/distributor_today_transaction_amount";
 
   static const distributorTransferDetail = "/api/distributor_transfer_detail";
 
@@ -108,15 +119,27 @@ class ApiRoutes {
   static const String distributorGetKyc = '/api/distributor_get_kyc';
   static const String distributorSubmitKyc = '/api/distributor_submit_kyc';
   static const String distributorGetSupport = '/api/distributor_get_support';
-  static const String distributorLoginHistory = '/api/distributor_login_history';
-  static const String distributorReverseWalletTransfer = '/api/distributor_reverse_wallet_transfer';
-  static const String distributorStatementDescriptions = '/api/distributor_statement_descriptions';
+  static const String distributorLoginHistory =
+      '/api/distributor_login_history';
+  static const String distributorReverseWalletTransfer =
+      '/api/distributor_reverse_wallet_transfer';
+  static const String distributorStatementDescriptions =
+      '/api/distributor_statement_descriptions';
   static const String distributorStatement = '/api/distributor_statement';
-  static const String distributorStatementDetail = '/api/distributor_statement_detail';
-  static const String distributorRegChargeDetail = '/api/distributor_reg_charge_detail';
-  static const String distributorOnlineTransactions = '/api/distributor_online_transactions';
+  static const String distributorStatementDetail =
+      '/api/distributor_statement_detail';
+  static const String distributorRegChargeDetail =
+      '/api/distributor_reg_charge_detail';
+  static const String distributorOnlineTransactions =
+      '/api/distributor_online_transactions';
 
   static const String distributorUpdatePin = '/api/distributor_update_pin';
-  static const String distributorUpdateMpinSendOtp = '/api/distributor_update_mpin_send_otp';
+  static const String distributorUpdateMpinSendOtp =
+      '/api/distributor_update_mpin_send_otp';
   static const String distributorUpdateMpin = '/api/distributor_update_mpin';
+  static const String distributorPrivacyPolicy =
+      '/api/distributor_privacy_policy';
+  static const bankdetail = "/api/get_bank_details";
+
+  static const verifyWorldlinePayment = "/distributor_verify_worldline_payment";
 }

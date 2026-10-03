@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
@@ -121,6 +122,12 @@ class ProfileForm extends StatelessWidget {
           ProfileTextField(
             title: "Pin Code",
             controller: controller.pincodeController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(6),
+            ],
+            maxLength: 6,
           ),
 
           const SizedBox(height: 16),
@@ -128,6 +135,7 @@ class ProfileForm extends StatelessWidget {
           ProfileTextField(
             title: "Mail ID",
             controller: controller.emailController,
+            keyboardType: TextInputType.emailAddress,
           ),
 
           const SizedBox(height: 16),
@@ -135,6 +143,12 @@ class ProfileForm extends StatelessWidget {
           ProfileTextField(
             title: "Phone No",
             controller: controller.phoneController,
+            keyboardType: TextInputType.phone,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ],
+            maxLength: 10,
           ),
 
           const SizedBox(height: 16),
@@ -142,6 +156,12 @@ class ProfileForm extends StatelessWidget {
           ProfileTextField(
             title: "WhatsApp Number",
             controller: controller.whatsappController,
+            keyboardType: TextInputType.phone,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ],
+            maxLength: 10,
           ),
 
           const SizedBox(height: 30),

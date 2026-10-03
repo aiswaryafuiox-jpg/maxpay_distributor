@@ -12,6 +12,7 @@ class AppColors {
   static const Color darkBlue = Color.fromRGBO(73, 91, 255, 0.4);
   static const Color redClr = Color(0xffFF0000);
   static const Color textclr = Color(0xffC1C2C8);
+  static const Color textclr2 = Color(0xff636363);
   static const Color darktextclr = Color(0xff636363);
   static const Color background = Color(0xFFF6F7FF);
   static const Color darkbgBlack = Color(0xff25293C);
@@ -158,5 +159,33 @@ class AppColors {
       Color(0xFFD4A041),
     ],
     stops: [0.00, 0.00, 0.15, 0.38, 0.77, 1.00],
+  );
+  static const LinearGradient platinumGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFE5E4E2),
+      Color(0xFFFFFFFF),
+      Color(0xFFD3D9DF),
+      Color(0xFFE5E9EC),
+      Color(0xFFB5C1CB),
+      Color(0xFF90A4AE),
+      Color(0xFF607D8B),
+    ],
+    stops: [0.0, 0.2, 0.35, 0.5, 0.7, 0.85, 1.0],
+  );
+  static const LinearGradient emeraldGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF004D40),
+      Color(0xFFE0F2F1),
+      Color(0xFF80CBC4),
+      Color(0xFF26A69A),
+      Color(0xFF00897B),
+      Color(0xFF00695C),
+      Color(0xFF004D40),
+    ],
+    stops: [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.0],
   );
 }

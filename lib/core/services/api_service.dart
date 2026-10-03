@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as g;
+import 'package:maxpay/core/services/error_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/api_routes.dart';
@@ -21,7 +22,7 @@ class ApiService {
         responseType: ResponseType.json,
         headers: {
           "Accept": "application/json",
-          "X-API-KEY": "mnbvcxzasdfghjklpoiuytrewqzxcvbnm",
+          "X-API-KEY": "kijunhpouytreesedcfvgbhbhjnhjbgcdfxxdfvghbgh",
         },
       ),
     );
@@ -34,7 +35,11 @@ class ApiService {
 
           log("REQUEST => ${options.method}");
           log("URL => ${options.baseUrl}${options.path}");
-          log("BODY => ${options.data}");
+          log(
+            options.data is FormData
+                ? "BODY => ${options.uri.toString()} ${(options.data as FormData).fields.map((e) => "${e.key}: ${e.value}").toList()}"
+                : "BODY => ${options.uri.toString()} ${options.data}",
+          );
 
           if (token != null && token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
@@ -53,21 +58,20 @@ class ApiService {
           log("ERROR => ${e.message}");
           log("ERROR RESPONSE => ${e.response?.data}");
 
-          if (e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
+          if (e.requestOptions.path.contains(ApiRoutes.loginSendOtp) ||
+              e.requestOptions.path.contains(ApiRoutes.verifyOtp) ||
+              e.requestOptions.path.contains(ApiRoutes.verifyPin) ||
               e.requestOptions.path.contains(ApiRoutes.updateStatusVerifyOtp) ||
               e.requestOptions.path.contains(
                 ApiRoutes.updateProfileVerifyOtp,
-              )) {
+              ) ||
+              e.requestOptions.path.contains(ApiRoutes.distributorUpdateMpin) ||
+              e.requestOptions.path.contains(ApiRoutes.distributorUpdatePin)) {
             return handler.next(e);
           }
 
           if (e.response?.statusCode == 401) {
             _handleUnauthorized();
-          } else {
-            g.Get.snackbar(
-              "Error",
-              e.response?.data?["message"] ?? "Something went wrong",
-            );
           }
 
           return handler.next(e);
@@ -79,11 +83,9 @@ class ApiService {
   /// GET API
   Future<Map<String, dynamic>> get(
     String endpoint, {
-    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? params,
   }) async {
-    return _handleResponse(
-      () => _dio.get(endpoint, queryParameters: queryParameters),
-    );
+    return _handleResponse(() => _dio.get(endpoint, queryParameters: params));
   }
 
   /// POST API
@@ -134,21 +136,74 @@ class ApiService {
 
       return {"data": response.data};
     } on DioException catch (e) {
-      log("DIO EXCEPTION => ${e.message}");
+      // ==========================================================
+      // CONNECTION ERROR
+      // ==========================================================
+
+      if (_isConnectionError(e)) {
+        log(
+          "🌐 Connection error: "
+          "${e.requestOptions.path}",
+        );
+
+        // IMPORTANT:
+        // Don't throw raw Dio message to UI.
+        throw Exception("No internet connection");
+      }
+
+      // ==========================================================
+      // API ERROR
+      // ==========================================================
+
+      final message = e.response?.data is Map ? e.response?.data : null;
+
+      log(
+        "DioException: "
+        "${e.requestOptions.path} "
+        "${message ?? e.type}",
+      );
+
+      // Rethrow the DioException so DioErrorHandler.handle can parse the response natively.
       rethrow;
     } catch (e) {
       log("UNKNOWN ERROR => $e");
-      throw Exception("Unexpected error occurred");
+      throw AppException("Unexpected error occurred");
     }
+  }
+
+  bool _isConnectionError(DioException e) {
+    return e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.sendTimeout ||
+        e.type == DioExceptionType.receiveTimeout;
   }
 
   /// Handle Unauthorized
   Future<void> _handleUnauthorized() async {
     final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
     await prefs.remove("token");
 
-    g.Get.offAllNamed(AppRoutes.loginPhoneName);
+    if (token != null && token.isNotEmpty) {
+      final currentRoute = g.Get.currentRoute;
+      final authRoutes = [
+        AppRoutes.splash,
+        AppRoutes.intro,
+        AppRoutes.welcome,
+        AppRoutes.selectSim,
+        AppRoutes.loginPhoneName,
+        AppRoutes.otpVerification,
+        AppRoutes.pinCodeCreation,
+        AppRoutes.enterPin,
+        AppRoutes.veirfypin,
+        AppRoutes.biometricsIntro,
+        AppRoutes.biometricsScanning,
+      ];
 
-    g.Get.snackbar("Session Expired", "Please login again.");
+      if (!authRoutes.contains(currentRoute)) {
+        g.Get.offAllNamed(AppRoutes.loginPhoneName);
+        g.Get.snackbar("Session Expired", "Please login again.");
+      }
+    }
   }
 }

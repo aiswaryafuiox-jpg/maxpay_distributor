@@ -1,3 +1,5 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:maxpay/data/model/report/online_transaction_model.dart';
@@ -17,11 +19,19 @@ class OnlineTransactionController extends GetxController {
   RxString searchQuery = ''.obs;
   RxString status = 'pending'.obs;
 
+  Timer? _debounceTimer;
+
   @override
   void onInit() {
     super.onInit();
     _initializeDates();
     fetchOnlineTransactions();
+  }
+
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    super.onClose();
   }
 
   void _initializeDates() {
@@ -39,7 +49,10 @@ class OnlineTransactionController extends GetxController {
 
   void updateSearchQuery(String query) {
     searchQuery.value = query;
-    fetchOnlineTransactions();
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchOnlineTransactions();
+    });
   }
 
   void updateStatus(String newStatus) {
@@ -64,7 +77,7 @@ class OnlineTransactionController extends GetxController {
     result.fold(
       (failure) {
         items.clear();
-        Get.snackbar('Error', failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (success) {
         final data = success.data;

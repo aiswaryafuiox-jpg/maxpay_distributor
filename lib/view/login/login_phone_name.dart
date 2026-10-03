@@ -4,12 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:maxpay/core/utils/responsive.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import '../../controller/login_controller.dart';
+import 'package:flutter/gestures.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
+import 'package:maxpay/core/di/service_locator.dart';
 
 class LoginPhoneNamePage extends StatefulWidget {
   const LoginPhoneNamePage({super.key});
@@ -30,7 +36,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: theme.scaffoldBackgroundColor,
 
-      appBar: const CommonAppBar(title: "Login"),
+      // appBar: CommonAppBar(title: "Login", showBack: false),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -41,7 +47,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: Column(
                 children: [
-                  SizedBox(height: 40.h),
+                  SizedBox(height: 55.h),
 
                   /// LOGO
                   Center(
@@ -49,7 +55,8 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                       isDark
                           ? AssetImages.splashLogoDark
                           : AssetImages.splashLogo,
-                      width: 170.w,
+                      width: 200.w,
+                      height: 200.h,
                     ),
                   ),
                   SizedBox(height: 30.h),
@@ -97,18 +104,27 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                               color: colorScheme.onSurface,
                               height: 1.5,
                             ),
-                            children: const [
-                              TextSpan(
+                            children: [
+                              const TextSpan(
                                 text: "Registration implies acceptance of the ",
                               ),
-                              TextSpan(
+                              const TextSpan(
                                 text: "Terms of Service",
                                 style: TextStyle(color: AppColors.clrPrimary),
                               ),
-                              TextSpan(text: " and "),
+                              const TextSpan(text: " and "),
                               TextSpan(
                                 text: "Privacy Policy.",
-                                style: TextStyle(color: AppColors.clrPrimary),
+                                style: const TextStyle(
+                                  color: AppColors.clrPrimary,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    final privacyController = Get.put(
+                                      sl<PrivacyPolicyController>(),
+                                    );
+                                    privacyController.openPrivacyPolicy();
+                                  },
                               ),
                             ],
                           ),
@@ -128,21 +144,26 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                       title: "Submit",
                       onTap: () {
                         if (!_isAccepted) {
-                          Get.snackbar(
-                            "Terms",
+                          CustomSnackbar.warning(
                             "Please accept Terms & Conditions",
                           );
                           return;
                         }
 
                         if (controller.phoneController.text.trim().isEmpty) {
-                          Get.snackbar("Error", "Enter mobile number");
+                          CustomSnackbar.warning(
+                            title: "Invalid mobile number",
+                            "Please enter mobile number",
+                          );
                           return;
                         }
 
                         if (controller.phoneController.text.trim().length !=
                             10) {
-                          Get.snackbar("Error", "Enter valid mobile number");
+                          CustomSnackbar.error(
+                            title: "Error",
+                            "Enter valid mobile number",
+                          );
                           return;
                         }
 

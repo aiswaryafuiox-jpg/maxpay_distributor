@@ -1,84 +1,193 @@
+// To parse this JSON data, do
+//
+//     final gradeModel = gradeModelFromJson(jsonString);
+
+import 'dart:convert';
+
+GradeModel gradeModelFromJson(String str) => GradeModel.fromJson(json.decode(str));
+
+String gradeModelToJson(GradeModel data) => json.encode(data.toJson());
+
 class GradeModel {
-  bool? success;
-  GradeData? data;
-  String? message;
-  int? code;
+    bool? success;
+    GradeData? data;
+    String? message;
+    int? code;
 
-  GradeModel({this.success, this.data, this.message, this.code});
+    GradeModel({
+        this.success,
+        this.data,
+        this.message,
+        this.code,
+    });
 
-  GradeModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    data = json['data'] != null ? GradeData.fromJson(json['data']) : null;
-    message = json['message'];
-    code = json['code'];
-  }
+    factory GradeModel.fromJson(Map<String, dynamic> json) => GradeModel(
+        success: json["success"],
+        data: json["data"] == null ? null : GradeData.fromJson(json["data"]),
+        message: json["message"],
+        code: json["code"],
+    );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['message'] = message;
-    data['code'] = code;
-    return data;
-  }
+    Map<String, dynamic> toJson() => {
+        "success": success,
+        "data": data?.toJson(),
+        "message": message,
+        "code": code,
+    };
 }
 
 class GradeData {
-  String? currentGrade;
-  dynamic walletBalance;
-  String? monthLabel;
-  List<GradeDetail>? details;
+    Distributor? distributor;
+    int? walletBalance;
+    TMonth? currentMonth;
+    TMonth? lastMonth;
+    DisplayCard? displayCard;
+    List<GradeSlab>? gradeSlabs;
 
-  GradeData(
-      {this.currentGrade,
-      this.walletBalance,
-      this.monthLabel,
-      this.details});
+    GradeData({
+        this.distributor,
+        this.walletBalance,
+        this.currentMonth,
+        this.lastMonth,
+        this.displayCard,
+        this.gradeSlabs,
+    });
 
-  GradeData.fromJson(Map<String, dynamic> json) {
-    currentGrade = json['current_grade'];
-    walletBalance = json['wallet_balance'];
-    monthLabel = json['month_label'];
-    if (json['details'] != null) {
-      details = <GradeDetail>[];
-      json['details'].forEach((v) {
-        details!.add(GradeDetail.fromJson(v));
-      });
-    }
-  }
+    factory GradeData.fromJson(Map<String, dynamic> json) => GradeData(
+        distributor: json["distributor"] == null ? null : Distributor.fromJson(json["distributor"]),
+        walletBalance: json["wallet_balance"],
+        currentMonth: json["current_month"] == null ? null : TMonth.fromJson(json["current_month"]),
+        lastMonth: json["last_month"] == null ? null : TMonth.fromJson(json["last_month"]),
+        displayCard: json["display_card"] == null ? null : DisplayCard.fromJson(json["display_card"]),
+        gradeSlabs: json["grade_slabs"] == null ? [] : List<GradeSlab>.from(json["grade_slabs"]!.map((x) => GradeSlab.fromJson(x))),
+    );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['current_grade'] = currentGrade;
-    data['wallet_balance'] = walletBalance;
-    data['month_label'] = monthLabel;
-    if (details != null) {
-      data['details'] = details!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+    Map<String, dynamic> toJson() => {
+        "distributor": distributor?.toJson(),
+        "wallet_balance": walletBalance,
+        "current_month": currentMonth?.toJson(),
+        "last_month": lastMonth?.toJson(),
+        "display_card": displayCard?.toJson(),
+        "grade_slabs": gradeSlabs == null ? [] : List<dynamic>.from(gradeSlabs!.map((x) => x.toJson())),
+    };
 }
 
-class GradeDetail {
-  String? grade;
-  num? dailyAverageBalance;
-  num? monthlyCashback;
+class TMonth {
+    String? grade;
+    String? monthKey;
+    String? monthLabel;
+    int? daysTracked;
+    int? actualAvg;
+    String? label;
+    dynamic cashback;
 
-  GradeDetail({this.grade, this.dailyAverageBalance, this.monthlyCashback});
+    TMonth({
+        this.grade,
+        this.monthKey,
+        this.monthLabel,
+        this.daysTracked,
+        this.actualAvg,
+        this.label,
+        this.cashback,
+    });
 
-  GradeDetail.fromJson(Map<String, dynamic> json) {
-    grade = json['grade'];
-    dailyAverageBalance = json['daily_average_balance'];
-    monthlyCashback = json['monthly_cashback'];
-  }
+    factory TMonth.fromJson(Map<String, dynamic> json) => TMonth(
+        grade: json["grade"],
+        monthKey: json["month_key"],
+        monthLabel: json["month_label"],
+        daysTracked: json["days_tracked"],
+        actualAvg: json["actual_avg"],
+        label: json["label"],
+        cashback: json["cashback"],
+    );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['grade'] = grade;
-    data['daily_average_balance'] = dailyAverageBalance;
-    data['monthly_cashback'] = monthlyCashback;
-    return data;
-  }
+    Map<String, dynamic> toJson() => {
+        "grade": grade,
+        "month_key": monthKey,
+        "month_label": monthLabel,
+        "days_tracked": daysTracked,
+        "actual_avg": actualAvg,
+        "label": label,
+        "cashback": cashback,
+    };
+}
+
+class DisplayCard {
+    String? grade;
+    String? label;
+    String? monthLabel;
+    String? source;
+
+    DisplayCard({
+        this.grade,
+        this.label,
+        this.monthLabel,
+        this.source,
+    });
+
+    factory DisplayCard.fromJson(Map<String, dynamic> json) => DisplayCard(
+        grade: json["grade"],
+        label: json["label"],
+        monthLabel: json["month_label"],
+        source: json["source"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "grade": grade,
+        "label": label,
+        "month_label": monthLabel,
+        "source": source,
+    };
+}
+
+class Distributor {
+    String? userId;
+    String? distributorName;
+    String? mobile;
+
+    Distributor({
+        this.userId,
+        this.distributorName,
+        this.mobile,
+    });
+
+    factory Distributor.fromJson(Map<String, dynamic> json) => Distributor(
+        userId: json["user_id"],
+        distributorName: json["distributor_name"],
+        mobile: json["mobile"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "user_id": userId,
+        "distributor_name": distributorName,
+        "mobile": mobile,
+    };
+}
+
+class GradeSlab {
+    int? sno;
+    String? grade;
+    int? dailyAverageBalance;
+    int? monthlyCashBack;
+
+    GradeSlab({
+        this.sno,
+        this.grade,
+        this.dailyAverageBalance,
+        this.monthlyCashBack,
+    });
+
+    factory GradeSlab.fromJson(Map<String, dynamic> json) => GradeSlab(
+        sno: json["sno"],
+        grade: json["grade"],
+        dailyAverageBalance: json["daily_average_balance"],
+        monthlyCashBack: json["monthly_cash_back"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "sno": sno,
+        "grade": grade,
+        "daily_average_balance": dailyAverageBalance,
+        "monthly_cash_back": monthlyCashBack,
+    };
 }

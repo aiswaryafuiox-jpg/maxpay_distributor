@@ -62,23 +62,37 @@ class ExecutiveDetailData {
     this.autoTransferAmount,
   });
 
+  static num? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value;
+    if (value is String) return num.tryParse(value);
+    return null;
+  }
+
   ExecutiveDetailData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    executiveName = json['executive_name'];
-    regMobileNumber = json['reg_mobile_number'];
-    whatsappNumber = json['whatsapp_number'];
-    email = json['email'];
-    address = json['address'];
-    pinCode = json['pin_code'];
-    walletBalance = json['wallet_balance'];
-    dueAmount = json['due_amount'];
-    commissionPackage = json['commission_package'];
-    autoTransfer = json['auto_transfer'];
-    createdOnTime = json['created_on_time'];
-    status = json['status'];
-    minimumAmount = json['minimum_amount'];
-    autoTransferAmount = json['auto_transfer_amount'];
+    id = json['id'] is int
+        ? json['id']
+        : int.tryParse(json['id']?.toString() ?? '');
+    userId = json['user_id']?.toString();
+    executiveName = json['executive_name']?.toString();
+    regMobileNumber = json['reg_mobile_number']?.toString();
+    whatsappNumber = json['whatsapp_number']?.toString();
+    email = json['email']?.toString();
+    address = json['address']?.toString();
+    pinCode = json['pin_code']?.toString();
+    walletBalance = _parseNum(
+      json['wallet_balance'] ??
+          json['wallet_amount'] ??
+          json['wallet'] ??
+          json['balance'],
+    );
+    dueAmount = _parseNum(json['due_amount']);
+    commissionPackage = json['commission_package']?.toString();
+    autoTransfer = json['auto_transfer']?.toString();
+    createdOnTime = json['created_on_time']?.toString();
+    status = json['status']?.toString();
+    minimumAmount = _parseNum(json['minimum_amount']);
+    autoTransferAmount = _parseNum(json['auto_transfer_amount']);
   }
 
   Map<String, dynamic> toJson() {

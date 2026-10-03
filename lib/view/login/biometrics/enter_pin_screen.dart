@@ -3,13 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/login_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:maxpay/core/utils/responsive.dart';
+import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
 import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:pinput/pinput.dart';
 
 class PinCodeEnterPage extends StatefulWidget {
   const PinCodeEnterPage({super.key});
+
   @override
   State<PinCodeEnterPage> createState() => _PinCodeEnterPageState();
 }
@@ -23,7 +26,13 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   @override
   void initState() {
     super.initState();
-    isUpdatePin = (Get.arguments as bool?) ?? false;
+    if (Get.arguments is bool) {
+      isUpdatePin = Get.arguments as bool;
+    } else if (Get.arguments is Map) {
+      isUpdatePin = (Get.arguments as Map)['isUpdatePin'] ?? false;
+    } else {
+      isUpdatePin = false;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!isUpdatePin) {
@@ -42,7 +51,7 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
         current = current.substring(0, current.length - 1);
       }
     } else {
-      if (current.length < 4) {
+      if (current.length < 6) {
         current = current + key;
       }
     }
@@ -51,7 +60,7 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
       text: current,
       selection: TextSelection.collapsed(offset: current.length),
     );
-    showVerifyButton.value = current.length == 4;
+    showVerifyButton.value = current.length == 6;
   }
 
   void resetPin() {
@@ -105,7 +114,7 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  'Please enter your 4-digit security PIN to access your account.',
+                  'Please enter your 6-digit security PIN to access your account.',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
@@ -118,7 +127,7 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
 
                 Center(
                   child: Pinput(
-                    length: 4,
+                    length: 6,
                     controller: pinController,
                     readOnly: true,
                     defaultPinTheme: PinTheme(
@@ -166,40 +175,6 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
                 SizedBox(height: isTablet ? 40.h : 32.h),
 
                 /// Fingerprint Icon
-                if (!isUpdatePin)
-                  Obx(() {
-                    if (controller.isFingerPrint.value == 1) {
-                      return Center(
-                        child: GestureDetector(
-                          onTap: () async {
-                            await controller.authenticateWithFingerprint();
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.fingerprint_rounded,
-                                size: isTablet ? 72.sp : 56.sp,
-                                color: AppColors.clrPrimary,
-                              ),
-                              SizedBox(height: 8.h),
-                              Text(
-                                'Use Fingerprint',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: isTablet ? 16.sp : 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.clrPrimary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                    return const SizedBox();
-                  }),
-
                 const Spacer(),
 
                 Obx(

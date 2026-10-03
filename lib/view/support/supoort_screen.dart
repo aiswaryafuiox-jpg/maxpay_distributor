@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 
@@ -62,10 +64,10 @@ class SuportScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 24,
                       backgroundColor: AppColors.darkFilterBorder,
-                      child: Icon(Icons.person, color: AppColors.textclr),
+                      child: SvgPicture.asset(AssetImages.splashLogo),
                     ),
 
                     const SizedBox(width: 14),

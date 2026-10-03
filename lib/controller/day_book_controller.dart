@@ -1,3 +1,5 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/daybook/day_book_products_model.dart';
@@ -29,11 +31,14 @@ class DayBookController extends GetxController {
   final toDateController = TextEditingController();
   final searchController = TextEditingController();
 
+  Timer? _debounceTimer;
+
   @override
   void onClose() {
     fromDateController.dispose();
     toDateController.dispose();
     searchController.dispose();
+    _debounceTimer?.cancel();
     super.onClose();
   }
 
@@ -41,6 +46,14 @@ class DayBookController extends GetxController {
   void onInit() {
     super.onInit();
     fetchProducts();
+    fetchDayBookList();
+  }
+
+  void onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchDayBookList();
+    });
   }
 
   Future<void> fetchProducts() async {
@@ -49,8 +62,10 @@ class DayBookController extends GetxController {
     result.fold(
       (failure) {
         isLoading.value = false;
-        AppLogger.logError("Failed to fetch day book products: ${failure.message}");
-        Get.snackbar("Error", failure.message);
+        AppLogger.logError(
+          "Failed to fetch day book products: ${failure.message}",
+        );
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isLoading.value = false;
@@ -78,12 +93,12 @@ class DayBookController extends GetxController {
       productId,
       searchController.text,
     );
-    
+
     result.fold(
       (failure) {
         isListLoading.value = false;
         AppLogger.logError("Failed to fetch day book list: ${failure.message}");
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (data) {
         isListLoading.value = false;
@@ -103,10 +118,10 @@ class DayBookController extends GetxController {
       (failure) {
         isListLoading.value = false;
         AppLogger.logError("Failed to delete day book: ${failure.message}");
-        Get.snackbar("Error", failure.message);
+        CustomSnackbar.error(failure.message);
       },
       (data) {
-        Get.snackbar("Success", data.message ?? "Deleted successfully");
+        CustomSnackbar.success(data.message ?? "Deleted successfully");
         fetchDayBookList();
       },
     );

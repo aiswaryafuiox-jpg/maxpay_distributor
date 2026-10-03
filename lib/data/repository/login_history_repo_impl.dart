@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -34,12 +35,12 @@ class LoginHistoryRepoImpl implements LoginHistoryRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch login history."));
+        return Left(
+          ServerFailure(model.message ?? "Failed to fetch login history."),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

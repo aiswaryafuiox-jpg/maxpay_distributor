@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/responsive.dart';
-import 'package:maxpay/view/login/widgets/custom_numeric_keyboard.dart';
 import 'package:maxpay/view/login/widgets/cutom_elevated_button.dart';
 import 'package:pinput/pinput.dart';
+import 'package:maxpay/view/login/widgets/resend_timer_widget.dart';
+import 'package:flutter/services.dart';
 import '../../controller/login_controller.dart';
-import '../../data/model/login_send_otp_response_model.dart';
 
 class ScreenOtpVerification extends StatefulWidget {
   const ScreenOtpVerification({super.key});
@@ -16,53 +16,63 @@ class ScreenOtpVerification extends StatefulWidget {
   State<ScreenOtpVerification> createState() => _ScreenOtpVerificationState();
 }
 
-class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
+class _ScreenOtpVerificationState extends State<ScreenOtpVerification>
+    with WidgetsBindingObserver {
   final TextEditingController _otpController = TextEditingController();
-  bool _showVerifyButton = false;
+  final FocusNode otpFocusNode = FocusNode();
+
+  String? _clipboardOtp;
+  Set<String> _pastedOtps = {};
 
   @override
   void initState() {
     super.initState();
-    _autoFillOtp();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  void _autoFillOtp() {
-    final args = Get.arguments;
-    if (args is LoginSendOtpResponseModel) {
-      final otp = args.data?.otp;
-      if (otp != null) {
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              _otpController.text = otp.toString();
-              _showVerifyButton = _otpController.text.length == 4;
-            });
-          }
-        });
-      }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _otpController.dispose();
+    otpFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkClipboardForOtp();
     }
   }
 
-  void _handleKeyPress(String key) {
-    setState(() {
-      if (key == 'backspace') {
-        if (_otpController.text.isNotEmpty) {
-          _otpController.text = _otpController.text.substring(
-            0,
-            _otpController.text.length - 1,
-          );
-        }
-      } else if (key == 'submit') {
-        // Handle direct submit if needed
-      } else {
-        if (_otpController.text.length < 4) {
-          _otpController.text += key;
+  Future<void> _checkClipboardForOtp() async {
+    try {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      final text = clipboardData?.text;
+
+      if (text != null && text.isNotEmpty) {
+        final regExp = RegExp(r'\b\d{4}\b');
+        final match = regExp.firstMatch(text);
+
+        if (match != null) {
+          final otp = match.group(0);
+          if (otp != null && !_pastedOtps.contains(otp)) {
+            setState(() {
+              _clipboardOtp = otp;
+            });
+          }
         }
       }
+    } catch (e) {
+      debugPrint("Clipboard error: $e");
+    }
+  }
 
-      // Automatically show verify button when 4 digits are entered
-      _showVerifyButton = _otpController.text.length == 4;
-    });
+  void _verifyOtp() {
+    if (_otpController.text.length == 4) {
+      final controller = Get.find<LoginController>();
+      controller.verifyOtp(_otpController.text);
+    }
   }
 
   @override
@@ -81,7 +91,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
             ),
             child: Column(
               children: [
-                /// ðŸ”¹ HEADER / BACK BUTTON
+                /// 🔹 HEADER / BACK BUTTON
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 24.w,
@@ -113,7 +123,7 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                       children: [
                         SizedBox(height: isTablet ? 40.h : 20.h),
 
-                        /// ðŸ”¹ Title
+                        /// 🔹 Title
                         Text(
                           'Verification code',
                           textAlign: TextAlign.center,
@@ -127,9 +137,9 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 12.h),
 
-                        /// ðŸ”¹ Subtitle
+                        /// 🔹 Subtitle
                         Text(
-                          "Please type the verification code\nsent to your phone number",
+                          "Please enter the verification code\nsent to your phone number",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: 'Poppins',
@@ -142,11 +152,15 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
 
                         SizedBox(height: 40.h),
 
-                        /// ðŸ”¹ OTP FIELD (Pinput)
+                        /// 🔹 OTP FIELD (Pinput)
                         Pinput(
                           length: 4,
                           controller: _otpController,
-                          readOnly: true,
+                          enabled: true,
+                          showCursor: true,
+                          keyboardType: TextInputType.number,
+                          onTap: () => otpFocusNode.requestFocus(),
+                          onCompleted: (pin) => _verifyOtp(),
                           mainAxisAlignment: MainAxisAlignment.center,
                           submittedPinTheme: PinTheme(
                             width: isTablet ? 70.w : 60.w,
@@ -196,43 +210,34 @@ class _ScreenOtpVerificationState extends State<ScreenOtpVerification> {
                           ),
                         ),
 
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 20.h),
 
-                        /// ðŸ”¹ Timer Placeholder
-                        Text(
-                          'Resend code in 00:30',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            fontSize: isTablet ? 16.sp : 14.sp,
-                            color: AppColors.fav2,
-                          ),
+                        /// 🔹 Timer
+                        ResendTimerWidget(
+                          onResend: () {
+                            final controller = Get.find<LoginController>();
+                            controller.sendOtp();
+                          },
                         ),
+
+                        SizedBox(height: 20.h),
+
+                        // 🔹 Paste Button
                       ],
                     ),
                   ),
                 ),
 
-                /// ðŸ”¹ NUMERIC KEYBOARD / VERIFY BUTTON
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: _showVerifyButton
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
-                          child: CustomElevatedButton(
-                            text: 'Verify OTP',
-                            onPressed: () {
-                              final controller = Get.find<LoginController>();
-                              controller.verifyOtp(_otpController.text);
-                            },
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.only(bottom: 20.h),
-                          child: CustomNumericKeyboard(
-                            onKeyPressed: _handleKeyPress,
-                          ),
-                        ),
+                /// VERIFY BUTTON
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 40.h),
+                  child: Obx(
+                    () => CustomElevatedButton(
+                      text: 'Verify OTP',
+                      onPressed: _verifyOtp,
+                      isLoading: Get.find<LoginController>().isLoading.value,
+                    ),
+                  ),
                 ),
               ],
             ),

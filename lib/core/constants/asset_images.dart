@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AssetImages {
   // Splash & Auth
   static const splashLogo = "assets/images/splash_logo.svg";
+  static const logo = "assets/images/logo.svg";
   static const splashLogoDark = "assets/images/logo_dark.svg";
   static const splash1 = "assets/images/splash1.webp";
   static const splash2 = "assets/images/splash2.webp";
@@ -86,6 +87,12 @@ class AssetImages {
   static const applogout = "assets/images/app_logout.svg";
   static const weblogout = "assets/images/web_logout.svg";
   static const iconPerson = "assets/images/icon_person.svg";
+  static const loadingImage = "assets/images/load.svg";
+  static const addProfile = "assets/images/add_profile.svg";
+  static const profileSolo = "assets/images/profile_solo.svg";
+  static const profileUser = "assets/images/profile_user.svg";
+  static const receipt = "assets/images/receipt.svg";
+  static const walletAdd = "assets/images/wallet-add.svg";
 }
 
 SizedBox adjustWidth(double width) {
@@ -97,8 +104,6 @@ SizedBox adjustHieght(double height) {
 }
 
 //  privacy_policy and terms_condition links
-const privacyPolicy = 'https://kathalan.in/privacy_policy';
-const termsCondition = 'https://kathalan.in/terms_condition';
 
 Duration animationDuration = const Duration(milliseconds: 300);
 

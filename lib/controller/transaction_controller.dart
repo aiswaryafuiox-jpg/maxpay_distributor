@@ -1,14 +1,17 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
+import 'package:maxpay/view/transaction_screens/widget/share_receipt.dart';
 import '../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import '../domain/usecase/transaction/submit_transaction_dispute_usecase.dart';
 import '../data/model/transaction/transaction_product_response_model.dart';
 import '../data/model/transaction/transaction_report_response_model.dart';
-import '../data/model/transaction/transaction_detail_response_model.dart';
 
 class TransactionController extends GetxController {
   final GetTransactionProductsUseCase getTransactionProductsUseCase;
@@ -29,13 +32,16 @@ class TransactionController extends GetxController {
 
   RxBool isReportLoading = false.obs;
   RxList<TransactionReportItem> transactions = <TransactionReportItem>[].obs;
-  
+
   RxString currentStatus = "success".obs;
   final TextEditingController searchController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
+  final TextEditingController fromDateController = TextEditingController();
+  final TextEditingController toDateController = TextEditingController();
 
   String fromDate = '';
   String toDate = '';
+
+  Timer? _debounceTimer;
 
   @override
   void onInit() {
@@ -43,9 +49,26 @@ class TransactionController extends GetxController {
     final DateTime today = DateTime.now();
     fromDate = DateFormat('yyyy-MM-dd').format(today);
     toDate = DateFormat('yyyy-MM-dd').format(today);
-    dateController.text = DateFormat('dd.MM.yyyy').format(today);
+    fromDateController.text = DateFormat('dd.MM.yyyy').format(today);
+    toDateController.text = DateFormat('dd.MM.yyyy').format(today);
 
     fetchTransactionProducts();
+  }
+
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    searchController.dispose();
+    fromDateController.dispose();
+    toDateController.dispose();
+    super.onClose();
+  }
+
+  void onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      fetchTransactionReport();
+    });
   }
 
   Future<void> fetchTransactionReport({String? statusOverride}) async {
@@ -68,7 +91,7 @@ class TransactionController extends GetxController {
       (failure) {
         isReportLoading.value = false;
         AppLogger.logError("Failed to fetch report: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         isReportLoading.value = false;
@@ -81,28 +104,31 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> selectDateRange(BuildContext context) async {
-    final picked = await showDateRangePicker(
+  Future<void> selectDate(
+    BuildContext context, {
+    required bool isFromDate,
+  }) async {
+    final DateTime initialDate = isFromDate
+        ? (DateTime.tryParse(fromDate) ?? DateTime.now())
+        : (DateTime.tryParse(toDate) ?? DateTime.now());
+
+    final picked = await showDatePicker(
       context: context,
+      initialDate: initialDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
-      initialDateRange: DateTimeRange(
-        start: DateTime.tryParse(fromDate) ?? DateTime.now(),
-        end: DateTime.tryParse(toDate) ?? DateTime.now(),
-      ),
     );
 
     if (picked != null) {
-      fromDate = DateFormat('yyyy-MM-dd').format(picked.start);
-      toDate = DateFormat('yyyy-MM-dd').format(picked.end);
-      
-      final displayStart = DateFormat('dd.MM.yyyy').format(picked.start);
-      final displayEnd = DateFormat('dd.MM.yyyy').format(picked.end);
-      
-      if (fromDate == toDate) {
-        dateController.text = displayStart;
+      final formattedDate = DateFormat('yyyy-MM-dd').format(picked);
+      final displayDate = DateFormat('dd.MM.yyyy').format(picked);
+
+      if (isFromDate) {
+        fromDate = formattedDate;
+        fromDateController.text = displayDate;
       } else {
-        dateController.text = "$displayStart - $displayEnd";
+        toDate = formattedDate;
+        toDateController.text = displayDate;
       }
 
       fetchTransactionReport();
@@ -112,12 +138,12 @@ class TransactionController extends GetxController {
   Future<void> fetchTransactionProducts() async {
     isProductsLoading.value = true;
     final result = await getTransactionProductsUseCase.call();
-    
+
     result.fold(
       (failure) {
         isProductsLoading.value = false;
         AppLogger.logError("Failed to fetch products: ${failure.message}");
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
         isProductsLoading.value = false;
@@ -128,94 +154,51 @@ class TransactionController extends GetxController {
     );
   }
 
-  Future<void> fetchTransactionDetail(int id) async {
-    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
-    
+  Future<void> fetchTransactionDetail(int id, [bool isView = false]) async {
+    Get.dialog(
+      const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
     final result = await getTransactionDetailUseCase.call(id);
-    
+
     Get.back(); // close loading dialog
 
     result.fold(
       (failure) {
-        Get.snackbar("Error", failure.message, snackPosition: SnackPosition.BOTTOM);
+        CustomSnackbar.error(failure.message);
       },
       (response) {
-        if (response.data != null) {
-          _showTransactionDetailDialog(response.data!);
+        //
+        if (isView) {
+          Get.toNamed(AppRoutes.view, arguments: response);
+        } else {
+          ShareReceipt.shareScreenshot(
+            context: Get.context!,
+            data: response.data!,
+          );
         }
       },
     );
   }
 
-  void _showTransactionDetailDialog(TransactionDetailData detail) {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Get.theme.scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Transaction Detail", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            _buildDetailRow("Transaction ID", detail.transactionId ?? 'N/A'),
-            _buildDetailRow("Date & Time", detail.dateTime ?? 'N/A'),
-            _buildDetailRow("Product", detail.productName ?? 'N/A'),
-            _buildDetailRow("Mobile", detail.mobile ?? 'N/A'),
-            _buildDetailRow("Retailer Name", detail.retailerName ?? 'N/A'),
-            _buildDetailRow("Amount", "₹ ${detail.amount ?? 0}"),
-            _buildDetailRow("Status", detail.status ?? 'N/A'),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Get.back(),
-                child: const Text("Close"),
-              ),
-            ),
-          ],
-        ),
-      ),
+  Future<void> submitDispute(
+    String id,
+    String subject,
+    String description,
+  ) async {
+    final result = await submitTransactionDisputeUseCase(
+      id,
+      subject,
+      description,
     );
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.grey)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
-
-  Future<void> submitDispute(String id, String subject, String description) async {
-    final result = await submitTransactionDisputeUseCase(id, subject, description);
 
     result.fold(
       (failure) {
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(successMessage);
       },
     );
   }

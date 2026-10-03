@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../controller/executive_controller.dart';
 import '../../../core/constants/colors.dart';
 import '../../../global_widget/custom_app.dart';
+import 'package:maxpay/global_widget/common_filter_box.dart';
 
 class ExecutiveScreen extends StatelessWidget {
   const ExecutiveScreen({super.key});
@@ -25,7 +26,10 @@ class ExecutiveScreen extends StatelessWidget {
             children: [
               const ExecutiveTopTabs(),
               const SizedBox(height: 18),
-
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                child: ExecutiveFilterWidget(),
+              ),
               Center(
                 child: SizedBox(
                   width: 300,
@@ -54,13 +58,29 @@ class ExecutiveScreen extends StatelessWidget {
                         );
                       }
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: controller.executives.length,
-                        itemBuilder: (context, index) {
-                          final executive = controller.executives[index];
-                          return ExecutiveCard(executive: executive);
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification scrollInfo) {
+                          if (!controller.isLoadMore.value &&
+                              scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent - 200) {
+                            controller.fetchExecutives();
+                          }
+                          return false;
                         },
+                        child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: controller.executives.length + (controller.isLoadMore.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == controller.executives.length) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                            final executive = controller.executives[index];
+                            return ExecutiveCard(executive: executive);
+                          },
+                        ),
                       );
                     });
                   },
@@ -69,6 +89,79 @@ class ExecutiveScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ExecutiveFilterWidget extends StatelessWidget {
+  const ExecutiveFilterWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xff2F3349) : const Color(0xffF8F9FA),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          DropdownButtonFormField<String>(
+            initialValue: Get.find<ExecutiveController>().currentStatusFilter ?? 'all',
+            decoration: InputDecoration(
+              fillColor: isDark ? AppColors.darkplceholder : AppColors.white,
+              filled: true,
+              hintText: "Select Package",
+              hintStyle: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 15,
+                fontFamily: "Poppins",
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA), // light border
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Color(0xFFD8DFEA),
+                  width: 1,
+                ),
+              ),
+            ),
+            items: ["all", "active", 'inactive'].map((pkg) {
+              return DropdownMenuItem<String>(
+                value: pkg,
+                child: Text(pkg.capitalize ?? 'Select'),
+              );
+            }).toList(),
+            onChanged: (v) {
+              if (v != null) {
+                Get.find<ExecutiveController>().fetchExecutives(isRefresh: true, statusFilter: v);
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          SearchBox(
+            onChanged: (v) {
+              Get.find<ExecutiveController>().searchQuery.value = v;
+            },
+          ),
+        ],
       ),
     );
   }

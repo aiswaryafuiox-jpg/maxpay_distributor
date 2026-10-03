@@ -1,32 +1,31 @@
 import 'package:get/get.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
+import 'package:maxpay/controller/day_book_controller.dart';
 import 'package:maxpay/controller/executive_controller.dart';
+import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/controller/home_controller.dart';
-import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/controller/banner_controller.dart';
+import 'package:maxpay/controller/graph_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/controller/transaction_controller.dart';
-import 'package:maxpay/core/bindings/initial_binding.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
 import 'package:maxpay/domain/usecase/executive/get_executive_commission_packages_usecase.dart';
 import 'package:maxpay/domain/usecase/executive/get_executive_detail_usecase.dart';
 import 'package:maxpay/domain/usecase/executive/get_executives_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/get_profile_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/resend_update_profile_otp_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/update_profile_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/update_status_send_otp_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/verify_update_profile_otp_usecase.dart';
-import 'package:maxpay/domain/usecase/profile/verify_update_status_otp_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_products_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_report_usecase.dart';
 import 'package:maxpay/domain/usecase/transaction/get_transaction_detail_usecase.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/add_wallet_home/add_wallet_screen.dart';
 import 'package:maxpay/view/balance/wallet.dart';
+import 'package:maxpay/view/bank_detail/bank_details.dart';
 import 'package:maxpay/view/cashback/cash_back_screen.dart';
 import 'package:maxpay/view/dth_recharge/dth_recharge_page.dart';
 import 'package:maxpay/view/favorite/favorite.dart';
 import 'package:maxpay/view/grade/grade_screen.dart';
 import 'package:maxpay/view/home/pages/home_page.dart';
 import 'package:maxpay/view/home/widgets/services_section.dart';
+import 'package:maxpay/view/internet/no_internet_screen.dart';
 import 'package:maxpay/view/kyc/kyc_screen.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_intro.dart';
 import 'package:maxpay/view/login/biometrics/biometrics_scanning.dart';
@@ -41,11 +40,12 @@ import 'package:maxpay/view/login_history/login_history_screen.dart';
 import 'package:maxpay/view/mobile_recharge/mobile_recharge_page.dart';
 import 'package:maxpay/view/my_earning/my_earning_screen.dart';
 import 'package:maxpay/view/nav_page/nav_page.dart';
+import 'package:maxpay/view/notifications/notification_screen.dart';
 import 'package:maxpay/view/refund/refund_screen.dart';
+import 'package:maxpay/view/search/search_screen.dart';
 import 'package:maxpay/view/report/payoutrequest/payout_request_screen.dart';
 import 'package:maxpay/view/settings/commission_settings/commission_settings_screen.dart';
 import 'package:maxpay/view/settings/settings_page.dart';
-
 import 'package:maxpay/view/splash/intro_page.dart';
 import 'package:maxpay/view/splash/main_splash.dart';
 import 'package:maxpay/view/statement/read_more.dart';
@@ -56,12 +56,10 @@ import 'package:maxpay/view/transaction_screens/view.dart';
 import 'package:maxpay/view/transfer&details/executive/exe_add_wallet_screen.dart';
 import 'package:maxpay/view/update_pin/update_pin_screen.dart';
 import 'package:maxpay/view/update_pin/update_mpin_otp_screen.dart';
-import 'package:maxpay/view/update_pin/verify_pin_screen.dart';
 import 'package:maxpay/view/wallet-credit/wallet_credit_screen.dart';
 import 'package:maxpay/view/web_login/web_login_otp_screen.dart';
 import 'package:maxpay/view/web_login/web_login_screen.dart';
 import 'package:maxpay/view/web_login/web_login_success_screen.dart';
-
 import '../../view/report/apipayoutdetail/api_payout_detail_screen.dart';
 import '../../view/report/onlinetransaction/online_transaction_screen.dart';
 import '../../view/report/paymentrequest/payment_request_screen.dart';
@@ -89,30 +87,13 @@ import '../di/service_locator.dart';
 
 class AppPages {
   static final pages = [
-    GetPage(
-      name: AppRoutes.splash,
-      page: () => const MainSplashScreen(),
-      binding: BindingsBuilder(() {
-        Get.lazyPut<ProfileController>(
-          () => ProfileController(
-            sl<GetProfileUseCase>(),
-            sl<UpdateProfileUseCase>(),
-            sl<VerifyUpdateProfileOtpUseCase>(),
-            sl<ResendUpdateProfileOtpUseCase>(),
-            sl<UpdateStatusSendOtpUseCase>(),
-            sl<VerifyUpdateStatusOtpUseCase>(),
-          ),
-          fenix: true,
-        );
-      }),
-    ),
+    GetPage(name: AppRoutes.splash, page: () => const MainSplashScreen()),
     GetPage(name: AppRoutes.intro, page: () => const IntroPage()),
     GetPage(name: AppRoutes.welcome, page: () => const WelcomePage()),
     GetPage(name: AppRoutes.selectSim, page: () => const SelectSimPage()),
     GetPage(
       name: AppRoutes.loginPhoneName,
       page: () => const LoginPhoneNamePage(),
-      binding: InitialBinding(),
     ),
     GetPage(
       name: AppRoutes.otpVerification,
@@ -138,13 +119,19 @@ class AppPages {
       page: () => const NavPageScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut<HomePageController>(
-          () => HomePageController(sl(), sl()),
+          () => HomePageController(sl(), sl(), sl(), sl(), sl(), sl()),
           fenix: true,
         );
+        Get.lazyPut<BannerController>(
+          () => BannerController(bannerUsecase: sl(), advusecase: sl()),
+          fenix: true,
+        );
+        Get.lazyPut<GraphController>(() => GraphController(sl()), fenix: true);
       }),
     ),
     GetPage(name: AppRoutes.myearning, page: () => const MyEarningsScreen()),
     GetPage(name: AppRoutes.lowWallet, page: () => const LowWalletScreen()),
+    GetPage(name: AppRoutes.bank, page: () => BankDetailsPage()),
     //
     GetPage(
       name: AppRoutes.onlineTransaction,
@@ -172,6 +159,7 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.lazyPut(
           () => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+          fenix: true,
         );
       }),
     ),
@@ -257,18 +245,31 @@ class AppPages {
     ),
     GetPage(name: AppRoutes.setting, page: () => const SettingsPage()),
 
-    GetPage(name: AppRoutes.grade, page: () => const GradeScreen()),
+    GetPage(
+      name: AppRoutes.grade,
+      page: () => const GradeScreen(),
+      binding: BindingsBuilder(() => Get.lazyPut(() => GradeController(sl()))),
+    ),
     GetPage(name: AppRoutes.prepaid, page: () => const MobileRechargePage()),
     GetPage(name: AppRoutes.menu, page: () => const MenuScreen()),
     GetPage(name: AppRoutes.dth, page: () => const DTHRechargePage()),
     GetPage(
-      name: AppRoutes.requestWallet,
+      name: AppRoutes.requestWalletpending,
       page: () => const WalletRequestPendingScreen(),
     ),
-    GetPage(name: AppRoutes.requestWallet, page: () => const AddWalletScreen()),
+    GetPage(
+      name: AppRoutes.dueAmountAddwallet,
+      page: () => const AddWalletScreen(),
+    ),
 
-    GetPage(name: AppRoutes.addwallet, page: () => const AddWalletScreenMain()),
-    GetPage(name: AppRoutes.veirfypin, page: () => const VerifyPinPage()),
+    GetPage(
+      name: AppRoutes.addwallet,
+      page: () => const AddWalletScreenMain(),
+      binding: BindingsBuilder(
+        () => Get.lazyPut(() => AddWalletController(sl(), sl(),sl())),
+      ),
+    ),
+    GetPage(name: AppRoutes.veirfypin, page: () => const PinCodeEnterPage()),
     GetPage(
       name: AppRoutes.transaction,
       page: () {
@@ -293,15 +294,22 @@ class AppPages {
       page: () => StatementReadMoreScreen(),
     ),
     GetPage(name: AppRoutes.outstanding, page: () => const OutstandingScreen()),
-    GetPage(name: AppRoutes.dayBook, page: () => const DayBookScreen()),
+    GetPage(
+      name: AppRoutes.dayBook,
+      page: () => const DayBookScreen(),
+      binding: BindingsBuilder(() => DayBookController(sl(), sl(), sl())),
+    ),
     GetPage(
       name: AppRoutes.regChargeCredit,
       page: () => const RegChargeCreditScreen(),
     ),
-    GetPage(name: AppRoutes.view, page: () => const ViewDetailsScreen()),
+    GetPage(name: AppRoutes.view, page: () => const TransactionDetailsPage()),
     GetPage(name: AppRoutes.favorite, page: () => const FavoriteScreen()),
     GetPage(
       name: AppRoutes.walletBalance,
+      binding: BindingsBuilder(
+        () => Get.lazyPut(() => AddWalletController(sl(), sl(),sl())),
+      ),
       page: () => const WalletBalanceScreen(),
     ),
     GetPage(name: AppRoutes.update, page: () => const UpdatePinPage()),
@@ -322,5 +330,8 @@ class AppPages {
       name: AppRoutes.bulkPackageChange,
       page: () => const BulkPackageChangeScreen(),
     ),
+    GetPage(name: AppRoutes.search, page: () => const SearchScreen()),
+    GetPage(name: AppRoutes.notification, page: () => NotificationPage()),
+    GetPage(name: AppRoutes.noInternet, page: () => const NoInternetScreen()),
   ];
 }

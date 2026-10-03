@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -12,7 +13,9 @@ class RegChargeRepositoryImpl implements RegChargeRepository {
   RegChargeRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, RegChargeDetailModel>> getRegChargeDetail(RegChargeDetailParams params) async {
+  Future<Either<Failure, RegChargeDetailModel>> getRegChargeDetail(
+    RegChargeDetailParams params,
+  ) async {
     try {
       final formData = FormData.fromMap({
         'from_date': params.fromDate,
@@ -20,7 +23,10 @@ class RegChargeRepositoryImpl implements RegChargeRepository {
         'search': params.search,
       });
 
-      final response = await _apiService.post(ApiRoutes.distributorRegChargeDetail, data: formData);
+      final response = await _apiService.post(
+        ApiRoutes.distributorRegChargeDetail,
+        data: formData,
+      );
       final model = RegChargeDetailModel.fromJson(response);
 
       if (model.success == true) {
@@ -28,10 +34,8 @@ class RegChargeRepositoryImpl implements RegChargeRepository {
       } else {
         return Left(ServerFailure(model.message ?? 'Failed to load details'));
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
+import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
@@ -28,13 +30,11 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
       ReverseWalletTransferUseCase(TransferDetailRepositoryImpl(ApiService())),
     ),
   );
-  String selectedTransactionType = "Transfer";
-  bool isReverse = false;
 
   void _showReverseDialog(String transactionId, String amount) {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (_) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
@@ -91,10 +91,19 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               /// Filter
               Obx(
                 () => TransferDetailFilterWidget(
-                  transferTypes: controller.transferDetails
-                      .map((e) => e.name ?? "")
-                      .toList(),
+                  transferTypes: [
+                    "All",
+                    ...controller.transferDetails
+                        .map((e) => e.name ?? "")
+                        .where((name) => name.isNotEmpty && name.toLowerCase() != "all"),
+                  ],
                   selectedType: controller.selectedTransactionType.value,
+                  fromDate: controller.fromDate.value,
+                  toDate: controller.toDate.value,
+                  onFromDateChanged: controller.updateFromDate,
+                  onToDateChanged: controller.updateToDate,
+                  searchController: controller.searchController,
+                  onSearchChanged: controller.onSearchChanged,
                   onChanged: (value) {
                     controller.changeTransactionType(value);
                   },
@@ -104,11 +113,17 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
               SizedBox(height: 16.h),
 
               /// Header Card
-              Obx(() => TransferDetailHeaderCard(
-                title: isReverse ? "Wallet Reverse" : "Wallet Transfer",
-                amount: controller.totalAmount.value,
-                isReverse: isReverse,
-              )),
+              Obx(
+                () => TransferDetailHeaderCard(
+                  title: controller.label.value.isNotEmpty
+                      ? controller.label.value
+                      : (controller.isReverse.value
+                          ? "Wallet Reverse"
+                          : "Wallet Transfer"),
+                  amount: controller.totalAmount.value,
+                  isReverse: controller.isReverse.value,
+                ),
+              ),
 
               SizedBox(height: 16.h),
 
@@ -131,14 +146,21 @@ class _TransferDetailScreenState extends State<TransferDetailScreen> {
                       final item = controller.transferDetailList[index];
                       return TransferDetailCard(
                         transactionId: item.transactionId ?? "",
-                        dateTime: item.dateTime ?? "",
+                        dateTime: DateFormat(
+                          'dd-MMM-yyyy, hh:mm a',
+                        ).format(DateTime.parse(item.dateTime ?? "")),
                         transactionType: item.transactionType ?? "",
                         userType: item.userType ?? "",
                         userName: item.userName ?? "",
                         regMobNo: item.regMobileNumber ?? "",
-                        amount: "₹ ${item.amount ?? '0.00'}",
+                        amount:
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
+                        isReversible: item.isReversible == 1,
                         onReverseIconTap: () {
-                          _showReverseDialog(item.id?.toString() ?? "", "₹ ${item.amount ?? '0.00'}");
+                          _showReverseDialog(
+                            item.id?.toString() ?? "",
+                            (item.amount?.toString() ?? '0.00').currencyIndian,
+                          );
                         },
                       );
                     },

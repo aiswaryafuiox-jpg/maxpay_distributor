@@ -7,7 +7,7 @@ class UpdatePinUseCase {
 
   UpdatePinUseCase(this.repository);
 
-  Future<Either<Failure, String>> call(String otp, String newPin, String confirmPin) {
-    return repository.updatePin(otp, newPin, confirmPin);
+  Future<Either<Failure, String>> call(String newPin, String confirmPin) {
+    return repository.updatePin(newPin, confirmPin);
   }
 }

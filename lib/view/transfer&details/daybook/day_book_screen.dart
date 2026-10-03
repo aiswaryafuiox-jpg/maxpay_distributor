@@ -158,6 +158,7 @@ class _DayBookScreenState extends State<DayBookScreen> {
                     hint: "Search",
                     textController: controller.searchController,
                     isDark: isDark,
+                    onChanged: controller.onSearchChanged,
                     onSearch: () {
                       controller.fetchDayBookList();
                     },
@@ -301,11 +302,13 @@ class _DayBookScreenState extends State<DayBookScreen> {
     required TextEditingController textController,
     required bool isDark,
     required VoidCallback onSearch,
+    ValueChanged<String>? onChanged,
   }) {
     final theme = Theme.of(context);
     return TextFormField(
       controller: textController,
       textInputAction: TextInputAction.search,
+      onChanged: onChanged,
       onFieldSubmitted: (_) => onSearch(),
       style: TextHelper.max1.copyWith(
         color: isDark ? AppColors.textclr : AppColors.clrTextblack,

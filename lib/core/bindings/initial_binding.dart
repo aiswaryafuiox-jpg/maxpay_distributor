@@ -1,4 +1,4 @@
-﻿import 'package:get/get.dart';
+import 'package:get/get.dart';
 
 import '../../controller/login_controller.dart';
 import '../../domain/usecase/login_send_otp_usecase.dart';
@@ -51,8 +51,8 @@ class InitialBinding extends Bindings {
       permanent: true,
     );
 
-    Get.put<RetailerController>(
-      RetailerController(
+    Get.lazyPut<RetailerController>(
+      () => RetailerController(
         sl<GetRetailersUseCase>(),
         sl<GetRetailerDetailUseCase>(),
         sl<GetCommissionPackagesUseCase>(),
@@ -61,7 +61,7 @@ class InitialBinding extends Bindings {
         sl<GetAddWalletDetailsUseCase>(),
         sl<AddWalletUseCase>(),
       ),
-      permanent: true,
+      fenix: true,
     );
   }
 }

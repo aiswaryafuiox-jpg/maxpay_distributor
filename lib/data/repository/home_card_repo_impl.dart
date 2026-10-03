@@ -15,9 +15,9 @@ class HomeCardRepositoryImpl implements HomeCardRepository {
   Future<Either<Failure, HomeCardModel>> getHomeCardData() async {
     try {
       final response = await _apiService.get(ApiRoutes.distributorHomeCard);
-      
+
       debugPrint("Home Card API Response: $response");
-      
+
       final model = HomeCardModel.fromJson(response);
       return Right(model);
     } catch (e) {

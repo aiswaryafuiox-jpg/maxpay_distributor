@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/controller/statement_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
@@ -50,92 +50,99 @@ class _StatementScreenState extends State<StatementScreen> {
             child: Column(
               children: [
                 /// Description Selector
-                Obx(() => Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 4.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkplceholder : Colors.white,
-                    borderRadius: BorderRadius.circular(8.r),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkFilterBorder
-                          : Colors.grey.withValues(alpha: 0.3),
+                Obx(
+                  () => Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 4.h,
                     ),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: controller.selectedDescription.value,
-                      hint: Text(
-                        'Select Description',
-                        style: TextHelper.max1.copyWith(
+                    decoration: BoxDecoration(
+                      color: isDark ? AppColors.darkplceholder : Colors.white,
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: controller.selectedDescription.value,
+                        hint: Text(
+                          'Select Description',
+                          style: TextHelper.max1.copyWith(
+                            color: isDark
+                                ? AppColors.textclr
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 24.sp,
                           color: isDark
                               ? AppColors.textclr
                               : theme.colorScheme.onSurfaceVariant,
                         ),
-                      ),
-                      icon: Icon(
-                        Icons.arrow_drop_down,
-                        size: 24.sp,
-                        color: isDark
-                            ? AppColors.textclr
-                            : theme.colorScheme.onSurfaceVariant,
-                      ),
-                      dropdownColor: isDark ? AppColors.darkplceholder : Colors.white,
-                      items: controller.descriptions.map((desc) {
-                        return DropdownMenuItem<String>(
-                          value: desc.name,
-                          child: Text(
-                            desc.name ?? "",
-                            style: TextHelper.max1.copyWith(
-                              color: isDark
-                                  ? AppColors.textclr
-                                  : theme.colorScheme.onSurface,
+                        dropdownColor: isDark
+                            ? AppColors.darkplceholder
+                            : Colors.white,
+                        items: controller.descriptions.map((desc) {
+                          return DropdownMenuItem<String>(
+                            value: desc.name,
+                            child: Text(
+                              desc.name ?? "",
+                              style: TextHelper.max1.copyWith(
+                                color: isDark
+                                    ? AppColors.textclr
+                                    : theme.colorScheme.onSurface,
+                              ),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        controller.selectDescription(value);
-                      },
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          controller.selectDescription(value);
+                        },
+                      ),
                     ),
                   ),
-                )),
+                ),
                 SizedBox(height: 12.h),
 
                 /// Date Range Fields
-                Obx(() => Row(
-                  children: [
-                    _buildDateField(
-                      hint: 'DD.MM.YYYY',
-                      isDark: isDark,
-                      dateValue: controller.fromDate.value,
-                      onTap: () => _selectDate(context, true),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Color(0xFF051B44),
-                        size: 18.sp,
+                Obx(
+                  () => Row(
+                    children: [
+                      _buildDateField(
+                        hint: 'DD.MM.YYYY',
+                        isDark: isDark,
+                        dateValue: controller.fromDate.value,
+                        onTap: () => _selectDate(context, true),
                       ),
-                    ),
-                    _buildDateField(
-                      hint: 'DD.MM.YYYY',
-                      isDark: isDark,
-                      dateValue: controller.toDate.value,
-                      onTap: () => _selectDate(context, false),
-                    ),
-                  ],
-                )),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: Color(0xFF051B44),
+                          size: 18.sp,
+                        ),
+                      ),
+                      _buildDateField(
+                        hint: 'DD.MM.YYYY',
+                        isDark: isDark,
+                        dateValue: controller.toDate.value,
+                        onTap: () => _selectDate(context, false),
+                      ),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 12.h),
 
                 /// Search Bar
                 TextField(
                   controller: _searchController,
                   style: TextStyle(color: theme.colorScheme.onSurface),
+                  onChanged: (value) => controller.updateSearchQuery(value),
                   onSubmitted: (value) => controller.updateSearchQuery(value),
                   decoration: _getInputDecoration(
                     hint: 'Search',
@@ -180,7 +187,11 @@ class _StatementScreenState extends State<StatementScreen> {
                 padding: EdgeInsets.all(16.r),
                 itemCount: controller.transactions.length,
                 itemBuilder: (context, index) {
-                  return _buildStatementCard(controller.transactions[index], isDark, theme);
+                  return _buildStatementCard(
+                    controller.transactions[index],
+                    isDark,
+                    theme,
+                  );
                 },
               );
             }),
@@ -270,9 +281,13 @@ class _StatementScreenState extends State<StatementScreen> {
             dateValue.isNotEmpty ? dateValue : hint,
             style: TextStyle(
               fontSize: 12.sp,
-              color: dateValue.isNotEmpty 
-                  ? (isDark ? AppColors.textclr : Theme.of(context).colorScheme.onSurface)
-                  : (isDark ? AppColors.textclr : Theme.of(context).colorScheme.onSurfaceVariant),
+              color: dateValue.isNotEmpty
+                  ? (isDark
+                        ? AppColors.textclr
+                        : Theme.of(context).colorScheme.onSurface)
+                  : (isDark
+                        ? AppColors.textclr
+                        : Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
         ),
@@ -280,18 +295,12 @@ class _StatementScreenState extends State<StatementScreen> {
     );
   }
 
-  Widget _buildStatementCard(
-    StatementItem item,
-    bool isDark,
-    ThemeData theme,
-  ) {
+  Widget _buildStatementCard(StatementItem item, bool isDark, ThemeData theme) {
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: isDark
-            ? AppColors.darkplceholder
-            :  Color(0xFFF6F7FF),
+        color: isDark ? AppColors.darkplceholder : Color(0xFFF6F7FF),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
       ),
@@ -303,13 +312,13 @@ class _StatementScreenState extends State<StatementScreen> {
               Text(
                 "Date & Time:",
                 style: TextHelper.max1.copyWith(
-                color: isDark
+                  color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
                       : AppColors.darktextclr,
                 ),
               ),
               Text(
-                item.dateTime ?? "N/A",
+                formatTransactionDate(item.dateTime ?? ""),
                 style: TextHelper.max1.copyWith(
                   color: isDark
                       ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
@@ -327,14 +336,23 @@ class _StatementScreenState extends State<StatementScreen> {
           ),
           _buildCardRow('Description', item.description ?? "N/A", theme),
           _buildCardRow('Transaction ID', item.transactionId ?? "N/A", theme),
-          _buildCardRow('Opening Balance', "\u{20B9}${item.openingBalance ?? '0.00'}", theme),
+          _buildCardRow(
+            'Opening Balance',
+            "\u{20B9}${item.openingBalance ?? '0.00'}",
+            theme,
+          ),
           _buildCardRow(
             'Credit',
             "\u{20B9}${item.credit ?? '0.00'}",
             theme,
             valueColor: Colors.green,
           ),
-          _buildCardRow('Debit', "\u{20B9}${item.debit ?? '0.00'}", theme, valueColor: Colors.red),
+          _buildCardRow(
+            'Debit',
+            "\u{20B9}${item.debit ?? '0.00'}",
+            theme,
+            valueColor: Colors.red,
+          ),
           _buildCardRow(
             'Closing Balance',
             "\u{20B9}${item.closingBalance ?? '0.00'}",
@@ -348,18 +366,14 @@ class _StatementScreenState extends State<StatementScreen> {
               onTap: () {
                 Get.toNamed(
                   AppRoutes.statementReadMore,
-                  arguments: {
-                    'id': item.id,
-                  },
+                  arguments: {'id': item.id},
                 );
               },
               borderRadius: BorderRadius.circular(4.r),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.clrPrimary
-                      : AppColors.lightbg,
+                  color: isDark ? AppColors.clrPrimary : AppColors.lightbg,
                   borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: Text(
@@ -384,29 +398,33 @@ class _StatementScreenState extends State<StatementScreen> {
     ThemeData theme, {
     Color? valueColor,
     bool isBold = false,
+    int maxLines = 2,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
             style: TextHelper.max6.copyWith(color: theme.colorScheme.onSurface),
           ),
-          Text(
-            value,
-            style: TextHelper.max7.copyWith(
-              color: valueColor ?? theme.colorScheme.onSurface,
-              fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Text(
+              value,
+              maxLines: maxLines,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: TextHelper.max7.copyWith(
+                color: valueColor ?? theme.colorScheme.onSurface,
+                fontWeight: isBold ? FontWeight.bold : FontWeight.w500,
+              ),
             ),
           ),
         ],
       ),
     );
   }
-   // color: isDark
-   //                     ? const Color(0xFFFFFFFF).withValues(alpha: 0.7)
-
 }
-

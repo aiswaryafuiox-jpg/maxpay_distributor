@@ -8,7 +8,7 @@ class GetAddWalletDetailsUseCase {
 
   GetAddWalletDetailsUseCase(this.repository);
 
-  Future<Either<Failure, AddWalletDetailsResponseModel>> call(String id) {
+  Future<Either<Failure, AddWalletDetailsResponseModel>> call(int id) {
     return repository.getAddWalletDetails(id);
   }
 }

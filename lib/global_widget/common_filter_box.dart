@@ -130,7 +130,10 @@ class CommonFilterBox extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          const SearchBox(),
+          SearchBox(
+            controller: searchController,
+            onChanged: onSearchChanged,
+          ),
 
           if (bottomWidget != null) ...[
             const SizedBox(height: 10),

@@ -15,5 +15,6 @@ abstract class LoginRepository {
   Future<Either<Failure, UpdateFingerprintResponseModel>> updateFingerprint(int isFingerPrint);
   Future<Either<Failure, LogoutResponseModel>> logout();
   Future<Either<Failure, String>> sendUpdateMpinOtp();
-  Future<Either<Failure, String>> updatePin(String otp, String newPin, String confirmPin);
+  Future<Either<Failure, String>> verifyUpdateMpinOtp(String otp);
+  Future<Either<Failure, String>> updatePin(String newPin, String confirmPin);
 }

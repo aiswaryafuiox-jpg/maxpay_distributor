@@ -1,16 +1,21 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../domain/usecase/update_pin_usecase.dart';
 import '../domain/usecase/send_update_mpin_otp_usecase.dart';
+import '../domain/usecase/verify_update_mpin_otp_usecase.dart';
 import '../core/constants/routes_path.dart';
 
 class UpdatePinController extends GetxController {
   final UpdatePinUseCase updatePinUseCase;
   final SendUpdateMpinOtpUseCase sendUpdateMpinOtpUseCase;
+  final VerifyUpdateMpinOtpUseCase verifyUpdateMpinOtpUseCase;
 
   UpdatePinController({
     required this.updatePinUseCase,
     required this.sendUpdateMpinOtpUseCase,
+    required this.verifyUpdateMpinOtpUseCase,
   });
 
   final otpController = TextEditingController();
@@ -19,6 +24,7 @@ class UpdatePinController extends GetxController {
 
   RxBool isLoading = false.obs;
   RxBool isOtpLoading = false.obs;
+  RxBool isOtpVerifying = false.obs;
 
   @override
   void dispose() {
@@ -35,81 +41,80 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isOtpLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isOtpLoading.value = false;
-        Get.toNamed(AppRoutes.updateMpinOtp);
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
+        if (Get.currentRoute != AppRoutes.updateMpinOtp) {
+          Get.toNamed(AppRoutes.updateMpinOtp);
+        }
+        Fluttertoast.showToast(
+          msg: "OTP Sent Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
           backgroundColor: Colors.green,
-          colorText: Colors.white,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       },
     );
   }
 
-  void onOtpVerify() {
-    if (otpController.text.length != 4) {
-      Get.snackbar("Error", "Please enter a valid 4-digit OTP", snackPosition: SnackPosition.BOTTOM);
+  Future<void> onOtpVerify() async {
+    final otp = otpController.text.trim();
+    if (otp.length != 4) {
+      CustomSnackbar.error("Please enter a valid 4-digit OTP");
       return;
     }
-    // "Verify" just goes to the next page because there's no separate verify API
-    Get.toNamed(AppRoutes.update);
+
+    isOtpVerifying.value = true;
+    final result = await verifyUpdateMpinOtpUseCase(otp);
+
+    result.fold(
+      (failure) {
+        isOtpVerifying.value = false;
+        CustomSnackbar.error(failure.message);
+      },
+      (successMessage) {
+        isOtpVerifying.value = false;
+        Get.toNamed(AppRoutes.update);
+        CustomSnackbar.success(successMessage);
+      },
+    );
   }
 
   Future<void> updatePin() async {
-    final otp = otpController.text;
-    final newPin = newPinController.text;
-    final confirmPin = confirmPinController.text;
+    final newPin = newPinController.text.trim();
+    final confirmPin = confirmPinController.text.trim();
 
     if (newPin.isEmpty || confirmPin.isEmpty) {
-      Get.snackbar("Error", "Please enter and confirm your new M-PIN", snackPosition: SnackPosition.BOTTOM);
+      CustomSnackbar.error("Please enter and confirm your new M-PIN");
       return;
     }
 
-    if (newPin.length != 4 || confirmPin.length != 4) {
-      Get.snackbar("Error", "M-PIN must be exactly 4 digits", snackPosition: SnackPosition.BOTTOM);
+    if (newPin.length != 6 || confirmPin.length != 6) {
+      CustomSnackbar.error("M-PIN must be exactly 4 digits");
       return;
     }
 
     if (newPin != confirmPin) {
-      Get.snackbar("Error", "M-PINs do not match", snackPosition: SnackPosition.BOTTOM);
+      CustomSnackbar.error("M-PINs do not match");
       return;
     }
 
     isLoading.value = true;
-    final result = await updatePinUseCase(otp, newPin, confirmPin);
+    final result = await updatePinUseCase(newPin, confirmPin);
 
     result.fold(
       (failure) {
         isLoading.value = false;
-        Get.snackbar(
-          "Error",
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
       },
       (successMessage) {
         isLoading.value = false;
-        Get.offAllNamed('/menu'); // Or wherever they should go after success
-        Get.snackbar(
-          "Success",
-          successMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        Get.offAllNamed(AppRoutes.main);
+        CustomSnackbar.success(successMessage);
       },
     );
   }

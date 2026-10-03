@@ -49,7 +49,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       title = "Transaction Success";
     } else if (isPending) {
       bgColor = isDark ? const Color(0xFFFFF1DD) : const Color(0xFFFFF1DD);
-      title = "Transaction Pending";
+      title = "Transaction Processing";
     } else {
       bgColor = isDark ? const Color(0xFFFFE4E6) : const Color(0xFFFFE4E6);
       title = "Transaction Failed";
@@ -88,74 +88,131 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
               child: Column(
                 children: [
-                  /// SELECT CREDIT TYPE
-                  GestureDetector(
-                    onTap: () {
-                      _showProductsBottomSheet(context);
-                    },
-                    child: Container(
-                      width: double.infinity,
-
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 14,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: theme.brightness == Brightness.light
-                            ? Colors.white
-                            : AppColors.darkplceholder,
-
-                        borderRadius: BorderRadius.circular(8),
-
-                        border: Border.all(
-                          color: theme.brightness == Brightness.light
-                              ? AppColors.darktextclr.withValues(alpha: 0.3)
-                              : AppColors.darkFilterBorder,
+                  /// SELECT PRODUCT DROPDOWN
+                  Obx(() {
+                    if (_controller.isProductsLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return DropdownButtonFormField<int?>(
+                      initialValue: _controller.selectedProduct.value?.id,
+                      dropdownColor: isDark
+                          ? AppColors.darkplceholder
+                          : Colors.white,
+                      decoration: InputDecoration(
+                        hintText: "Select Product",
+                        hintStyle: TextHelper.max1.copyWith(
+                          color: isDark
+                              ? AppColors.textclr
+                              : AppColors.clrTextgrey,
+                        ),
+                        filled: true,
+                        fillColor: isDark
+                            ? AppColors.darkplceholder
+                            : Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.totalborde2,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.darktextclr.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: isDark
+                                ? AppColors.darkFilterBorder
+                                : AppColors.clrPrimary,
+                          ),
                         ),
                       ),
-
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          Obx(
-                            () => Text(
-                              _controller.selectedProduct.value?.name ??
-                                  "Select Product",
-                              style: TextHelper.max1.copyWith(
-                                color: isDark
-                                    ? AppColors.textclr
-                                    : AppColors.clrTextgrey,
-                              ),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: isDark
+                            ? AppColors.textclr
+                            : theme.colorScheme.onSurfaceVariant,
+                        size: 20,
+                      ),
+                      items: [
+                        DropdownMenuItem<int?>(
+                          value: null,
+                          child: Text(
+                            "All Products",
+                            style: TextHelper.max1.copyWith(
+                              color: isDark ? Colors.white : Colors.black,
                             ),
                           ),
-
-                          Icon(
-                            Icons.chevron_right,
-                            color: isDark
-                                ? AppColors.textclr
-                                : theme.colorScheme.onSurfaceVariant,
-                            size: 18,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                        ..._controller.products.map((product) {
+                          return DropdownMenuItem<int?>(
+                            value: product.id,
+                            child: Row(
+                              children: [
+                                if (product.logo != null &&
+                                    product.logo!.isNotEmpty) ...[
+                                  Image.network(
+                                    product.logo!,
+                                    width: 20,
+                                    height: 20,
+                                    errorBuilder: (_, _, _) =>
+                                        const SizedBox.shrink(),
+                                  ),
+                                  const SizedBox(width: 8),
+                                ],
+                                Text(
+                                  product.name ?? "Unknown",
+                                  style: TextHelper.max1.copyWith(
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                      onChanged: (selectedId) {
+                        if (selectedId == null) {
+                          _controller.selectedProduct.value = null;
+                        } else {
+                          _controller.selectedProduct.value = _controller
+                              .products
+                              .firstWhereOrNull((p) => p.id == selectedId);
+                        }
+                        _controller.fetchTransactionReport();
+                      },
+                    );
+                  }),
 
                   const SizedBox(height: 10),
 
-                  /// DATE FIELD
-                  GestureDetector(
-                    onTap: () => _controller.selectDateRange(context),
-                    child: Row(
+                  /// DATE FIELDS
+                  if (isPending == false)
+                    Row(
                       children: [
                         Expanded(
-                          child: customField(
-                            context,
-                            hint: "DD/MM/YYYY",
-                            controller: _controller.dateController,
-                            enabled: false,
+                          child: GestureDetector(
+                            onTap: () => _controller.selectDate(
+                              context,
+                              isFromDate: true,
+                            ),
+                            child: customField(
+                              context,
+                              hint: "DD/MM/YYYY",
+                              controller: _controller.fromDateController,
+                              enabled: false,
+                            ),
                           ),
                         ),
 
@@ -169,16 +226,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         ),
 
                         Expanded(
-                          child: customField(
-                            context,
-                            hint: "DD/MM/YYYY",
-                            controller: _controller.dateController,
-                            enabled: false,
+                          child: GestureDetector(
+                            onTap: () => _controller.selectDate(
+                              context,
+                              isFromDate: false,
+                            ),
+                            child: customField(
+                              context,
+                              hint: "DD/MM/YYYY",
+                              controller: _controller.toDateController,
+                              enabled: false,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
 
                   const SizedBox(height: 10),
 
@@ -187,9 +249,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                     context,
                     hint: "Search",
                     controller: _controller.searchController,
-                    onChanged: (v) {
-                      // Optional: debounce this or rely on submitted
-                    },
+                    onChanged: _controller.onSearchChanged,
                     onSubmitted: (v) {
                       _controller.fetchTransactionReport();
                     },
@@ -309,78 +369,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showProductsBottomSheet(BuildContext context) {
-    final theme = Theme.of(context);
-
-    Get.bottomSheet(
-      Container(
-        height: Get.height * 0.5,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Select Product",
-              style: TextHelper.max3.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Obx(() {
-                if (_controller.isProductsLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (_controller.products.isEmpty) {
-                  return const Center(child: Text("No products found"));
-                }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: _controller.products.length,
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemBuilder: (context, index) {
-                    final product = _controller.products[index];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: product.logo != null
-                          ? Image.network(
-                              product.logo!,
-                              width: 30,
-                              height: 30,
-                              errorBuilder: (_, _, _) =>
-                                  const Icon(Icons.broken_image),
-                            )
-                          : const Icon(Icons.category),
-                      title: Text(
-                        product.name ?? "Unknown",
-                        style: TextHelper.max1,
-                      ),
-                      trailing:
-                          _controller.selectedProduct.value?.id == product.id
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: AppColors.clrPrimary,
-                            )
-                          : null,
-                      onTap: () {
-                        _controller.selectedProduct.value = product;
-                        Get.back();
-                        _controller.fetchTransactionReport();
-                      },
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
     );
   }
 }

@@ -12,11 +12,26 @@ import '../usecase/retailer/update_retailer_usecase.dart';
 import '../usecase/retailer/add_wallet_usecase.dart';
 
 abstract class RetailerRepository {
-  Future<Either<Failure, RetailerListResponseModel>> getRetailers();
-  Future<Either<Failure, RetailerDetailResponseModel>> getRetailerDetail(String id);
-  Future<Either<Failure, CommissionPackageResponseModel>> getCommissionPackages();
-  Future<Either<Failure, CreateRetailerResponseModel>> createRetailer(CreateRetailerParams params);
-  Future<Either<Failure, UpdateRetailerResponseModel>> updateRetailer(UpdateRetailerParams params);
-  Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(String id);
-  Future<Either<Failure, AddWalletResponseModel>> addWallet(AddWalletParams params);
+  Future<Either<Failure, RetailerListResponseModel>> getRetailers({
+    int page = 1,
+    String? isActive,
+    String? search,
+  });
+  Future<Either<Failure, RetailerDetailResponseModel>> getRetailerDetail(
+    int id,
+  );
+  Future<Either<Failure, CommissionPackageResponseModel>>
+  getCommissionPackages();
+  Future<Either<Failure, CreateRetailerResponseModel>> createRetailer(
+    CreateRetailerParams params,
+  );
+  Future<Either<Failure, UpdateRetailerResponseModel>> updateRetailer(
+    UpdateRetailerParams params,
+  );
+  Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
+    int id,
+  );
+  Future<Either<Failure, AddWalletResponseModel>> addWallet(
+    AddWalletParams params,
+  );
 }

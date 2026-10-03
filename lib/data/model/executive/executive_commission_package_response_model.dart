@@ -4,8 +4,12 @@ class ExecutiveCommissionPackageResponseModel {
   String? message;
   int? code;
 
-  ExecutiveCommissionPackageResponseModel(
-      {this.success, this.data, this.message, this.code});
+  ExecutiveCommissionPackageResponseModel({
+    this.success,
+    this.data,
+    this.message,
+    this.code,
+  });
 
   ExecutiveCommissionPackageResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -39,13 +43,13 @@ class ExecutiveCommissionPackage {
 
   ExecutiveCommissionPackage.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    packageName = json['package_name'];
+    packageName = json['package_type'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['package_name'] = packageName;
+    data['package_type'] = packageName;
     return data;
   }
 }

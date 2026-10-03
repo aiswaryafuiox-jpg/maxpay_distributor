@@ -1,3 +1,4 @@
+import 'package:maxpay/core/utils/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/settings/commission_settings_model.dart';
@@ -41,9 +42,9 @@ class CommissionSettingsController extends GetxController {
   Future<void> fetchCommissionSettings() async {
     isLoading.value = true;
     errorMessage.value = '';
-    
+
     final result = await getCommissionSettingsUseCase.call();
-    
+
     result.fold(
       (failure) {
         errorMessage.value = failure.message;
@@ -58,29 +59,25 @@ class CommissionSettingsController extends GetxController {
     );
   }
 
-  Future<void> updatePackageStatus({required int id, required String type, required String status}) async {
+  Future<void> updatePackageStatus({
+    required int id,
+    required String type,
+    required String status,
+  }) async {
     isUpdating.value = true;
-    final result = await updatePackageStatusUseCase.call(id: id, type: type, status: status);
-    
+    final result = await updatePackageStatusUseCase.call(
+      id: id,
+      type: type,
+      status: status,
+    );
+
     result.fold(
       (failure) {
-        Get.snackbar(
-          'Error',
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        Get.snackbar(
-          'Success',
-          message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(message);
         isUpdating.value = false;
         fetchCommissionSettings();
       },
@@ -90,26 +87,14 @@ class CommissionSettingsController extends GetxController {
   Future<void> resetPackageCommission({required int id}) async {
     isUpdating.value = true;
     final result = await resetPackageCommissionUseCase.call(id: id);
-    
+
     result.fold(
       (failure) {
-        Get.snackbar(
-          'Error',
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        Get.snackbar(
-          'Success',
-          message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(message);
         isUpdating.value = false;
         fetchCommissionSettings();
       },
@@ -118,18 +103,12 @@ class CommissionSettingsController extends GetxController {
 
   Future<void> fetchBulkPackageOptions() async {
     isUpdating.value = true;
-    
+
     final result = await getBulkPackageOptionsUseCase.call();
-    
+
     result.fold(
       (failure) {
-        Get.snackbar(
-          'Error',
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
         isUpdating.value = false;
       },
       (data) {
@@ -141,62 +120,52 @@ class CommissionSettingsController extends GetxController {
     );
   }
 
-  Future<void> applyBulkPackageCharge({required int packageId, required String userType, required VoidCallback onSuccess}) async {
+  Future<void> applyBulkPackageCharge({
+    required int packageId,
+    required String userType,
+    required VoidCallback onSuccess,
+  }) async {
     isUpdating.value = true;
-    
-    final result = await bulkPackageChargeUseCase.call(packageId: packageId, userType: userType);
-    
+
+    final result = await bulkPackageChargeUseCase.call(
+      packageId: packageId,
+      userType: userType,
+    );
+
     result.fold(
       (failure) {
-        Get.snackbar(
-          'Error',
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        Get.snackbar(
-          'Success',
-          message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.success(message);
         isUpdating.value = false;
         onSuccess();
       },
     );
   }
 
-  Future<void> applyBulkPackageChange({required int packageId, required String status, required VoidCallback onSuccess}) async {
+  Future<void> applyBulkPackageChange({
+    required int packageId,
+    required String status,
+    required VoidCallback onSuccess,
+  }) async {
     isUpdating.value = true;
-    
-    final result = await bulkPackageChangeUseCase.call(packageId: packageId, status: status);
-    
+
+    final result = await bulkPackageChangeUseCase.call(
+      packageId: packageId,
+      status: status,
+    );
+
     result.fold(
       (failure) {
-        Get.snackbar(
-          'Error',
-          failure.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
+        CustomSnackbar.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        Get.snackbar(
-          'Success',
-          message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
         isUpdating.value = false;
         onSuccess();
+        CustomSnackbar.success(message);
       },
     );
   }

@@ -17,7 +17,7 @@ class CreateQrUsecase {
     return repository.checkQrStatus(txnId: txnId);
   }
 
-  Future<Either<Failure, WalletQrHistory>> getWalletHistory() {
+  Future<Either<Failure, WalletQrHistoryModel>> getWalletHistory() {
     return repository.getWalletHistory();
   }
 }

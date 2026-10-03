@@ -10,6 +10,7 @@ class CustomElevatedButton extends StatelessWidget {
   final double? width;
   final double? height;
   final double? borderRadius;
+  final bool isLoading;
 
   const CustomElevatedButton({
     super.key,
@@ -20,12 +21,13 @@ class CustomElevatedButton extends StatelessWidget {
     this.width,
     this.height,
     this.borderRadius,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: isLoading ? null : onPressed,
       child: Container(
         width: width ?? double.infinity,
         height: height ?? 56.h,
@@ -34,15 +36,24 @@ class CustomElevatedButton extends StatelessWidget {
           color: backgroundColor ?? AppColors.clrPrimary,
           borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w600,
-            fontSize: 16.sp,
-            color: textColor ?? Colors.white,
-          ),
-        ),
+        child: isLoading
+            ? SizedBox(
+                width: 24.w,
+                height: 24.w,
+                child: CircularProgressIndicator(
+                  color: textColor ?? Colors.white,
+                  strokeWidth: 2.5,
+                ),
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16.sp,
+                  color: textColor ?? Colors.white,
+                ),
+              ),
       ),
     );
   }

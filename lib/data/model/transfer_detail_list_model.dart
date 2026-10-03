@@ -1,57 +1,64 @@
+// To parse this JSON data, do
+//
+//     final transferDetailListModel = transferDetailListModelFromJson(jsonString);
+
+import 'dart:convert';
+
+TransferDetailListModel transferDetailListModelFromJson(String str) =>
+    TransferDetailListModel.fromJson(json.decode(str));
+
+String transferDetailListModelToJson(TransferDetailListModel data) =>
+    json.encode(data.toJson());
+
 class TransferDetailListModel {
   bool? success;
-  TransferDetailData? data;
+  TransferDetailListData? data;
   String? message;
   int? code;
 
   TransferDetailListModel({this.success, this.data, this.message, this.code});
 
-  TransferDetailListModel.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    data = json['data'] != null ? TransferDetailData.fromJson(json['data']) : null;
-    message = json['message'];
-    code = json['code'];
-  }
+  factory TransferDetailListModel.fromJson(Map<String, dynamic> json) =>
+      TransferDetailListModel(
+        success: json["success"],
+        data: json["data"] == null ? null : TransferDetailListData.fromJson(json["data"]),
+        message: json["message"],
+        code: json["code"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['success'] = success;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    data['message'] = message;
-    data['code'] = code;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "data": data?.toJson(),
+    "message": message,
+    "code": code,
+  };
 }
 
-class TransferDetailData {
+class TransferDetailListData {
   String? summaryLabel;
-  dynamic summaryAmount;
+  int? summaryAmount;
   List<TransferDetailListItem>? list;
 
-  TransferDetailData({this.summaryLabel, this.summaryAmount, this.list});
+  TransferDetailListData({this.summaryLabel, this.summaryAmount, this.list});
 
-  TransferDetailData.fromJson(Map<String, dynamic> json) {
-    summaryLabel = json['summary_label'];
-    summaryAmount = json['summary_amount'];
-    if (json['list'] != null) {
-      list = <TransferDetailListItem>[];
-      json['list'].forEach((v) {
-        list!.add(TransferDetailListItem.fromJson(v));
-      });
-    }
-  }
+  factory TransferDetailListData.fromJson(Map<String, dynamic> json) =>
+      TransferDetailListData(
+        summaryLabel: json["summary_label"],
+        summaryAmount: json["summary_amount"],
+        list: json["list"] == null
+            ? []
+            : List<TransferDetailListItem>.from(
+                json["list"]!.map((x) => TransferDetailListItem.fromJson(x)),
+              ),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['summary_label'] = summaryLabel;
-    data['summary_amount'] = summaryAmount;
-    if (list != null) {
-      data['list'] = list!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "summary_label": summaryLabel,
+    "summary_amount": summaryAmount,
+    "list": list == null
+        ? []
+        : List<dynamic>.from(list!.map((x) => x.toJson())),
+  };
 }
 
 class TransferDetailListItem {
@@ -62,43 +69,43 @@ class TransferDetailListItem {
   String? userType;
   String? userName;
   String? regMobileNumber;
-  dynamic amount;
+  int? amount;
   int? isReversible;
 
-  TransferDetailListItem(
-      {this.id,
-      this.transactionId,
-      this.dateTime,
-      this.transactionType,
-      this.userType,
-      this.userName,
-      this.regMobileNumber,
-      this.amount,
-      this.isReversible});
+  TransferDetailListItem({
+    this.id,
+    this.transactionId,
+    this.dateTime,
+    this.transactionType,
+    this.userType,
+    this.userName,
+    this.regMobileNumber,
+    this.amount,
+    this.isReversible,
+  });
 
-  TransferDetailListItem.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    transactionId = json['transaction_id'];
-    dateTime = json['date_time'];
-    transactionType = json['transaction_type'];
-    userType = json['user_type'];
-    userName = json['user_name'];
-    regMobileNumber = json['reg_mobile_number'];
-    amount = json['amount'];
-    isReversible = json['is_reversible'];
-  }
+  factory TransferDetailListItem.fromJson(Map<String, dynamic> json) =>
+      TransferDetailListItem(
+        id: json["id"],
+        transactionId: json["transaction_id"],
+        dateTime: json["date_time"],
+        transactionType: json["transaction_type"],
+        userType: json["user_type"],
+        userName: json["user_name"],
+        regMobileNumber: json["reg_mobile_number"],
+        amount: json["amount"],
+        isReversible: json["is_reversible"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['transaction_id'] = transactionId;
-    data['date_time'] = dateTime;
-    data['transaction_type'] = transactionType;
-    data['user_type'] = userType;
-    data['user_name'] = userName;
-    data['reg_mobile_number'] = regMobileNumber;
-    data['amount'] = amount;
-    data['is_reversible'] = isReversible;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "transaction_id": transactionId,
+    "date_time": dateTime,
+    "transaction_type": transactionType,
+    "user_type": userType,
+    "user_name": userName,
+    "reg_mobile_number": regMobileNumber,
+    "amount": amount,
+    "is_reversible": isReversible,
+  };
 }

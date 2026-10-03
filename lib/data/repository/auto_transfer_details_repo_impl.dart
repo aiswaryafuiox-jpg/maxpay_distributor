@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -12,11 +13,11 @@ class AutoTransferDetailsRepoImpl implements AutoTransferDetailsRepository {
   AutoTransferDetailsRepoImpl(this._apiService);
 
   @override
-  Future<Either<Failure, AutoTransferDetailsModel>> getAutoTransferDetails(String id) async {
+  Future<Either<Failure, AutoTransferDetailsModel>> getAutoTransferDetails(
+    String id,
+  ) async {
     try {
-      final formData = FormData.fromMap({
-        'id': id,
-      });
+      final formData = FormData.fromMap({'id': id});
 
       final response = await _apiService.post(
         ApiRoutes.distributorAutoTransferDetails,
@@ -28,12 +29,14 @@ class AutoTransferDetailsRepoImpl implements AutoTransferDetailsRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch auto transfer details."));
+        return Left(
+          ServerFailure(
+            model.message ?? "Failed to fetch auto transfer details.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

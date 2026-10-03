@@ -773,6 +773,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:maxpay/controller/home_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
@@ -798,6 +799,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     isActive = Get.find<ProfileController>().profileData.value?.isActive == 1
         ? true
         : false;
+        
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.isRegistered<HomePageController>()) {
+        Get.find<HomePageController>().fetchPopupMessage("Profile");
+      }
+    });
   }
 
   Future<void> _showStatusDialog() async {

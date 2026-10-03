@@ -7,12 +7,14 @@ import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/constants/routes_path.dart';
-import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/core/utils/theme.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
 import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -23,17 +25,30 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isActive = true;
+  String _appVersion = '';
 
   @override
   void initState() {
     super.initState();
+    _loadAppVersion();
     Get.put(ProfileController(sl(), sl(), sl(), sl(), sl(), sl()));
     isActive = Get.find<ProfileController>().profileData.value?.isActive == 1
         ? true
         : false;
   }
 
-  Future<void> _showStatusDialog() async {
+  Future<void> _loadAppVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
+        });
+      }
+    } catch (_) {}
+  }
+
+  /* Future<void> _showStatusDialog() async {
     final action = isActive ? "inactive" : "active";
 
     final bool? result = await showDialog<bool>(
@@ -111,15 +126,20 @@ class _SettingsPageState extends State<SettingsPage> {
         isActive = !isActive;
       });
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
     final updatePinController = Get.put(sl<UpdatePinController>());
     final authController = Get.find<LoginController>();
+    final profileController = Get.find<ProfileController>();
+    
+
     return Obx(() {
       final isDark = themeController.isDarkMode;
+      final isExecutive =
+          profileController.profileData.value?.userType == "executive";
       return Container(
         decoration: BoxDecoration(
           image: isDark
@@ -182,45 +202,53 @@ class _SettingsPageState extends State<SettingsPage> {
                               "Web Login",
                               style: TextStyle(
                                 fontFamily: "Poppins",
-                                fontSize: 14.sp,
+                                fontSize: 10.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
 
-                            SizedBox(height: 6.h),
-
                             Row(
                               children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
-                                    vertical: 6.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF00BC62),
-                                    borderRadius: BorderRadius.circular(8.r),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "Link",
-                                        style: TextStyle(
+                                InkWell(
+                                  onTap: () {
+                                    SharePlus.instance.share(
+                                      ShareParams(
+                                        uri: Uri.parse(
+                                          "https://paylinkonline.in/distributor/login",
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 8.w),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w,
+                                      vertical: 5.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "Link",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        SizedBox(width: 3.w),
+                                        Icon(
+                                          Icons.reply_rounded,
                                           color: Colors.white,
-                                          fontSize: 13,
+                                          size: 14.sp,
                                         ),
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      SvgPicture.asset(
-                                        AssetImages.linkShare,
-                                        width: 15.w,
-                                        height: 15.h,
-                                        colorFilter: const ColorFilter.mode(
-                                          Colors.white,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
 
@@ -231,8 +259,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                   },
                                   child: Image.asset(
                                     AssetImages.qrCode,
-                                    width: 50.w,
-                                    height: 50.w,
+                                    width: 35.w,
+                                    height: 35.w,
                                   ),
                                 ),
                               ],
@@ -260,50 +288,37 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                       SvgPicture.asset(AssetImages.acc, width: 24.w),
                     ),
-                    _buildMenuTile(
-                      context,
-                      'Commission Settings',
-                      () {
-                        Get.toNamed(AppRoutes.commission);
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                    ),
-                    _buildMenuTile(
-                      context,
-                      'Bulk Package Update',
-                      () {
-                        Get.toNamed(AppRoutes.bulkPackageCharge);
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                    ),
-                    _buildMenuTile(
-                      context,
-                      'Account (active/inactive)',
-                      () {
-                        _showStatusDialog();
-                      },
-                      SvgPicture.asset(AssetImages.acc, width: 24.w),
-                    ),
-                    _buildMenuTile(
-                      context,
-                      authController.isFingerPrint.value == 1
-                          ? 'Update Fingerprint'
-                          : 'Add Fingerprint',
-                      () {
-                        Get.toNamed(
-                          AppRoutes.biometricsIntro,
-                          arguments: {
-                            'is_update':
-                                authController.isFingerPrint.value == 1,
-                          },
-                        );
-                      },
-                      Icon(
-                        Icons.fingerprint,
-                        size: 24.w,
-                        color: AppColors.clrPrimary,
+                    if (isExecutive == false) ...[
+                      _buildMenuTile(
+                        context,
+                        'Commission Settings',
+                        () {
+                          Get.toNamed(AppRoutes.commission);
+                        },
+                        SvgPicture.asset(AssetImages.acc, width: 24.w),
                       ),
-                    ),
+
+                      _buildMenuTile(
+                        context,
+                        'Bulk Package Update',
+                        () {
+                          Get.toNamed(AppRoutes.bulkPackageCharge);
+                        },
+                        SvgPicture.asset(AssetImages.acc, width: 24.w),
+                      ),
+                    ],
+                    // _buildMenuTile(
+                    //   context,
+                    //   'Account ',
+                    //   () {
+                    //     _showStatusDialog();
+                    //   },
+                    //   SvgPicture.asset(AssetImages.acc, width: 24.w),
+                    //   '(active/inactive)',
+                    // ),
+                   
+
+                   
                     _buildMenuTile(
                       context,
                       'Grade',
@@ -317,7 +332,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     }, SvgPicture.asset(AssetImages.kyc, width: 24.w)),
                     _buildMenuTile(
                       context,
-                      'Update M-Pin',
+                      'Change M Pin',
                       () {
                         if (!updatePinController.isOtpLoading.value) {
                           updatePinController.sendOtp();
@@ -336,11 +351,97 @@ class _SettingsPageState extends State<SettingsPage> {
                               width: 24.w,
                             ),
                     ),
+  _buildMenuTile(
+                            context,
+                            'Forgot M Pin',
+                            () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.r),
+                                    ),
+                                    title: Text(
+                                      'Contact Support',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    content: Text(
+                                      'To reset your M PIN, please contact support.',
+                                      style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Get.back(); // close dialog
+                                        },
+                                        child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              Theme.of(context).platform ==
+                                                  TargetPlatform.iOS
+                                              ? AppColors.clrPrimary
+                                              : AppColors.clrPrimary,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          Get.back(); // close dialog
+                                          Get.toNamed(
+                                            AppRoutes.support,
+                                            arguments: {'showBack': true},
+                                          ); // move to support
+                                        },
+                                        child: Text(
+                                          'Continue',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.sp,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            SvgPicture.asset(
+                              AssetImages.updatePin,
+                              width: 24.w,
+                            ),
+                          ),
 
                     _buildMenuTile(
                       context,
+                      'Bank Details',
+                      () {
+                        Get.toNamed(AppRoutes.bank);
+                      },
+                      SvgPicture.asset(AssetImages.cashback, width: 24.w),
+                    ),
+                    _buildMenuTile(
+                      context,
                       'Privacy Policy',
-                      () {},
+                      () {
+                        final controller = Get.put(
+                          sl<PrivacyPolicyController>(),
+                        );
+                        controller.openPrivacyPolicy();
+                      },
                       SvgPicture.asset(AssetImages.privacyPolicy, width: 24.w),
                     ),
                     _buildMenuTile(
@@ -373,7 +474,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               context,
                               'App Logout',
                               AssetImages.applogout,
-                              () {},
+                              () async {
+                                await Get.find<LoginController>().logout();
+                              },
                             ),
                           ),
                           SizedBox(width: 15.w),
@@ -395,15 +498,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
 
-                    /// 🔹 VERSION TEXT
-                    Text(
-                      'Latest Version 1.0.0',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14.sp,
-                        fontFamily: 'Poppins',
+                    if (_appVersion.isNotEmpty)
+                      Text(
+                        'Latest Version $_appVersion',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 14.sp,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
-                    ),
                     SizedBox(height: 45.h),
                   ],
                 ),
@@ -425,9 +528,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _buildMenuTile(
     BuildContext context,
     String title,
+
     VoidCallback onTap,
-    Widget leadingIcon,
-  ) {
+    Widget leadingIcon, [
+    String? minititle,
+  ]) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -445,15 +550,40 @@ class _SettingsPageState extends State<SettingsPage> {
         dense: true,
         contentPadding: EdgeInsets.symmetric(vertical: 8.h),
         leading: leadingIcon,
-        title: Text(
-          title,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontSize: 16.sp,
-            color: colorScheme.onSurface,
-          ),
-        ),
+        title: minititle != null
+            ? Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: title,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.sp,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    TextSpan(
+                      text: minititle,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13.sp,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                  color: colorScheme.onSurface,
+                ),
+              ),
         trailing: Icon(
           Icons.chevron_right,
           color: colorScheme.onSurface.withValues(alpha: 0.5),

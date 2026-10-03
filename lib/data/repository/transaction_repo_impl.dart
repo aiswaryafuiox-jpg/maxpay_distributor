@@ -1,12 +1,11 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/model/transaction/transaction_report_model.dart';
 import 'package:maxpay/domain/repository/transaction_repo.dart';
-
-
 
 class TransactionRepoImpl implements TransactionRepository {
   final ApiService _apiService;
@@ -15,7 +14,11 @@ class TransactionRepoImpl implements TransactionRepository {
 
   @override
   Future<Either<Failure, TransactionReportModel>> getTransactionSuccessReport(
-      String productId, String fromDate, String toDate, String search) async {
+    String productId,
+    String fromDate,
+    String toDate,
+    String search,
+  ) async {
     try {
       final formData = FormData.fromMap({
         'product_id': productId,
@@ -34,12 +37,14 @@ class TransactionRepoImpl implements TransactionRepository {
       if (model.success == true) {
         return Right(model);
       } else {
-        return Left(ServerFailure(model.message ?? "Failed to fetch transaction success report."));
+        return Left(
+          ServerFailure(
+            model.message ?? "Failed to fetch transaction success report.",
+          ),
+        );
       }
-    } on DioException catch (e) {
-      return Left(ServerFailure(e.message ?? 'A network error occurred'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

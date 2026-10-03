@@ -1,130 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/core/constants/colors.dart';
-import 'package:maxpay/core/utils/texthelper.dart';
 
-class ViewDetailsScreen extends StatelessWidget {
-  const ViewDetailsScreen({super.key});
+import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/extensions/string_ext.dart';
+import 'package:maxpay/data/model/transaction/transaction_detail_response_model.dart';
+import 'package:maxpay/global_widget/custom_app.dart';
+
+class TransactionDetailsPage extends StatelessWidget {
+  const TransactionDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    // Mock data matching your Figma fields
-    final Map<String, String> detailsData = {
-      'Product Name': 'Airtel',
-      'Payment Status': 'Success',
-      'Transaction No': 'TXN9876543210',
-      'Available Balance': '₹ 1,250.00',
-      'Transaction Amount': '₹ 50.00',
-      'Commission': '₹ 2.00',
-      'Surcharge': '₹ 0.50',
-      'Remaining Balance': '₹ 1,197.50',
-      'Request Date & Time': 'May 21, 2026 - 16:12',
-      'Response Date & Time': 'May 21, 2026 - 16:13',
-    };
+    final dynamic rawArgs = Get.arguments;
+    final TransactionDetailData data;
+    if (rawArgs is TransactionDetailResponseModel) {
+      data = rawArgs.data ?? TransactionDetailData();
+    } else if (rawArgs is TransactionDetailData) {
+      data = rawArgs;
+    } else if (rawArgs is Map<String, dynamic>) {
+      data = TransactionDetailData.fromJson(rawArgs);
+    } else {
+      data = TransactionDetailData();
+    }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new,
-            size: 18,
-            color: theme.colorScheme.onSurface,
+      appBar: CommonAppBar(title: "View Details"),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 5)],
           ),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'View Details',
-          style: TextStyle(
-            color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
-        ),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: isDark
-                  ? AppColors.darkplceholder
-                  : const Color(0xFFF6F7FF),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isDark
-                    ? theme.colorScheme.outline
-                    : AppColors.totalborde2.withValues(alpha: 0.2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              productRow("Product Name", data.productLogo),
+
+              detailRow(
+                "Payment Status",
+                (data.status?.toLowerCase() == 'received' ||
+                        data.status?.toLowerCase() == 'success')
+                    ? 'Success'
+                    : (data.status ?? "-"),
+                textColor:
+                    (data.status?.toLowerCase() == 'received' ||
+                        data.status?.toLowerCase() == 'success')
+                    ? Colors.green
+                    : null,
               ),
-              boxShadow: isDark
-                  ? []
-                  : [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.03),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: detailsData.length,
-              itemBuilder: (context, index) {
-                String key = detailsData.keys.elementAt(index);
-                String value = detailsData[key]!;
 
-                bool isStatus = key == 'Payment Status';
+              detailRow("Transaction No", data.transactionId ?? "-"),
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 10.0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Text(
-                          key,
-                          style: TextHelper.max1.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                          value,
-                          textAlign: TextAlign.end,
-                          style: TextHelper.max1.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: isStatus && value == 'Success'
-                                ? Colors.green
-                                : theme.colorScheme.onSurface,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+              detailRow("Retailer Name", data.retailerName ?? "-"),
+
+              detailRow("Mobile No", data.mobile ?? "-"),
+
+              detailRow(
+                "Transaction Amount",
+                (data.amount ?? 0).currencyIndian,
+              ),
+
+              detailRow(
+                "Request Date & Time",
+                (data.dateTime?.isNotEmpty ?? false)
+                    ? formatTransactionDate(data.dateTime ?? '-')
+                    : "-",
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget detailRow(String title, String value, {Color? textColor}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 12)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget productRow(String title, String? imageUrl) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 12)),
+          imageUrl != null && imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  height: 35,
+                  width: 35,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.image_not_supported, size: 35);
+                  },
+                )
+              : const Text("-", style: TextStyle(fontSize: 12)),
+        ],
       ),
     );
   }

@@ -4,6 +4,11 @@ import 'package:maxpay/controller/cash_back_controller.dart';
 import 'package:maxpay/controller/low_wallet_controller.dart';
 import 'package:maxpay/controller/outstanding_controller.dart';
 import 'package:maxpay/controller/pending_wallet_request_controller.dart';
+import 'package:maxpay/controller/bank_controller.dart';
+import 'package:maxpay/domain/repository/bank_detail_repository.dart';
+import 'package:maxpay/data/repository/bank_detail_repoo_impl.dart';
+import 'package:maxpay/domain/repository/wallet_request_repository.dart';
+import 'package:maxpay/domain/usecase/bank_detail_usecase.dart';
 import 'package:maxpay/data/repository/home_card_repo_impl.dart';
 import 'package:maxpay/data/repository/outstanding_repo_impl.dart';
 import 'package:maxpay/data/repository/pending_wallet_request_repo_impl.dart';
@@ -16,12 +21,15 @@ import 'package:maxpay/domain/repository/today_transaction_repo.dart';
 import 'package:maxpay/domain/repository/wallet_credit_list_repo.dart';
 import 'package:maxpay/domain/repository/web_login_repo.dart';
 import 'package:maxpay/data/repository/web_login_repo_impl.dart';
+import 'package:maxpay/domain/usecase/wallet_request_usecase.dart';
 import 'package:maxpay/domain/usecase/web_login_usecase.dart';
 import 'package:maxpay/domain/usecase/web_logout_usecase.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/domain/usecase/get_transfer_detail_list_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_home_card_usecase.dart';
 import 'package:maxpay/domain/usecase/home/get_today_transaction_amount_usecase.dart';
+import '../../controller/banner_controller.dart';
+import '../../controller/graph_controller.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
@@ -86,6 +94,7 @@ import 'package:maxpay/controller/statement_controller.dart';
 import 'package:maxpay/controller/statement_read_more_controller.dart';
 import 'package:maxpay/controller/reg_charge_controller.dart';
 import 'package:maxpay/controller/online_transaction_controller.dart';
+import 'package:maxpay/controller/search_transaction_controller.dart';
 
 import '../../data/repository/login_send_otp_repo_impl.dart';
 import '../../domain/repository/login_send_otp_repo.dart';
@@ -105,7 +114,9 @@ import 'package:maxpay/domain/repository/update_auto_transfer_repo.dart';
 import '../../data/repository/low_wallet_repo_impl.dart';
 
 import '../../domain/usecase/wallet_credit_type_usecase.dart';
-
+import '../../domain/repository/wallet_credit_type_repository.dart';
+import '../../data/repository/wallet_credit_type_repository_impl.dart';
+import '../../domain/usecase/reverse_wallet_transfer_usecase.dart';
 import '../../controller/wallet_controller.dart';
 import '../../controller/day_book_controller.dart';
 import '../../controller/my_earnings_controller.dart';
@@ -118,6 +129,7 @@ import '../../domain/usecase/create_pin_usecase.dart';
 import '../../domain/usecase/verify_pin_usecase.dart';
 import '../../domain/usecase/update_pin_usecase.dart';
 import '../../domain/usecase/send_update_mpin_otp_usecase.dart';
+import '../../domain/usecase/verify_update_mpin_otp_usecase.dart';
 import '../../domain/usecase/update_fingerprint_usecase.dart';
 import '../../domain/usecase/logout_usecase.dart';
 import '../../controller/login_controller.dart';
@@ -150,6 +162,29 @@ import '../../domain/repository/transaction_repository.dart';
 import '../../domain/usecase/transaction/get_transaction_products_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_report_usecase.dart';
 import '../../domain/usecase/transaction/get_transaction_detail_usecase.dart';
+import '../../domain/repository/news_repo.dart';
+import '../../data/repository/news_repo_impl.dart';
+import '../../domain/usecase/home/get_news_usecase.dart';
+import '../../domain/repository/banner_repo.dart';
+import '../../data/repository/banner_repo_impl.dart';
+import '../../domain/usecase/home/get_banner_usecase.dart';
+import '../../domain/usecase/home/get_advertisement_usecase.dart';
+import '../../domain/usecase/home/get_faq_usecase.dart';
+import '../../domain/usecase/home/get_popup_message_usecase.dart';
+import '../../domain/usecase/home/faq_reply_usecase.dart';
+import '../../domain/repository/faq_repo.dart';
+import '../../data/repository/faq_repo_impl.dart';
+import '../../domain/repository/faq_reply_repo.dart';
+import '../../data/repository/faq_reply_repo_impl.dart';
+import '../../domain/repository/popup_message_repo.dart';
+import '../../data/repository/popup_message_repo_impl.dart';
+import '../../domain/repository/graph_repo.dart';
+import '../../data/repository/graph_repo_impl.dart';
+import '../../domain/usecase/home/get_graph_usecase.dart';
+import '../../domain/repository/ip_address_repo.dart';
+import '../../data/repository/ip_address_repo_impl.dart';
+import '../../domain/usecase/ip_address_usecase.dart';
+import '../../controller/ip_address_controller.dart';
 
 // SharedPreferences
 
@@ -163,6 +198,10 @@ import 'package:maxpay/domain/usecase/settings/bulk_package_change_usecase.dart'
 import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/data/repository/add_wallet_balance_repo_impl.dart';
+import 'package:maxpay/data/repository/wallet_request_repo_impl.dart';
+import 'package:maxpay/domain/repository/wallet_request_repository.dart';
+import 'package:maxpay/domain/usecase/wallet_request_usecase.dart';
+
 import 'package:maxpay/domain/repository/add_wallet_balance_repo.dart';
 import 'package:maxpay/domain/usecase/get_add_wallet_balance_usecase.dart';
 import 'package:maxpay/data/repository/create_qr_repo_impl.dart';
@@ -174,6 +213,10 @@ import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/controller/transfer_detail_controller.dart';
 import 'package:maxpay/domain/usecase/transfer_detail_usecase.dart';
+import 'package:maxpay/controller/privacy_policy_controller.dart';
+import 'package:maxpay/data/repository/privacy_policy_repo_impl.dart';
+import 'package:maxpay/domain/repository/privacy_policy_repo.dart';
+import 'package:maxpay/domain/usecase/get_privacy_policy_usecase.dart';
 
 final sl = GetIt.instance;
 Future<void> init() async {
@@ -238,10 +281,16 @@ Future<void> init() async {
 
   /// Retailer Repository
   sl.registerLazySingleton<RetailerRepository>(
-    () => RetailerRepositoryImpl(sl<ApiService>()),
+    () => RetailerRepositoryImpl(sl()),
   );
 
-  // Transfer Detail Repository
+  sl.registerLazySingleton<NewsRepository>(() => NewsRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<BannerRepository>(() => BannerRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<GraphRepository>(() => GraphRepositoryImpl(sl()));
+
+  /// 🔹 USE CASESTransfer Detail Repository
   sl.registerLazySingleton<TransferDetailRepository>(
     () => TransferDetailRepositoryImpl(sl<ApiService>()),
   );
@@ -410,7 +459,7 @@ Future<void> init() async {
     () => GetTransactionSuccessReportUseCase(sl()),
   );
   sl.registerFactory(() => TransactionController(sl(), sl(), sl(), sl()));
-
+  sl.registerFactory(() => SearchTransactionController(sl()));
 
   // CashBack
   sl.registerLazySingleton<CashBackRepository>(() => CashBackRepoImpl(sl()));
@@ -455,14 +504,46 @@ Future<void> init() async {
 
   // KYC
   sl.registerLazySingleton<KycRepository>(() => KycRepoImpl(sl()));
+  sl.registerLazySingleton(() => GetNewsUseCase(sl()));
+  sl.registerLazySingleton(() => GetBannerUseCase(sl()));
+  sl.registerLazySingleton(() => AdvertisementUsecase(sl()));
+
+  sl.registerLazySingleton<FaqRepository>(() => FaqRepoImpl(sl()));
+  sl.registerLazySingleton(() => GetFaqUseCase(sl()));
+
+  sl.registerLazySingleton<FaqReplyRepository>(() => FaqReplyRepoImpl(sl()));
+  sl.registerLazySingleton(() => FaqReplyUseCase(sl()));
+
+  sl.registerLazySingleton<PopupMessageRepository>(
+    () => PopupMessageRepoImpl(sl()),
+  );
+  sl.registerLazySingleton(() => GetPopupMessageUseCase(sl()));
+
+  sl.registerLazySingleton(() => GetGraphUseCase(sl()));
   sl.registerLazySingleton<GetKycUseCase>(() => GetKycUseCase(sl()));
   sl.registerLazySingleton<SubmitKycUseCase>(() => SubmitKycUseCase(sl()));
   sl.registerFactory(() => KycController(sl(), sl()));
+
+  // IP Address
+  sl.registerLazySingleton<IpAddressRepository>(
+    () => IpAddressRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<IpAddressUseCase>(() => IpAddressUseCase(sl()));
+  sl.registerFactory(() => IpAddressController(ipAddressUseCase: sl()));
 
   // Support
   sl.registerLazySingleton<SupportRepository>(() => SupportRepoImpl(sl()));
   sl.registerLazySingleton<GetSupportUseCase>(() => GetSupportUseCase(sl()));
   sl.registerFactory(() => SupportController(sl()));
+
+  // Privacy Policy
+  sl.registerLazySingleton<PrivacyPolicyRepository>(
+    () => PrivacyPolicyRepoImpl(sl()),
+  );
+  sl.registerLazySingleton<GetPrivacyPolicyUseCase>(
+    () => GetPrivacyPolicyUseCase(sl()),
+  );
+  sl.registerFactory(() => PrivacyPolicyController(sl()));
 
   // Login History
   sl.registerLazySingleton<LoginHistoryRepository>(
@@ -497,12 +578,23 @@ Future<void> init() async {
   );
 
   // Home Page
-  sl.registerFactory(() => HomePageController(sl(), sl()));
+  sl.registerFactory(
+    () => HomePageController(sl(), sl(), sl(), sl(), sl(), sl()),
+  );
+  sl.registerFactory(
+    () => BannerController(bannerUsecase: sl(), advusecase: sl()),
+  );
+  sl.registerFactory(() => GraphController(sl()));
 
   // Login
   sl.registerLazySingleton<UpdatePinUseCase>(() => UpdatePinUseCase(sl()));
-  sl.registerLazySingleton<SendUpdateMpinOtpUseCase>(() => SendUpdateMpinOtpUseCase(sl()));
-  
+  sl.registerLazySingleton<SendUpdateMpinOtpUseCase>(
+    () => SendUpdateMpinOtpUseCase(sl()),
+  );
+  sl.registerLazySingleton<VerifyUpdateMpinOtpUseCase>(
+    () => VerifyUpdateMpinOtpUseCase(sl()),
+  );
+
   sl.registerFactory(
     () => LoginController(
       loginUseCase: sl(),
@@ -514,10 +606,13 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => UpdatePinController(
-    updatePinUseCase: sl(),
-    sendUpdateMpinOtpUseCase: sl(),
-  ));
+  sl.registerFactory(
+    () => UpdatePinController(
+      updatePinUseCase: sl(),
+      sendUpdateMpinOtpUseCase: sl(),
+      verifyUpdateMpinOtpUseCase: sl(),
+    ),
+  );
 
   // Low Wallet
   sl.registerLazySingleton<GetLowWalletRetailersUseCase>(
@@ -569,24 +664,38 @@ Future<void> init() async {
   sl.registerLazySingleton<GetTransferDetailListUseCase>(
     () => GetTransferDetailListUseCase(sl()),
   );
-  sl.registerFactory(() => TransferDetailController(sl(), sl()));
+  sl.registerLazySingleton<ReverseWalletTransferUseCase>(
+    () => ReverseWalletTransferUseCase(sl()),
+  );
+  sl.registerFactory(() => TransferDetailController(sl(), sl(), sl()));
 
   // Wallet
   sl.registerLazySingleton<WalletCreditListRepository>(
     () => WalletCreditListRepoImpl(sl()),
   );
+  sl.registerLazySingleton<WalletRepository>(() => WalletRepositoryImpl(sl()));
   sl.registerLazySingleton<GetWalletCreditTypeUseCase>(
     () => GetWalletCreditTypeUseCase(sl()),
   );
   sl.registerLazySingleton<GetWalletCreditListUseCase>(
     () => GetWalletCreditListUseCase(sl()),
   );
-  sl.registerFactory(() => WalletController(getWalletCreditTypeUseCase: sl()));
+  sl.registerFactory(
+    () => WalletController(
+      getWalletCreditTypeUseCase: sl(),
+      getWalletCreditListUseCase: sl(),
+    ),
+  );
 
   // App Lifecycle
   sl.registerFactory(() => AppLifecycleController());
 
   // Add Wallet Balance & QR
+  sl.registerLazySingleton<WalletRequestRepository>(
+    () => WalletRequestRepoImpl(sl()),
+  );
+  sl.registerLazySingleton(() => WalletRequestUsecase(sl()));
+
   sl.registerLazySingleton<AddWalletBalanceRepository>(
     () => AddWalletBalanceRepoImpl(sl()),
   );
@@ -597,7 +706,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CreateQrRepository>(() => CreateQrRepoImpl(sl()));
   sl.registerLazySingleton<CreateQrUsecase>(() => CreateQrUsecase(sl()));
 
-  sl.registerFactory(() => AddWalletController(sl(), sl()));
+  sl.registerFactory(() => AddWalletController(sl(), sl(), sl()));
 
   // Statement
   sl.registerLazySingleton<StatementRepository>(
@@ -630,15 +739,18 @@ Future<void> init() async {
   sl.registerFactory(() => OnlineTransactionController(sl()));
 
   // Web Login
+  // Bank Details
+  sl.registerLazySingleton<BankDetailRepository>(
+    () => BankDetailRepooImpl(sl()),
+  );
+  sl.registerLazySingleton<BankDetailUsecase>(() => BankDetailUsecase(sl()));
+  sl.registerFactory(() => BankDetailController(bankdetailusecase: sl()));
   sl.registerLazySingleton<WebLoginRepository>(
     () => WebLoginRepositoryImpl(apiService: sl()),
   );
-  sl.registerLazySingleton<WebLoginUseCase>(
-    () => WebLoginUseCase(sl()),
-  );
-  sl.registerLazySingleton<WebLogoutUseCase>(
-    () => WebLogoutUseCase(sl()),
-  );
+  sl.registerLazySingleton<WebLoginUseCase>(() => WebLoginUseCase(sl()));
+  sl.registerLazySingleton<WebLogoutUseCase>(() => WebLogoutUseCase(sl()));
   sl.registerFactory(
-      () => WebLoginController(webLoginUseCase: sl(), webLogoutUseCase: sl()));
+    () => WebLoginController(webLoginUseCase: sl(), webLogoutUseCase: sl()),
+  );
 }

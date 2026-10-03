@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ionicons/flutter_ionicons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
@@ -10,6 +11,7 @@ import 'package:maxpay/controller/support_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../nav_page/navbar_provider.dart';
+import 'package:maxpay/core/utils/theme.dart';
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
@@ -17,7 +19,11 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final themeController = Get.isRegistered<ThemeController>()
+        ? Get.find<ThemeController>()
+        : Get.put(ThemeController(Get.find()));
+
+    final isDark = themeController.isDarkMode;
     final supportController = Get.put(sl<SupportController>());
 
     return Scaffold(
@@ -69,14 +75,14 @@ class SupportScreen extends StatelessWidget {
   }
 
   Widget _supportCard(
-      BuildContext context,
-      bool isDark, {
-        required String title,
-        required String phone,
-        required String whatsappNumber,
-        bool whatsappEnabled = true,
-        bool callEnabled = true,
-      }) {
+    BuildContext context,
+    bool isDark, {
+    required String title,
+    required String phone,
+    required String whatsappNumber,
+    bool whatsappEnabled = true,
+    bool callEnabled = true,
+  }) {
     final theme = Theme.of(context);
 
     return Container(
@@ -101,14 +107,17 @@ class SupportScreen extends StatelessWidget {
       child: Row(
         children: [
           /// Profile Image
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: const Color(0xFFEAEAEA),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: SvgPicture.asset(
-                AssetImages.iconPerson,
-                fit: BoxFit.contain,
+          Card(
+            elevation: 12,
+            shadowColor: AppColors.silverLight,
+            shape: CircleBorder(),
+            child: Container(
+              height: 53,
+              width: 53,
+              padding: EdgeInsets.all(8),
+              child: FittedBox(
+                fit: .scaleDown,
+                child: SvgPicture.asset(AssetImages.logo),
               ),
             ),
           ),
@@ -153,11 +162,19 @@ class SupportScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     if (whatsappNumber.isEmpty) return;
-                    final cleanPhone = whatsappNumber.replaceAll(RegExp(r'\D'), '');
-                    final formattedPhone = cleanPhone.length == 10 ? '91$cleanPhone' : cleanPhone;
+                    final cleanPhone = whatsappNumber.replaceAll(
+                      RegExp(r'\D'),
+                      '',
+                    );
+                    final formattedPhone = cleanPhone.length == 10
+                        ? '91$cleanPhone'
+                        : cleanPhone;
                     final url = Uri.parse("https://wa.me/$formattedPhone");
                     try {
-                      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                      final launched = await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
                       if (!launched) {
                         Get.snackbar("Error", "Could not open WhatsApp");
                       }
@@ -173,14 +190,11 @@ class SupportScreen extends StatelessWidget {
                       color: AppColors.clrPrimary,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: SvgPicture.asset(
-                      AssetImages.whatsapp,
-                    ),
+                    child: SvgPicture.asset(AssetImages.whatsapp),
                   ),
                 ),
 
-              if (whatsappEnabled && callEnabled)
-                const SizedBox(height: 8),
+              if (whatsappEnabled && callEnabled) const SizedBox(height: 8),
 
               if (callEnabled)
                 GestureDetector(
@@ -189,7 +203,10 @@ class SupportScreen extends StatelessWidget {
                     final cleanPhone = phone.replaceAll(RegExp(r'[^\d+]'), '');
                     final url = Uri.parse("tel:$cleanPhone");
                     try {
-                      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+                      final launched = await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
                       if (!launched) {
                         Get.snackbar("Error", "Could not open phone dialer");
                       }
@@ -205,9 +222,7 @@ class SupportScreen extends StatelessWidget {
                       color: AppColors.clrPrimary,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: SvgPicture.asset(
-                      AssetImages.call,
-                    ),
+                    child: Icon(Ionicons.call, color: Colors.white),
                   ),
                 ),
             ],

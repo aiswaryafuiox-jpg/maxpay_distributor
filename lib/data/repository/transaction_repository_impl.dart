@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/services/api_service.dart';
 import '../../../core/constants/api_routes.dart';
@@ -19,14 +20,8 @@ class TransactionRepositoryImpl implements TransactionsListRepository {
     try {
       final response = await _apiService.get(ApiRoutes.transactionProducts);
       return Right(TransactionProductResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -40,14 +35,8 @@ class TransactionRepositoryImpl implements TransactionsListRepository {
         data: body,
       );
       return Right(TransactionReportResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -61,14 +50,8 @@ class TransactionRepositoryImpl implements TransactionsListRepository {
         data: {'id': id.toString()},
       );
       return Right(TransactionDetailResponseModel.fromJson(response));
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
@@ -99,14 +82,8 @@ class TransactionRepositoryImpl implements TransactionsListRepository {
           ServerFailure(response['message'] ?? 'Failed to submit dispute'),
         );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        final message = e.response!.data['message'] ?? 'Server error';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

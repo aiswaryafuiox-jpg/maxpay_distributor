@@ -6,11 +6,14 @@ class StatCard extends StatelessWidget {
   final String title;
   final String? value;
   final Widget imageWidget;
+  final TextStyle? titletextStyle;
+  final TextStyle? valuetextStyle;
   final Color? bgColor;
   final Color? borderColor;
   final Color? textColor;
   final Color? valueColor;
   final bool needSpacingbwImage;
+  final double borderWidth;
 
   final VoidCallback? onTap;
 
@@ -25,6 +28,9 @@ class StatCard extends StatelessWidget {
     this.valueColor,
     this.onTap,
     this.needSpacingbwImage = true,
+    this.borderWidth = 1.0,
+    this.titletextStyle,
+    this.valuetextStyle,
   });
 
   @override
@@ -34,58 +40,73 @@ class StatCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(8.r),
-        decoration: BoxDecoration(
-          color: bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
+      child: MediaQuery.withClampedTextScaling(
+        maxScaleFactor: 1.15,
+        child: Container(
+          padding: EdgeInsets.all(6.r),
+          decoration: BoxDecoration(
+            color:
+                bgColor ?? (isDark ? theme.colorScheme.surface : Colors.white),
 
-          borderRadius: BorderRadius.circular(12.r),
-
-          border: Border.all(
-            color: borderColor ?? AppColors.clrPrimary,
-            width: 0.8,
-          ),
-        ),
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: [
-            /// IMAGE / ICON
-            SizedBox(
-              height: 40.h,
-              child: Center(child: imageWidget),
-            ),
-            if (needSpacingbwImage) SizedBox(height: 2.h),
-
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w700,
-                fontSize: 10.sp,
-                color: textColor ?? theme.colorScheme.onSurface,
-              ),
-            ),
-
-            if (value != null) ...[
-              SizedBox(height: 2.h),
-              Text(
-                value!,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 10.sp,
-                  height: 1.2,
-                  color: valueColor,
-                ),
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                offset: const Offset(0, 4),
+                blurRadius: 20,
+                spreadRadius: 0,
               ),
             ],
-          ],
+            border: Border.all(
+              color: borderColor ?? AppColors.clrPrimary,
+              width: borderWidth,
+            ),
+          ),
+
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              /// IMAGE / ICON
+              SizedBox(
+                height: 38.h,
+                child: Center(child: imageWidget),
+              ),
+              if (needSpacingbwImage) SizedBox(height: 5.h),
+
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style:
+                    titletextStyle ??
+                    TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 9.sp,
+                      color: textColor ?? theme.colorScheme.onSurface,
+                    ),
+              ),
+
+              if (value != null) ...[
+                SizedBox(height: 2.h),
+                Text(
+                  value!,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style:
+                      valuetextStyle ??
+                      TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                        height: 1.2,
+                        color: valueColor,
+                      ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );

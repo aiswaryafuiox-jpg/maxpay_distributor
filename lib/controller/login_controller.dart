@@ -1,9 +1,13 @@
-﻿import 'package:flutter/cupertino.dart';
+import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
+import 'package:maxpay/core/utils/sim_util.dart';
 
 import '../core/constants/routes_path.dart';
 import '../domain/usecase/login_send_otp_usecase.dart';
@@ -59,8 +63,20 @@ class LoginController extends GetxController {
   }
 
   Future<void> sendOtp() async {
+    final phone = phoneController.text.trim();
+
+    // Verify SIM presence before proceeding
     isLoading.value = true;
-    final result = await loginUseCase(phoneController.text.trim());
+    final bool isSimValid = await SimUtil.verifySimPresent(
+      phone,
+      showToasts: true,
+    );
+    if (!isSimValid) {
+      isLoading.value = false;
+      return;
+    }
+
+    final result = await loginUseCase(phone);
     isLoading.value = false;
 
     result.fold(
@@ -69,7 +85,23 @@ class LoginController extends GetxController {
       },
       (response) {
         if (response.success == true) {
-          Get.toNamed(AppRoutes.otpVerification, arguments: response);
+          String toastMsg = "OTP Sent Successfully";
+          if (SimUtil.testNumbers.contains(phone)) {
+            toastMsg = "OTP: ${response.data?.otp}";
+          }
+          AppLogger.logError({"phone": phone, "otp": response.data?.otp});
+          Fluttertoast.showToast(
+            msg: toastMsg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          if (Get.currentRoute != AppRoutes.otpVerification) {
+            Get.toNamed(AppRoutes.otpVerification, arguments: response);
+          }
         } else {
           CustomToast.error(response.message ?? "Something went wrong");
         }
@@ -105,11 +137,8 @@ class LoginController extends GetxController {
           isPin.value = response.data!.isPin ?? 0;
           isFingerPrint.value = response.data!.isFingerPrint ?? 0;
 
-          if (isPin.value == 1) {
-            Get.toNamed(AppRoutes.enterPin);
-          } else {
-            Get.toNamed(AppRoutes.pinCodeCreation);
-          }
+          await Get.find<ProfileController>().fetchProfile();
+          Get.offAllNamed(AppRoutes.main);
         } else {
           CustomToast.error(response.message ?? "Invalid OTP");
         }
@@ -137,7 +166,8 @@ class LoginController extends GetxController {
 
           isPin.value = 1;
 
-          Get.toNamed(AppRoutes.successScreen);
+          await Get.find<ProfileController>().fetchProfile();
+          Get.offAllNamed(AppRoutes.main);
         } else {
           CustomToast.error(response.message ?? "Failed to create PIN");
         }
@@ -162,6 +192,10 @@ class LoginController extends GetxController {
             "last_active_time",
             DateTime.now().toIso8601String(),
           );
+          CustomToast.success(
+            "M Pin Verified Successfully", //2722
+          );
+          await Get.find<ProfileController>().fetchProfile();
           Get.offAllNamed(AppRoutes.main);
           return true;
         } else {
@@ -178,13 +212,10 @@ class LoginController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove("token");
       Get.offAllNamed(AppRoutes.loginPhoneName);
-      Get.snackbar(
-        "Session Expired",
-        "Too many failed attempts. Please login again.",
-      );
+      CustomSnackbar.warning("Too many failed attempts. Please login again.");
       return false;
     } else {
-      Get.snackbar("Error", "$message. ${3 - mpinAttempts} attempts left.");
+      CustomSnackbar.error("$message. ${3 - mpinAttempts} attempts left.");
       return false;
     }
   }
@@ -195,7 +226,7 @@ class LoginController extends GetxController {
       final bool canAuthenticate =
           canAuthenticateWithBiometrics || await auth.isDeviceSupported();
       if (!canAuthenticate) {
-        Get.snackbar('Info', 'Biometrics not supported on this device.');
+        CustomSnackbar.warning('Biometrics not supported on this device.');
         return;
       }
 
@@ -210,10 +241,11 @@ class LoginController extends GetxController {
           'last_active_time',
           DateTime.now().toIso8601String(),
         );
+        await Get.find<ProfileController>().fetchProfile();
         Get.offAllNamed(AppRoutes.main);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Authentication failed: $e');
+      CustomSnackbar.error('Authentication failed: $e');
     }
   }
 

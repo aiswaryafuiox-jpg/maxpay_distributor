@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:maxpay/core/error/error_handler.dart';
 import 'package:dio/dio.dart';
 import 'package:maxpay/core/constants/api_routes.dart';
 import 'package:maxpay/core/error/failure.dart';
@@ -13,9 +14,7 @@ class WebLoginRepositoryImpl implements WebLoginRepository {
   @override
   Future<Either<Failure, String>> webLogin(String qrUserId) async {
     try {
-      final formData = FormData.fromMap({
-        'qr_user_id': qrUserId,
-      });
+      final formData = FormData.fromMap({'qr_user_id': qrUserId});
 
       final response = await apiService.post(
         ApiRoutes.distributorWebLogin,
@@ -25,24 +24,19 @@ class WebLoginRepositoryImpl implements WebLoginRepository {
       if (response['code'] == 200 || response['status'] == true) {
         return Right(response['message']?.toString() ?? 'Web login successful');
       } else {
-        return Left(ServerFailure(response['message'] ?? 'Failed to web login'));
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to web login'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 
   @override
   Future<Either<Failure, String>> webLogout(String isWebLogin) async {
     try {
-      final formData = FormData.fromMap({
-        'is_web_login': isWebLogin,
-      });
+      final formData = FormData.fromMap({'is_web_login': isWebLogin});
 
       final response = await apiService.post(
         ApiRoutes.distributorWebLogout,
@@ -50,17 +44,16 @@ class WebLoginRepositoryImpl implements WebLoginRepository {
       );
 
       if (response['code'] == 200 || response['status'] == true) {
-        return Right(response['message']?.toString() ?? 'Web logout successful');
+        return Right(
+          response['message']?.toString() ?? 'Web logout successful',
+        );
       } else {
-        return Left(ServerFailure(response['message'] ?? 'Failed to web logout'));
+        return Left(
+          ServerFailure(response['message'] ?? 'Failed to web logout'),
+        );
       }
-    } on DioException catch (e) {
-      if (e.response != null && e.response!.data is Map<String, dynamic>) {
-        return Left(ServerFailure(e.response!.data['message'] ?? 'Server error'));
-      }
-      return Left(ServerFailure(e.message ?? 'Network error'));
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      return Left(DioErrorHandler.handle(e));
     }
   }
 }

@@ -315,7 +315,6 @@ import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 
-
 class GradeScreen extends StatelessWidget {
   const GradeScreen({super.key});
 
@@ -323,7 +322,7 @@ class GradeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final gradeController = Get.put(sl<GradeController>());
 
     return Scaffold(
@@ -331,9 +330,7 @@ class GradeScreen extends StatelessWidget {
 
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(56.h),
-        child: const CommonAppBar(
-          title: "Grade",
-        ),
+        child: const CommonAppBar(title: "Grade"),
       ),
 
       body: SafeArea(
@@ -374,8 +371,8 @@ class GradeScreen extends StatelessWidget {
                       SizedBox(height: 10.h),
 
                       Text(
-                        gradeData.monthLabel != null 
-                            ? "This month (${gradeData.monthLabel}) grade is" 
+                        gradeData.displayCard?.monthLabel != null
+                            ? "This month ${gradeData.displayCard?.monthLabel} grade is"
                             : "This month grade is",
                         style: TextStyle(
                           fontSize: 14.sp,
@@ -386,7 +383,7 @@ class GradeScreen extends StatelessWidget {
                       SizedBox(height: 18.h),
 
                       Text(
-                        gradeData.currentGrade ?? "-",
+                        gradeData.displayCard?.grade ?? "-",
                         style: TextStyle(
                           fontSize: 105.sp,
                           fontWeight: FontWeight.bold,
@@ -448,13 +445,15 @@ class GradeScreen extends StatelessWidget {
                         ],
                       ),
 
-                      if (gradeData.details != null)
-                        ...gradeData.details!.map((detail) => _tableRow(
-                              context,
-                              detail.grade ?? "-",
-                              detail.dailyAverageBalance?.toString() ?? "-",
-                              detail.monthlyCashback?.toString() ?? "-",
-                            )),
+                      if (gradeData.gradeSlabs != null)
+                        ...gradeData.gradeSlabs!.map(
+                          (detail) => _tableRow(
+                            context,
+                            detail.grade ?? "-",
+                            detail.dailyAverageBalance?.toString() ?? "-",
+                            detail.monthlyCashBack?.toString() ?? "-",
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -469,11 +468,11 @@ class GradeScreen extends StatelessWidget {
   }
 
   Widget _headerCell(
-      BuildContext context, {
-        required String title,
-        required Color color,
-        bool isLast = false,
-      }) {
+    BuildContext context, {
+    required String title,
+    required Color color,
+    bool isLast = false,
+  }) {
     final theme = Theme.of(context);
 
     return Expanded(
@@ -486,8 +485,8 @@ class GradeScreen extends StatelessWidget {
             right: isLast
                 ? BorderSide.none
                 : BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: .5),
-            ),
+                    color: theme.colorScheme.outline.withValues(alpha: .5),
+                  ),
           ),
         ),
         child: Text(
@@ -504,31 +503,23 @@ class GradeScreen extends StatelessWidget {
   }
 
   Widget _tableRow(
-      BuildContext context,
-      String grade,
-      String balance,
-      String cashback,
-      ) {
+    BuildContext context,
+    String grade,
+    String balance,
+    String cashback,
+  ) {
     return IntrinsicHeight(
       child: Row(
         children: [
           _bodyCell(context, grade),
           _bodyCell(context, balance),
-          _bodyCell(
-            context,
-            cashback,
-            isLast: true,
-          ),
+          _bodyCell(context, cashback, isLast: true),
         ],
       ),
     );
   }
 
-  Widget _bodyCell(
-      BuildContext context,
-      String text, {
-        bool isLast = false,
-      }) {
+  Widget _bodyCell(BuildContext context, String text, {bool isLast = false}) {
     final theme = Theme.of(context);
 
     return Expanded(
@@ -540,9 +531,9 @@ class GradeScreen extends StatelessWidget {
             right: isLast
                 ? BorderSide.none
                 : BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: .5),
-              width: 1,
-            ),
+                    color: theme.colorScheme.outline.withValues(alpha: .5),
+                    width: 1,
+                  ),
           ),
         ),
         child: Text(
