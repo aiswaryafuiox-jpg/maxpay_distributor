@@ -123,6 +123,7 @@ class Retailer {
   dynamic executiveId;
   dynamic executiveName;
   String? commissionPackage;
+  String? commissionPackagename;
   int? isActive;
   String? walletAmount;
   String? dueAmount;
@@ -142,6 +143,7 @@ class Retailer {
     this.dueAmount,
     this.todayOnline,
     this.todayTransfer,
+    this.commissionPackagename,
   });
 
   factory Retailer.fromJson(Map<String, dynamic> json) => Retailer(
@@ -152,6 +154,7 @@ class Retailer {
     executiveId: json["executive_id"],
     executiveName: json["executive_name"]?.toString(),
     commissionPackage: json["commission_package"]?.toString(),
+    commissionPackagename: json["commission_package_name"]?.toString(),
     isActive: json["is_active"],
     walletAmount: json["wallet_amount"]?.toString(),
     dueAmount: json["due_amount"]?.toString(),
@@ -167,6 +170,7 @@ class Retailer {
     "executive_id": executiveId,
     "executive_name": executiveName,
     "commission_package": commissionPackage,
+    "commission_package_name":commissionPackagename,
     "is_active": isActive,
     "wallet_amount": walletAmount,
     "due_amount": dueAmount,

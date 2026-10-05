@@ -5,6 +5,7 @@ class SimUtil {
     '9876541302',
     '6369497195',
     '9361663531',
+    '9292697711',
   ];
 
   /// Verifies if the [registeredPhone] is currently present in the device's SIM slots.

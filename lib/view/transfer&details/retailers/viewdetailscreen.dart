@@ -7,7 +7,6 @@ import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
-
 import 'package:get/get.dart';
 import '../../../controller/retailer_controller.dart';
 import '../../../domain/usecase/retailer/update_retailer_usecase.dart';
@@ -156,10 +155,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               buildField(
                 context,
                 detail.regMobileNumber ?? "-",
-                onChanged: (val) {
-                  editedFields['regMobileNumber'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
+                readOnly: true,
                 isPhoneNumber: true,
               ),
 
@@ -169,10 +165,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               buildField(
                 context,
                 detail.whatsappNumber ?? "-",
-                onChanged: (val) {
-                  editedFields['whatsappNumber'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
+                readOnly: true,
                 isPhoneNumber: true,
               ),
 
@@ -183,10 +176,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                 context,
                 detail.email ?? "-",
                 isEmailAdres: true,
-                onChanged: (val) {
-                  editedFields['email'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
+                readOnly: true,
               ),
 
               SizedBox(height: 14.h),
@@ -204,14 +194,7 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               SizedBox(height: 14.h),
 
               buildLabel("GST No", isDark, context),
-              buildField(
-                context,
-                detail.gstNo ?? "-",
-                onChanged: (val) {
-                  editedFields['gstNo'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
-              ),
+              buildField(context, detail.gstNo ?? "-", readOnly: true),
 
               SizedBox(height: 14.h),
 
@@ -221,24 +204,13 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                 detail.pincode ?? "-",
                 isDigitsOnly: true,
                 isPhoneNumber: false,
-
-                onChanged: (val) {
-                  editedFields['pincode'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
+                readOnly: true,
               ),
 
               SizedBox(height: 14.h),
 
               buildLabel("Executive Name", isDark, context),
-              buildField(
-                context,
-                detail.executiveName ?? "-",
-                onChanged: (val) {
-                  editedFields['executiveName'] = val;
-                  if (!isDirty) setState(() => isDirty = true);
-                },
-              ),
+              buildField(context, detail.executiveName ?? "-", readOnly: true),
 
               SizedBox(height: 14.h),
 
@@ -296,69 +268,87 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
               SizedBox(height: 6.h),
 
-              DropdownButtonFormField<String>(
-                initialValue: () {
-                  final packages = retailerController.commissionPackages
-                      .map((e) => e.packageName)
-                      .where((e) => e != null)
-                      .toSet();
-                  String? val = selectedPackage ?? detail.packageName;
-                  if (packages.contains(val)) return val;
-                  if (packages.contains(val?.toLowerCase()))
-                    return val?.toLowerCase();
-                  return null;
-                }(),
-                style: TextStyle(
-                  fontSize: 14.sp, // Selected value font size
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontFamily: "Poppins",
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: isDark
-                      ? AppColors.darkplceholder
-                      : AppColors.lightbg2,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 12.h,
+              if ((detail.executiveId != null &&
+                      detail.executiveId.toString().trim().isNotEmpty &&
+                      detail.executiveId.toString() != "0" &&
+                      detail.executiveId.toString().toLowerCase() != "null") ||
+                  (detail.executiveName != null &&
+                      detail.executiveName.toString().trim().isNotEmpty &&
+                      detail.executiveName.toString() != "-" &&
+                      detail.executiveName.toString().toLowerCase() != "null"))
+                buildField(context, detail.packageName ?? "-", readOnly: true)
+              else
+                DropdownButtonFormField<String>(
+                  initialValue: () {
+                    String? val = selectedPackage ?? detail.packageName;
+                    return (val != null && val.trim().isNotEmpty) ? val : null;
+                  }(),
+                  style: TextStyle(
+                    fontSize: 14.sp, // Selected value font size
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.w500,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkFilterBorder
-                          : Colors.grey.shade300,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: isDark
+                        ? AppColors.darkplceholder
+                        : AppColors.lightbg2,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(color: AppColors.clrPrimary),
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide(
-                      color: isDark
-                          ? AppColors.darkFilterBorder
-                          : Colors.grey.shade300,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide(color: AppColors.clrPrimary),
-                  ),
+                  items: () {
+                    final packages = retailerController.commissionPackages
+                        .map((e) => e.packageName)
+                        .where(
+                          (e) => e != null && e.toString().trim().isNotEmpty,
+                        )
+                        .map((e) => e.toString())
+                        .toSet();
+
+                    String? val = selectedPackage ?? detail.packageName;
+                    if (val != null && val.trim().isNotEmpty) {
+                      packages.add(val);
+                    }
+
+                    return packages
+                        .map(
+                          (e) => DropdownMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
+                        .toList();
+                  }(),
+                  onChanged: (val) {
+                    setState(() {
+                      selectedPackage = val;
+                      isDirty = true;
+                    });
+                  },
                 ),
-                items: retailerController.commissionPackages
-                    .map((e) => e.packageName)
-                    .where((e) => e != null)
-                    .toSet()
-                    .map(
-                      (e) => DropdownMenuItem(value: e, child: Text(e ?? "")),
-                    )
-                    .toList(),
-                onChanged: (val) {
-                  setState(() {
-                    selectedPackage = val;
-                    isDirty = true;
-                  });
-                },
-              ),
 
               SizedBox(height: 14.h),
 

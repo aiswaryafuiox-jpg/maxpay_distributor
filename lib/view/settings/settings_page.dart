@@ -15,6 +15,7 @@ import 'package:maxpay/controller/update_pin_controller.dart';
 import 'package:maxpay/controller/web_login_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -134,7 +135,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final updatePinController = Get.put(sl<UpdatePinController>());
     final authController = Get.find<LoginController>();
     final profileController = Get.find<ProfileController>();
-    
 
     return Obx(() {
       final isDark = themeController.isDarkMode;
@@ -307,6 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         SvgPicture.asset(AssetImages.acc, width: 24.w),
                       ),
                     ],
+
                     // _buildMenuTile(
                     //   context,
                     //   'Account ',
@@ -316,9 +317,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     //   SvgPicture.asset(AssetImages.acc, width: 24.w),
                     //   '(active/inactive)',
                     // ),
-                   
-
-                   
                     _buildMenuTile(
                       context,
                       'Grade',
@@ -351,79 +349,74 @@ class _SettingsPageState extends State<SettingsPage> {
                               width: 24.w,
                             ),
                     ),
-  _buildMenuTile(
-                            context,
-                            'Forgot M Pin',
-                            () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
+                    _buildMenuTile(
+                      context,
+                      'Forgot M Pin',
+                      () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              title: Text(
+                                'Contact Support',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              content: Text(
+                                'To reset your M PIN, please contact support.',
+                                style: TextStyle(fontSize: 14.sp),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Get.back(); // close dialog
+                                  },
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).platform ==
+                                            TargetPlatform.iOS
+                                        ? AppColors.clrPrimary
+                                        : AppColors.clrPrimary,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.r),
+                                      borderRadius: BorderRadius.circular(8.r),
                                     ),
-                                    title: Text(
-                                      'Contact Support',
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  ),
+                                  onPressed: () {
+                                    Get.back(); // close dialog
+                                    Get.toNamed(
+                                      AppRoutes.support,
+                                      arguments: {'showBack': true},
+                                    ); // move to support
+                                  },
+                                  child: Text(
+                                    'Continue',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
                                     ),
-                                    content: Text(
-                                      'To reset your M PIN, please contact support.',
-                                      style: TextStyle(fontSize: 14.sp),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Get.back(); // close dialog
-                                        },
-                                        child: Text(
-                                          'Cancel',
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 16.sp,
-                                          ),
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor:
-                                              Theme.of(context).platform ==
-                                                  TargetPlatform.iOS
-                                              ? AppColors.clrPrimary
-                                              : AppColors.clrPrimary,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              8.r,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Get.back(); // close dialog
-                                          Get.toNamed(
-                                            AppRoutes.support,
-                                            arguments: {'showBack': true},
-                                          ); // move to support
-                                        },
-                                        child: Text(
-                                          'Continue',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16.sp,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            SvgPicture.asset(
-                              AssetImages.updatePin,
-                              width: 24.w,
-                            ),
-                          ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      SvgPicture.asset(AssetImages.updatePin, width: 24.w),
+                    ),
 
                     _buildMenuTile(
                       context,
@@ -447,8 +440,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildMenuTile(
                       context,
                       'update & Review',
-                      () {
-                        //Get.toNamed(AppRoutes.profile);
+                      () async {
+                        final url = Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.paylink.business',
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
                       },
                       SvgPicture.asset(AssetImages.rating, width: 24.w),
                     ),

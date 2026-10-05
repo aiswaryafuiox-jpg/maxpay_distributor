@@ -237,10 +237,10 @@ class RetailerCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  retailer.commissionPackage ?? "Silver",
+                  retailer.commissionPackagename ?? "Silver",
                   style: TextHelper.max1.copyWith(
                     color:
-                        retailer.commissionPackage?.toLowerCase() == 'emerald'
+                        retailer.commissionPackagename?.toLowerCase() == 'emerald'
                         ? Colors.white
                         : Colors.black87,
                     fontSize: 12,
