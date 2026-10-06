@@ -17,7 +17,7 @@ class OnlineTransactionController extends GetxController {
   RxString fromDate = ''.obs;
   RxString toDate = ''.obs;
   RxString searchQuery = ''.obs;
-  RxString status = 'pending'.obs;
+  RxString status = 'success'.obs;
 
   Timer? _debounceTimer;
 

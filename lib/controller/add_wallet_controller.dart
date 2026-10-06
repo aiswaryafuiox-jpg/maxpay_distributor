@@ -69,6 +69,7 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
     required String bankid,
     required String description,
     required String receipt,
+    VoidCallback? onSuccess,
   }) async {
     try {
       isLoading.value = true;
@@ -86,15 +87,14 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
 
       result.fold(
         (failure) {
-          CustomToast.error(
-            failure.message.toString(),
-          );
+          CustomToast.error(failure.message.toString());
           debugPrint("ERROR: ${failure.message}");
         },
         (response) {
-          CustomToast.success(
-            response.message ?? "Wallet Request Success",
-          );
+          if (onSuccess != null) {
+            onSuccess();
+          }
+          CustomToast.success(response.message ?? "Wallet Request Success");
           debugPrint("SUCCESS RESPONSE: ${response.toJson()}");
           // Optionally, refresh history
           getWalletHistory();
@@ -551,7 +551,8 @@ class AddWalletController extends GetxController with WidgetsBindingObserver {
       return false;
     }
   }
-Future<void> _worldlineResponseCallback(
+
+  Future<void> _worldlineResponseCallback(
     Map<dynamic, dynamic> response,
   ) async {
     AppLogger.logError(response);
@@ -592,7 +593,7 @@ Future<void> _worldlineResponseCallback(
         final amount = qrResponse?.data?.worldline?.amount ?? "0";
         showSuccessDialog(amount);
 
-       fetchWalletBalance();
+        fetchWalletBalance();
       } else {
         CustomToast.error("Payment failed, please try again later.");
       }
@@ -609,6 +610,7 @@ Future<void> _worldlineResponseCallback(
     AppLogger.logError(response);
     CustomToast.error("Payment failed, please try again later.");
   }
+
   Future<void> loadInstalledUpiApps() async {
     isLoadingUpiApps.value = true;
     upiApps.value = await getInstalledUpiApps();

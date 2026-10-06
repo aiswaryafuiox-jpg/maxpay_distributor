@@ -4,8 +4,12 @@ class CommissionPackageResponseModel {
   String? message;
   int? code;
 
-  CommissionPackageResponseModel(
-      {this.success, this.data, this.message, this.code});
+  CommissionPackageResponseModel({
+    this.success,
+    this.data,
+    this.message,
+    this.code,
+  });
 
   CommissionPackageResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -39,7 +43,7 @@ class CommissionPackageData {
 
   CommissionPackageData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    packageName = json['package_name'];
+    packageName = json['package_type'] ?? json['package_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,4 +52,5 @@ class CommissionPackageData {
     data['package_name'] = packageName;
     return data;
   }
+  
 }

@@ -229,56 +229,50 @@ class _ProfileScreenState extends State<ProfileggScreen> {
               const SizedBox(height: 10),
 
               /// PROFILE IMAGE
-              Stack(
-                children: [
-                  Container(
-                    width: 95,
-                    height: 95,
+             Stack(
+  clipBehavior: Clip.none,
+  children: [
+    ClipOval(
+      child: Container(
+        width: 95,
+        height: 95,
+        color: Colors.white,
+        child: Image(
+          image: profileImageProvider,
+          width: 95,
+          height: 95,
+          fit: BoxFit.cover,
+        ),
+      ),
+    ),
 
-                    decoration: BoxDecoration(
-                      color: theme.brightness == Brightness.dark
-                          ? AppColors.darkplceholder
-                          : Colors.grey.shade200,
-                      shape: BoxShape.circle,
+    Positioned(
+      right: 0,
+      bottom: 0,
+      child: GestureDetector(
+        onTap: _showImagePickerOptions,
+        child: Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: AppColors.clrPrimary,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.white,
+              width: 2,
+            ),
+          ),
+          child: const Icon(
+            Icons.camera_alt_outlined,
+            color: Colors.white,
+            size: 16,
+          ),
+        ),
+      ),
+    ),
+  ],
+),
 
-                      image: DecorationImage(
-                        image: profileImageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-
-                    child: GestureDetector(
-                      onTap: _showImagePickerOptions,
-                      child: Container(
-                        width: 28,
-                        height: 28,
-
-                        decoration: BoxDecoration(
-                          color: AppColors.clrPrimary,
-
-                          shape: BoxShape.circle,
-
-                          border: Border.all(
-                            color: theme.colorScheme.surface,
-                            width: 2,
-                          ),
-                        ),
-
-                        child: const Icon(
-                          Icons.camera_alt_outlined,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 28),
 
               /// NAME

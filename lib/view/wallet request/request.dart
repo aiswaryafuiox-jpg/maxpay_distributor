@@ -118,9 +118,14 @@ class _WalletRequestScreenState extends State<WalletRequestScreen> {
               _UploadBox(pickedFile: _pickedFile, onTap: _pickFile),
 
               SizedBox(height: 24.h),
-              Center(
-                child: CommonButton(title: 'Submit', onTap: () {}),
-              ),
+             Center(
+  child: CommonButton(
+    title: 'Submit',
+    onTap: () {
+      debugPrint('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@😷😷😷Submit button clicked');
+    },
+  ),
+),
             ],
           ),
         ),

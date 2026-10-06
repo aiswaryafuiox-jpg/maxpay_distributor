@@ -45,45 +45,46 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.retailerId,
-      this.retailerUserId,
-      this.bankId,
-      this.userType,
-      this.paymentFor,
-      this.outstandingAmount,
-      this.requestAmount,
-      this.paymentType,
-      this.bankName,
-      this.refNumber,
-      this.receipt,
-      this.description,
-      this.remark,
-      this.txnId,
-      this.status,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.retailerId,
+    this.retailerUserId,
+    this.bankId,
+    this.userType,
+    this.paymentFor,
+    this.outstandingAmount,
+    this.requestAmount,
+    this.paymentType,
+    this.bankName,
+    this.refNumber,
+    this.receipt,
+    this.description,
+    this.remark,
+    this.txnId,
+    this.status,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     retailerId = json['retailer_id'];
-    retailerUserId = json['retailer_user_id'];
+    retailerUserId = json['retailer_user_id']?.toString();
     bankId = json['bank_id'];
-    userType = json['user_type'];
-    paymentFor = json['payment_for'];
-    outstandingAmount = json['outstanding_amount'];
-    requestAmount = json['request_amount'];
-    paymentType = json['payment_type'];
-    bankName = json['bank_name'];
-    refNumber = json['ref_number'];
-    receipt = json['receipt'];
-    description = json['description'];
-    remark = json['remark'];
-    txnId = json['txn_id'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    userType = json['user_type']?.toString();
+    paymentFor = json['payment_for']?.toString();
+    outstandingAmount = json['outstanding_amount']?.toString();
+    requestAmount = json['request_amount']?.toString();
+    paymentType = json['payment_type']?.toString();
+    bankName = json['bank_name']?.toString();
+    refNumber = json['ref_number']?.toString();
+    receipt = json['receipt']?.toString();
+    description = json['description']?.toString();
+    remark = json['remark']?.toString();
+    txnId = json['txn_id']?.toString();
+    status = json['status']?.toString();
+    createdAt = json['created_at']?.toString();
+    updatedAt = json['updated_at']?.toString();
   }
 
   Map<String, dynamic> toJson() {

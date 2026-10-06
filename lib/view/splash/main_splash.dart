@@ -146,14 +146,7 @@ class _MainSplashScreenState extends State<MainSplashScreen>
       }
     }
 
-    /// Old User -> PIN Created
-    if (isPin == 1) {
-      Get.offAllNamed(AppRoutes.main);
-      return;
-    }
-
-    /// User Logged In But No PIN
-    Get.offAllNamed(AppRoutes.pinCodeCreation);
+    Get.offAllNamed(AppRoutes.main);
   }
 
   @override

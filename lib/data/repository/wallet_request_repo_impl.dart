@@ -21,19 +21,22 @@ class WalletRequestRepoImpl implements WalletRequestRepository {
     required String receipt,
   }) async {
     try {
-      final formData = FormData.fromMap({
-        "payment_for": "wallet",
+      final Map<String, dynamic> mapData = {
         "request_amount": amount,
         "payment_type": paymenttype,
         "bank_id": bankid,
         "ref_number": utrno,
-        "outstanding_amount": "", // Or a specific value if required
         "description": description,
-        "receipt": await MultipartFile.fromFile(
+      };
+
+      if (receipt.isNotEmpty) {
+        mapData["receipt"] = await MultipartFile.fromFile(
           receipt,
           filename: "receipt.jpg",
-        ),
-      });
+        );
+      }
+
+      final formData = FormData.fromMap(mapData);
 
       final response = await apiService.post(
         ApiRoutes.requestWallet,

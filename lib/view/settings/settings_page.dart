@@ -499,15 +499,22 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
 
-                    if (_appVersion.isNotEmpty)
-                      Text(
-                        'Latest Version $_appVersion',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14.sp,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
+                    FutureBuilder<PackageInfo>(
+                            future: PackageInfo.fromPlatform(),
+                            builder: (context, snapshot) {
+                              final version = snapshot.data?.version ?? '';
+                              return Text(
+                                version.isNotEmpty
+                                    ? 'Latest Version $version'
+                                    : 'Latest Version',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Poppins',
+                                ),
+                              );
+                            },
+                          ),
                     SizedBox(height: 45.h),
                   ],
                 ),

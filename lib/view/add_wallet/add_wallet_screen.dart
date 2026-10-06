@@ -138,7 +138,10 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
               buildLabel(context, "Payment Type"),
               DropdownButtonFormField<String>(
                 dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                initialValue: _paymentType,
+                value:
+                    ["Bank Transfer", "Stock Exchange"].contains(_paymentType)
+                    ? _paymentType
+                    : null,
                 decoration: inputDecoration(context, "Select"),
                 style: TextStyle(
                   color: theme.colorScheme.onSurface,
@@ -155,17 +158,17 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
                   return null;
                 },
                 items: const [
-                  DropdownMenuItem(value: "received", child: Text("Received")),
-                 
                   DropdownMenuItem(
-                    value: "UPI Transfer",
-                    child: Text("UPI Transfer"),
+                    value: "Bank Transfer",
+                    child: Text("Bank Transfer"),
                   ),
+
                   DropdownMenuItem(
                     value: "Stock Exchange",
                     child: Text("Stock Exchange"),
                   ),
                 ],
+
                 onChanged: (value) {
                   setState(() {
                     _paymentType = value;
@@ -174,53 +177,55 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
               ),
               SizedBox(height: 16.h),
 
-              /// Bank Name
-              buildLabel(context, "Bank Name"),
-              Obx(() {
-                final banks = _bankController.bankData.value?.data ?? [];
-                return DropdownButtonFormField<bank_model.Data>(
-                  dropdownColor: isDark
-                      ? const Color(0xFF1E1E1E)
-                      : Colors.white,
-                  initialValue: _selectedBank,
-                  decoration: inputDecoration(context, "Select Bank"),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontFamily: 'Poppins',
-                  ),
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  validator: (value) {
-                    if (value == null) {
-                      return "Please select bank";
-                    }
-                    return null;
-                  },
-                  items: banks.map((bank) {
-                    return DropdownMenuItem<bank_model.Data>(
-                      value: bank,
-                      child: Text(bank.bankName ?? ''),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedBank = value;
-                    });
-                  },
-                );
-              }),
-              SizedBox(height: 16.h),
+              if (_paymentType != "Stock Exchange") ...[
+                /// Bank Name
+                buildLabel(context, "Bank Name"),
+                Obx(() {
+                  final banks = _bankController.bankData.value?.data ?? [];
+                  return DropdownButtonFormField<bank_model.Data>(
+                    dropdownColor: isDark
+                        ? const Color(0xFF1E1E1E)
+                        : Colors.white,
+                    value: _selectedBank,
+                    decoration: inputDecoration(context, "Select Bank"),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontFamily: 'Poppins',
+                    ),
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please select bank";
+                      }
+                      return null;
+                    },
+                    items: banks.map((bank) {
+                      return DropdownMenuItem<bank_model.Data>(
+                        value: bank,
+                        child: Text(bank.bankName ?? ''),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedBank = value;
+                      });
+                    },
+                  );
+                }),
+                SizedBox(height: 16.h),
 
-              /// UTR
-              buildLabel(context, "UTR No"),
-              buildTextField(
-                context: context,
-                controller: _utrController,
-                hint: "Enter UTR No",
-              ),
-              SizedBox(height: 16.h),
+                /// UTR
+                buildLabel(context, "UTR No"),
+                buildTextField(
+                  context: context,
+                  controller: _utrController,
+                  hint: "Enter UTR No",
+                ),
+                SizedBox(height: 16.h),
+              ],
 
               /// Description
               buildLabel(context, "Description"),
@@ -232,77 +237,83 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
               ),
               SizedBox(height: 16.h),
 
-              /// Upload
-              buildLabel(context, "Upload"),
-              GestureDetector(
-                onTap: _pickFile,
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 20.h,
-                    horizontal: 20.w,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF1E1E1E)
-                        : const Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: _pickedFile != null && _pickedFile!.path != null
-                      ? Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10.r),
-                              child: Image.file(
-                                File(_pickedFile!.path!),
-                                height: 160.h,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
+              if (_paymentType != "Stock Exchange") ...[
+                /// Upload
+                buildLabel(context, "Upload"),
+                GestureDetector(
+                  onTap: _pickFile,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 20.h,
+                      horizontal: 20.w,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF1E1E1E)
+                          : const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: _pickedFile != null && _pickedFile!.path != null
+                        ? Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Image.file(
+                                  File(_pickedFile!.path!),
+                                  height: 160.h,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 10.h),
-                            Text(
-                              "Image Selected",
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.green,
-                                fontWeight: FontWeight.w600,
+                              SizedBox(height: 10.h),
+                              Text(
+                                "Image Selected",
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Icon(
-                              Icons.cloud_upload_outlined,
-                              size: 32.sp,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                            SizedBox(height: 12.h),
-                            Text(
-                              "Browse and choose the files you want to upload from your device",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 12.sp,
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              Icon(
+                                Icons.cloud_upload_outlined,
+                                size: 32.sp,
                                 color: theme.colorScheme.onSurfaceVariant,
                               ),
-                            ),
-                            SizedBox(height: 18.h),
-                            Container(
-                              width: 36.w,
-                              height: 36.h,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(6.r),
+                              SizedBox(height: 12.h),
+                              Text(
+                                "Browse and choose the files you want to upload from your device",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
-                              child: const Icon(Icons.add, color: Colors.white),
-                            ),
-                          ],
-                        ),
+                              SizedBox(height: 18.h),
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(6.r),
+                                ),
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 30.h),
+                SizedBox(height: 30.h),
+              ],
+              if (_paymentType == "Stock Exchange") SizedBox(height: 30.h),
 
               /// Submit Button
               Center(
@@ -311,34 +322,41 @@ class _WalletRequestScreenState extends State<AddWalletScreen> {
                   height: 46.h,
                   child: ElevatedButton(
                     onPressed: () async {
-                      // if (!_formKey.currentState!.validate()) {
-                      //   return;
-                      // }
-                      if (_pickedFile == null) {
-                        Get.snackbar(
-                          "Error",
-                          "Please upload receipt image",
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                        );
-                        return;
+                      if (_paymentType != "Stock Exchange") {
+                        if (_pickedFile == null) {
+                          Get.snackbar(
+                            "Error",
+                            "Please upload receipt image",
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
                       }
-                      if (_pickedFile == null) {
-                        Get.snackbar(
-                          "Error",
-                          "Please upload Receipt",
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                        );
-                        return;
-                      }
+
                       await _controller.createWalletRequest(
                         amount: _amountController.text.trim(),
                         paymenttype: _paymentType ?? "",
-                        utrno: _utrController.text.trim(),
-                        bankid: (_selectedBank?.id ?? 1).toString(),
+                        utrno: _paymentType == "Stock Exchange"
+                            ? ""
+                            : _utrController.text.trim(),
+                        bankid: _paymentType == "Stock Exchange"
+                            ? ""
+                            : (_selectedBank?.id ?? 1).toString(),
                         description: _descriptionController.text.trim(),
-                        receipt: _pickedFile!.path!,
+                        receipt: _paymentType == "Stock Exchange"
+                            ? ""
+                            : _pickedFile!.path!,
+                        onSuccess: () {
+                          _amountController.clear();
+                          _utrController.clear();
+                          _descriptionController.clear();
+                          setState(() {
+                            _paymentType = null;
+                            _selectedBank = null;
+                            _pickedFile = null;
+                          });
+                        },
                       );
 
                       // Optionally pop or clear fields

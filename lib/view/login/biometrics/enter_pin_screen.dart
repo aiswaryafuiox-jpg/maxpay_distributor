@@ -33,14 +33,6 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
     } else {
       isUpdatePin = false;
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!isUpdatePin) {
-        if (controller.isFingerPrint.value == 1) {
-          await controller.authenticateWithFingerprint();
-        }
-      }
-    });
   }
 
   void handleKeyPress(String key) {
