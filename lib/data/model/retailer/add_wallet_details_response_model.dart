@@ -4,11 +4,18 @@ class AddWalletDetailsResponseModel {
   String? message;
   int? code;
 
-  AddWalletDetailsResponseModel({this.success, this.data, this.message, this.code});
+  AddWalletDetailsResponseModel({
+    this.success,
+    this.data,
+    this.message,
+    this.code,
+  });
 
   AddWalletDetailsResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? AddWalletDetailsData.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? AddWalletDetailsData.fromJson(json['data'])
+        : null;
     message = json['message'];
     code = json['code'];
   }
@@ -34,6 +41,12 @@ class AddWalletDetailsData {
   String? lastTransferDateTime;
   num? outstanding;
 
+  // Partner / Distributor fields
+  int? distributorId;
+  String? distributorUserId;
+  String? companyName;
+  String? regMobileNumber;
+
   AddWalletDetailsData({
     this.walletBalance,
     this.retailerId,
@@ -42,16 +55,40 @@ class AddWalletDetailsData {
     this.lastTransferAmount,
     this.lastTransferDateTime,
     this.outstanding,
+    this.distributorId,
+    this.distributorUserId,
+    this.companyName,
+    this.regMobileNumber,
   });
 
+  static num? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value;
+    if (value is String) return num.tryParse(value);
+    return null;
+  }
+
+  static String? _parseString(dynamic value) {
+    if (value == null) return null;
+    return value.toString();
+  }
+
   AddWalletDetailsData.fromJson(Map<String, dynamic> json) {
-    walletBalance = json['wallet_balance'];
-    retailerId = json['retailer_id'];
-    retailerUserId = json['retailer_user_id'];
-    userName = json['user_name'];
-    lastTransferAmount = json['last_transfer_amount'];
-    lastTransferDateTime = json['last_transfer_date_time'];
-    outstanding = json['outstanding'];
+    walletBalance = _parseNum(json['wallet_balance']);
+    retailerId = _parseNum(
+      json['retailer_id'] ?? json['distributor_id'],
+    )?.toInt();
+    distributorId = _parseNum(json['distributor_id'])?.toInt();
+    retailerUserId = _parseString(
+      json['retailer_user_id'] ?? json['distributor_user_id'],
+    );
+    distributorUserId = _parseString(json['distributor_user_id']);
+    userName = _parseString(json['user_name'] ?? json['company_name']);
+    companyName = _parseString(json['company_name']);
+    regMobileNumber = _parseString(json['reg_mobile_number']);
+    lastTransferAmount = _parseNum(json['last_transfer_amount']);
+    lastTransferDateTime = _parseString(json['last_transfer_date_time']);
+    outstanding = _parseNum(json['outstanding']);
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +100,18 @@ class AddWalletDetailsData {
     data['last_transfer_amount'] = lastTransferAmount;
     data['last_transfer_date_time'] = lastTransferDateTime;
     data['outstanding'] = outstanding;
+    if (distributorId != null) {
+      data['distributor_id'] = distributorId;
+    }
+    if (distributorUserId != null) {
+      data['distributor_user_id'] = distributorUserId;
+    }
+    if (companyName != null) {
+      data['company_name'] = companyName;
+    }
+    if (regMobileNumber != null) {
+      data['reg_mobile_number'] = regMobileNumber;
+    }
     return data;
   }
 }

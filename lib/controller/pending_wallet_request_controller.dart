@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/pending_wallet_request_model.dart';
 import 'package:maxpay/data/model/pending_wallet_request_detail_model.dart';
@@ -40,7 +40,7 @@ class PendingWalletRequestController extends GetxController {
     
     result.fold(
       (Failure failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (PendingWalletRequestModel response) {
         if (response.data?.list != null) {
@@ -58,7 +58,7 @@ class PendingWalletRequestController extends GetxController {
     
     result.fold(
       (Failure failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (PendingWalletRequestDetailModel response) {
         selectedRequestDetail.value = response.data;
@@ -73,10 +73,10 @@ class PendingWalletRequestController extends GetxController {
     
     result.fold(
       (Failure failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (ApproveWalletRequestModel response) {
-        CustomSnackbar.success(response.message ?? "Approved successfully");
+        CustomToast.success(response.message ?? "Approved successfully");
         fetchPendingWalletRequests(); // Refresh the list
       }
     );

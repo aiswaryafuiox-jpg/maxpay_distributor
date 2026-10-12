@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:maxpay/view/add_wallet/add_wallet_screen.dart';
 import 'package:maxpay/view/home/pages/home_page.dart';
 import 'package:maxpay/view/nav_page/navbar.dart';
@@ -62,12 +63,7 @@ class _ScreenNavBarState extends State<NavPageScreen>
             if (lastBackPressed == null ||
                 now.difference(lastBackPressed!) > const Duration(seconds: 2)) {
               lastBackPressed = now;
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Press back again to exit'),
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              CustomToast.warning('Press back again to exit');
             } else {
               SystemNavigator.pop();
             }

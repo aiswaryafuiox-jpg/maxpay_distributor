@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/extensions/currency.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/common_filter_box.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/controller/online_transaction_controller.dart';
@@ -11,42 +14,94 @@ class OnlineTransactionScreen extends StatefulWidget {
   const OnlineTransactionScreen({super.key});
 
   @override
-  State<OnlineTransactionScreen> createState() => _OnlineTransactionScreenState();
+  State<OnlineTransactionScreen> createState() =>
+      _OnlineTransactionScreenState();
 }
 
 class _OnlineTransactionScreenState extends State<OnlineTransactionScreen> {
-  final OnlineTransactionController controller = Get.put(sl<OnlineTransactionController>());
+  final OnlineTransactionController controller = Get.put(
+    sl<OnlineTransactionController>(),
+  );
   final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: const CommonAppBar(title: "Online Transaction"),
       body: Column(
         children: [
           /// Filter Box
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-            child: Obx(() => CommonFilterBox(
-                  fromDateText: controller.fromDate.value.isEmpty ? null : controller.fromDate.value,
-                  toDateText: controller.toDate.value.isEmpty ? null : controller.toDate.value,
-                  onFromDateTap: () => _selectDate(context, true),
-                  onToDateTap: () => _selectDate(context, false),
-                  searchController: _searchController,
-                  onSearchChanged: (val) {
-                    controller.updateSearchQuery(val);
+            child: Obx(
+              () => CommonFilterBox(
+                fromDateText: controller.fromDate.value.isEmpty
+                    ? null
+                    : controller.fromDate.value,
+                toDateText: controller.toDate.value.isEmpty
+                    ? null
+                    : controller.toDate.value,
+                onFromDateTap: () => _selectDate(context, true),
+                onToDateTap: () => _selectDate(context, false),
+                searchController: _searchController,
+                onSearchChanged: (val) {
+                  controller.updateSearchQuery(val);
+                },
+                bottomWidget: TransactionTypeField(
+                  value: controller.status.value,
+                  onChanged: (val) {
+                    if (val != null) {
+                      controller.updateStatus(val);
+                    }
                   },
-                  bottomWidget: TransactionTypeField(
-                    value: controller.status.value,
-                    onChanged: (val) {
-                      if (val != null) {
-                        controller.updateStatus(val);
-                      }
-                    },
-                  ),
-                )),
+                ),
+              ),
+            ),
           ),
+
+          /// Total Amount Card (Matching Reference Design)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Obx(() {
+              final amountStr = controller.totalAmount.value.isEmpty
+                  ? '0'
+                  : controller.totalAmount.value;
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: AppColors.clrPrimary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    Text("Total Amount", style: TextHelper.max16),
+                    const SizedBox(height: 4),
+                    Text(amountStr.currencyIndian, style: TextHelper.lato12),
+                  ],
+                ),
+              );
+            }),
+          ),
+
+          const SizedBox(height: 12),
+
+          /// Divider below Total Amount card
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(
+              color: isDark
+                  ? AppColors.darkFilterBorder
+                  : Colors.grey.withValues(alpha: 0.3),
+              thickness: 1,
+            ),
+          ),
+
+          const SizedBox(height: 8),
 
           /// Transaction List
           Expanded(
@@ -58,7 +113,10 @@ class _OnlineTransactionScreenState extends State<OnlineTransactionScreen> {
                 return const Center(child: Text("Data not found"));
               }
               return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 itemCount: controller.items.length,
                 separatorBuilder: (_, _) => const SizedBox(height: 14),
                 itemBuilder: (context, index) {
@@ -95,4 +153,4 @@ class _OnlineTransactionScreenState extends State<OnlineTransactionScreen> {
       }
     }
   }
-}
+}

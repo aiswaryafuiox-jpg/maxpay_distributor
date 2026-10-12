@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/statement/statement_descriptions_model.dart';
@@ -53,7 +53,7 @@ class StatementController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (success) {
         descriptions.value = success.data ?? [];
@@ -94,7 +94,7 @@ class StatementController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (success) {
         transactions.value = success.data?.list ?? [];

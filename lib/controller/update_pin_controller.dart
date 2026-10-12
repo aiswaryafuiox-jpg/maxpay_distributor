@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -41,7 +41,7 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isOtpLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (successMessage) {
         isOtpLoading.value = false;
@@ -64,7 +64,7 @@ class UpdatePinController extends GetxController {
   Future<void> onOtpVerify() async {
     final otp = otpController.text.trim();
     if (otp.length != 4) {
-      CustomSnackbar.error("Please enter a valid 4-digit OTP");
+      CustomToast.error("Please enter a valid 4-digit OTP");
       return;
     }
 
@@ -74,12 +74,12 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isOtpVerifying.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (successMessage) {
         isOtpVerifying.value = false;
         Get.toNamed(AppRoutes.update);
-        CustomSnackbar.success(successMessage);
+        CustomToast.success(successMessage);
       },
     );
   }
@@ -89,17 +89,17 @@ class UpdatePinController extends GetxController {
     final confirmPin = confirmPinController.text.trim();
 
     if (newPin.isEmpty || confirmPin.isEmpty) {
-      CustomSnackbar.error("Please enter and confirm your new M-PIN");
+      CustomToast.error("Please enter and confirm your new M-PIN");
       return;
     }
 
     if (newPin.length != 6 || confirmPin.length != 6) {
-      CustomSnackbar.error("M-PIN must be exactly 4 digits");
+      CustomToast.error("M-PIN must be exactly 4 digits");
       return;
     }
 
     if (newPin != confirmPin) {
-      CustomSnackbar.error("M-PINs do not match");
+      CustomToast.error("M-PINs do not match");
       return;
     }
 
@@ -109,12 +109,12 @@ class UpdatePinController extends GetxController {
     result.fold(
       (failure) {
         isLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (successMessage) {
         isLoading.value = false;
         Get.offAllNamed(AppRoutes.main);
-        CustomSnackbar.success(successMessage);
+        CustomToast.success(successMessage);
       },
     );
   }

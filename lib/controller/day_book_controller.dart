@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
@@ -65,7 +65,7 @@ class DayBookController extends GetxController {
         AppLogger.logError(
           "Failed to fetch day book products: ${failure.message}",
         );
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isLoading.value = false;
@@ -98,7 +98,7 @@ class DayBookController extends GetxController {
       (failure) {
         isListLoading.value = false;
         AppLogger.logError("Failed to fetch day book list: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isListLoading.value = false;
@@ -118,10 +118,10 @@ class DayBookController extends GetxController {
       (failure) {
         isListLoading.value = false;
         AppLogger.logError("Failed to delete day book: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
-        CustomSnackbar.success(data.message ?? "Deleted successfully");
+        CustomToast.success(data.message ?? "Deleted successfully");
         fetchDayBookList();
       },
     );

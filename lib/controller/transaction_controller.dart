@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,7 +91,7 @@ class TransactionController extends GetxController {
       (failure) {
         isReportLoading.value = false;
         AppLogger.logError("Failed to fetch report: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
         isReportLoading.value = false;
@@ -143,7 +143,7 @@ class TransactionController extends GetxController {
       (failure) {
         isProductsLoading.value = false;
         AppLogger.logError("Failed to fetch products: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
         isProductsLoading.value = false;
@@ -166,7 +166,7 @@ class TransactionController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
         //
@@ -195,10 +195,10 @@ class TransactionController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (successMessage) {
-        CustomSnackbar.success(successMessage);
+        CustomToast.success(successMessage);
       },
     );
   }

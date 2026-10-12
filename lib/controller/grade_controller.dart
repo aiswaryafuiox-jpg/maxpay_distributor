@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/grade_model.dart';
@@ -30,7 +30,7 @@ class GradeController extends GetxController {
         isLoading.value = false;
         errorMessage.value = failure.message;
         AppLogger.logError("Failed to fetch grade: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isLoading.value = false;

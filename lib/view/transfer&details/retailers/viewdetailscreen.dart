@@ -5,10 +5,10 @@ import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 import 'package:maxpay/core/extensions/currency.dart';
-import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:get/get.dart';
 import '../../../controller/retailer_controller.dart';
+import '../../../data/model/retailer/retailer_detail_response_model.dart';
 import '../../../domain/usecase/retailer/update_retailer_usecase.dart';
 import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
@@ -30,16 +30,233 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
   bool isDirty = false;
   Map<String, String> editedFields = {};
+  late TextEditingController _lowWalletController;
 
   @override
   void initState() {
     super.initState();
+    _lowWalletController = TextEditingController();
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args.containsKey('id')) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.fetchRetailerDetail(args['id']);
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _lowWalletController.dispose();
+    super.dispose();
+  }
+
+  void _showAutoTransferDialog(
+    BuildContext context,
+    RetailerDetailData detail,
+    String previousVal,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final lowWalletVal =
+        editedFields['lowWalletAmount'] ??
+        (_lowWalletController.text.trim().isNotEmpty
+            ? _lowWalletController.text.trim()
+            : (detail.lowWalletAmount != null
+                  ? detail.lowWalletAmount.toString()
+                  : "0"));
+
+    final lowWalletController = TextEditingController(text: lowWalletVal);
+
+    final transferAmountController = TextEditingController(
+      text:
+          editedFields['autoTransferAmount'] ??
+          (detail.autoTransferAmount != null && detail.autoTransferAmount != 0
+              ? detail.autoTransferAmount.toString()
+              : ""),
+    );
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.darkplceholder : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          title: Text(
+            "Are you sure to Auto Transfer",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : AppColors.clrSecondary,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Low Wallet Amount",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                TextFormField(
+                  controller: lowWalletController,
+                  readOnly: true,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+                  ),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: isDark
+                        ? AppColors.darkplceholder
+                        : AppColors.lightbg2,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 12.h,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 14.h),
+                Text(
+                  "Transfer Amount",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+                  ),
+                ),
+                SizedBox(height: 6.h),
+                TextFormField(
+                  controller: transferAmountController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: "Enter",
+                    hintStyle: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontSize: 13.sp,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 14.w,
+                      vertical: 12.h,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? AppColors.darkFilterBorder
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: const BorderSide(color: AppColors.clrPrimary),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Center(
+                  child: SizedBox(
+                    width: 140.w,
+                    height: 42.h,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final lowVal = lowWalletController.text.trim();
+                        final transferVal = transferAmountController.text
+                            .trim();
+                        if (transferVal.isEmpty) {
+                          Get.snackbar(
+                            "Required",
+                            "Please enter Transfer Amount",
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          return;
+                        }
+                        Navigator.pop(dialogContext, true);
+                        setState(() {
+                          editedFields['lowWalletAmount'] = lowVal;
+                          editedFields['autoTransferAmount'] = transferVal;
+                          selectedAutoTransfer = "Active";
+                          isDirty = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.clrPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        "Submit",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ).then((submitted) {
+      if (submitted != true) {
+        if (selectedAutoTransfer != "Active") {
+          setState(() {
+            selectedAutoTransfer = previousVal;
+          });
+        }
+      }
+    });
   }
 
   Widget buildLabel(String text, bool isDark, BuildContext context) {
@@ -127,6 +344,11 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
 
         if (detail == null) {
           return const Center(child: Text("No details available."));
+        }
+
+        if (_lowWalletController.text.isEmpty &&
+            !editedFields.containsKey('lowWalletAmount')) {
+          _lowWalletController.text = "${detail.lowWalletAmount ?? 0}";
         }
 
         return SingleChildScrollView(
@@ -251,15 +473,39 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               SizedBox(height: 14.h),
 
               buildLabel("Low Wallet Amount", isDark, context),
-              buildField(
-                context,
-                "${detail.lowWalletAmount ?? 0}",
-                isDigitsOnly: true,
+              TextFormField(
+                controller: _lowWalletController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (val) {
                   editedFields['lowWalletAmount'] = val;
-
                   if (!isDirty) setState(() => isDirty = true);
                 },
+                style: TextHelper.max1.copyWith(
+                  color: isDark ? AppColors.textclr : AppColors.clrTextblack,
+                ),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: isDark
+                      ? AppColors.darkplceholder
+                      : AppColors.lightbg2,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 14.h,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide(
+                      color: isDark
+                          ? AppColors.darkFilterBorder
+                          : Colors.grey.shade300,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: const BorderSide(color: AppColors.clrPrimary),
+                  ),
+                ),
               ),
 
               SizedBox(height: 14.h),
@@ -357,11 +603,25 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
               SizedBox(height: 6.h),
 
               DropdownButtonFormField<String>(
+                key: ValueKey(
+                  selectedAutoTransfer ??
+                      ((detail.autoTransfer != null &&
+                              [
+                                "Active",
+                                "Inactive",
+                              ].contains(detail.autoTransfer))
+                          ? detail.autoTransfer!
+                          : "Select"),
+                ),
                 initialValue:
                     selectedAutoTransfer ??
-                    (["Active", "Inactive"].contains(detail.autoTransfer)
-                        ? detail.autoTransfer
-                        : "Active"),
+                    ((detail.autoTransfer != null &&
+                            [
+                              "Active",
+                              "Inactive",
+                            ].contains(detail.autoTransfer))
+                        ? detail.autoTransfer!
+                        : "Select"),
                 style: TextStyle(
                   fontSize: 14.sp, // Selected value font size
                   color: Theme.of(context).colorScheme.onSurface,
@@ -387,14 +647,34 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                   ),
                 ),
                 items: const [
+                  DropdownMenuItem(value: "Select", child: Text("Select")),
                   DropdownMenuItem(value: "Active", child: Text("Active")),
                   DropdownMenuItem(value: "Inactive", child: Text("Inactive")),
                 ],
                 onChanged: (val) {
-                  setState(() {
-                    selectedAutoTransfer = val;
-                    isDirty = true;
-                  });
+                  if (val == null) return;
+                  final currentVal =
+                      selectedAutoTransfer ??
+                      ((detail.autoTransfer != null &&
+                              [
+                                "Active",
+                                "Inactive",
+                              ].contains(detail.autoTransfer))
+                          ? detail.autoTransfer!
+                          : "Select");
+                  if (val == "Active") {
+                    _showAutoTransferDialog(context, detail, currentVal);
+                  } else if (val == "Inactive") {
+                    setState(() {
+                      selectedAutoTransfer = "Inactive";
+                      isDirty = true;
+                    });
+                  } else {
+                    setState(() {
+                      selectedAutoTransfer = "Select";
+                      isDirty = true;
+                    });
+                  }
                 },
               ),
 
@@ -544,10 +824,14 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                                     "",
                                 lowWalletAmount:
                                     editedFields['lowWalletAmount'] ??
-                                    detail.lowWalletAmount?.toString() ??
-                                    "",
+                                    (_lowWalletController.text.trim().isNotEmpty
+                                        ? _lowWalletController.text.trim()
+                                        : (detail.lowWalletAmount?.toString() ??
+                                              "")),
                                 autoTransferAmount:
-                                    detail.autoTransferAmount?.toString() ?? "",
+                                    editedFields['autoTransferAmount'] ??
+                                    detail.autoTransferAmount?.toString() ??
+                                    "",
                                 packageName:
                                     selectedPackage ??
                                     ([
@@ -557,13 +841,10 @@ class _RetViewDetailsScreenState extends State<RetViewDetailsScreen> {
                                         ? detail.packageName ?? "Silver"
                                         : "Silver"),
                                 autoTransfer:
-                                    selectedAutoTransfer ??
-                                    ([
-                                          "Active",
-                                          "Inactive",
-                                        ].contains(detail.autoTransfer)
-                                        ? detail.autoTransfer ?? "Active"
-                                        : "Active"),
+                                    (selectedAutoTransfer != null &&
+                                        selectedAutoTransfer != "Select")
+                                    ? selectedAutoTransfer!
+                                    : (detail.autoTransfer ?? "Inactive"),
                                 status:
                                     selectedStatus ??
                                     ([

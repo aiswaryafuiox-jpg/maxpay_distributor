@@ -9,7 +9,8 @@ import '../../../global_widget/commom_button.dart';
 import '../../../global_widget/custom_app.dart';
 
 class RetAddWalletScreen extends StatefulWidget {
-  const RetAddWalletScreen({super.key});
+  final bool isPartner;
+  const RetAddWalletScreen({super.key, this.isPartner = false});
 
   @override
   State<RetAddWalletScreen> createState() => _AddWalletScreenState();
@@ -63,6 +64,111 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
       style: TextHelper.max4.copyWith(
         color: isDark ? AppColors.textclr : AppColors.clrTextblack,
       ),
+    );
+  }
+
+  void _showConfirmationDialog(String id, String amount) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.darkplceholder : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14.r),
+          ),
+          title: Text(
+            "Confirmation",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : AppColors.clrTextblack,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Are you sure you want to add wallet amount?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                amount.currencyIndian,
+                style: TextStyle(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.clrPrimary,
+                ),
+              ),
+            ],
+          ),
+          actionsPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      if (widget.isPartner) {
+                        _controller.submitDisAddWallet(id, amount);
+                      } else {
+                        _controller.submitAddWallet(id, amount);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.clrPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -179,11 +285,24 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     title: "Update",
                     isLoading: _controller.isAddWalletLoading.value,
                     onTap: () {
-                      final id = _controller.addWalletDetails.value?.retailerId
-                          ?.toString();
+                      final id =
+                          (widget.isPartner
+                                  ? (_controller
+                                            .addWalletDetails
+                                            .value
+                                            ?.distributorId ??
+                                        _controller
+                                            .addWalletDetails
+                                            .value
+                                            ?.retailerId)
+                                  : _controller
+                                        .addWalletDetails
+                                        .value
+                                        ?.retailerId)
+                              ?.toString();
                       final amount = amountController.text.trim();
                       if (id != null && amount.isNotEmpty) {
-                        _controller.submitAddWallet(id, amount);
+                        _showConfirmationDialog(id, amount);
                       } else if (amount.isEmpty) {
                         Get.snackbar(
                           "Required",

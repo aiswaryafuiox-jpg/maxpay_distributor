@@ -234,7 +234,7 @@ class MenuScreen extends StatelessWidget {
           'badge': controller.retailers.length,
         },
         {
-          'title': 'Auto Transfer',
+          'title': 'Partner',
           'image': AssetImages.gas,
           'color': AppColors.box4,
           'route': AppRoutes.autoTransferScreen,

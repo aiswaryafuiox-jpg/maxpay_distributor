@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maxpay/core/constants/colors.dart';
-import 'package:maxpay/core/utils/texthelper.dart';
-import '../../../global_widget/commom_button.dart';
-import '../../../global_widget/custom_app.dart';
+import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/controller/auto_transfer_controller.dart';
-import 'package:maxpay/controller/profile_controller.dart';
+import 'package:maxpay/controller/retailer_controller.dart';
+import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/di/service_locator.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
+import 'package:maxpay/core/utils/texthelper.dart';
+import 'package:maxpay/global_widget/common_filter_box.dart';
+import 'package:maxpay/global_widget/custom_app.dart';
+import 'package:maxpay/view/transfer&details/autotransfer/widget/partner_card.dart';
 
 class AutoTransferScreen extends StatefulWidget {
   const AutoTransferScreen({super.key});
@@ -17,77 +20,25 @@ class AutoTransferScreen extends StatefulWidget {
 }
 
 class _AutoTransferScreenState extends State<AutoTransferScreen> {
-  final AutoTransferController controller = Get.put(sl<AutoTransferController>());
+  final AutoTransferController controller = Get.put(
+    sl<AutoTransferController>(),
+  );
+  late final RetailerController retailerController;
 
   @override
   void initState() {
     super.initState();
+    // Ensure AddWalletController and RetailerController are available for wallet actions
+    if (!Get.isRegistered<AddWalletController>()) {
+      Get.put(sl<AddWalletController>());
+    }
+    retailerController = Get.isRegistered<RetailerController>()
+        ? Get.find<RetailerController>()
+        : Get.put(sl<RetailerController>());
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final profileController = Get.find<ProfileController>();
-      final String id = profileController.profileData.value?.id?.toString() ?? "";
-      controller.fetchAutoTransferDetails(id);
+      controller.fetchMappedPartners();
     });
-  }
-
-  Widget buildLabel(
-      BuildContext context,
-      String text,
-      bool isDark,
-      ) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Text(
-        text,
-        style: TextHelper.max9(context).copyWith(
-          color: isDark
-              ? AppColors.textclr
-              : AppColors.clrTextblack,
-        ),
-      ),
-    );
-  }
-
-  InputDecoration buildDecoration(
-      BuildContext context,
-      String hint,
-      bool isDark,
-      ) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextHelper.max9(context).copyWith(
-        color: AppColors.clrTextgrey,
-      ),
-      filled: true,
-      fillColor: isDark
-          ? AppColors.darkplceholder
-          : AppColors.lightbg2,
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: 15.w,
-        vertical: 15.h,
-      ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : Colors.grey.shade300,
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(
-          color: isDark
-              ? AppColors.darkFilterBorder
-              : Colors.grey.shade300,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.r),
-        borderSide: BorderSide(
-          color: AppColors.clrPrimary,
-        ),
-      ),
-    );
   }
 
   @override
@@ -97,99 +48,106 @@ class _AutoTransferScreenState extends State<AutoTransferScreen> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: const CommonAppBar(
-        title: "Auto Transfer",
-      ),
+      appBar: const CommonAppBar(title: "Partner"),
       body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        child: Column(
+          children: [
+            SizedBox(height: 12.h),
 
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-
-                buildLabel(
-                  context,
-                  "Low Wallet",
-                  isDark,
+            // Search filter box
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xff2F3349)
+                      : const Color(0xffF8F9FA),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
-
-                TextField(
-                  controller: controller.lowWalletController,
-                  keyboardType: TextInputType.number,
-                  style: TextHelper.max9(context).copyWith(
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
-                  ),
-                  decoration: buildDecoration(
-                    context,
-                    "Enter Wallet Amount",
-                    isDark,
-                  ),
+                child: SearchBox(
+                  onChanged: (val) {
+                    controller.searchQuery.value = val;
+                  },
                 ),
+              ),
+            ),
 
-                SizedBox(height: 22.h),
+            SizedBox(height: 12.h),
 
-                buildLabel(
-                  context,
-                  "Transfer Amount",
-                  isDark,
+            Center(
+              child: SizedBox(
+                width: 300.w,
+                child: Divider(
+                  color: isDark
+                      ? AppColors.darkFilterBorder
+                      : Colors.grey.shade300,
+                  thickness: 1,
                 ),
+              ),
+            ),
 
-                TextField(
-                  controller: controller.transferAmountController,
-                  keyboardType: TextInputType.number,
-                  style: TextHelper.max9(context).copyWith(
-                    color: isDark
-                        ? AppColors.textclr
-                        : AppColors.clrTextblack,
-                  ),
-                  decoration: buildDecoration(
-                    context,
-                    "Enter Transfer Amount",
-                    isDark,
-                  ),
-                ),
+            SizedBox(height: 8.h),
 
-                const Spacer(),
+            // Partner list
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () =>
+                    controller.fetchMappedPartners(isRefresh: true),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                Center(
-                  child: Obx(() {
-                    if (controller.isUpdating.value) {
-                      return const CircularProgressIndicator();
-                    }
-                    return CommonButton(
-                      title: "Update",
-                      onTap: () {
-                        // Pass the fetched auto transfer id if available, otherwise empty
-                        final String id = controller.autoTransferData.value?.id?.toString() ?? "";
-                        controller.updateAutoTransfer(id);
-                      },
-                    );
-                  }),
-                ),
+                  final partners = controller.filteredPartners;
 
-                SizedBox(height: 20.h),
-                        ],
+                  if (partners.isEmpty) {
+                    return Center(
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Text(
+                          controller.errorMessage.value.isNotEmpty
+                              ? controller.errorMessage.value
+                              : "No partners found.",
+                          style: TextHelper.max1.copyWith(
+                            color: isDark
+                                ? AppColors.textclr
+                                : AppColors.clrTextgrey,
+                            fontSize: 14.sp,
+                          ),
+                        ),
                       ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 8.h,
                     ),
-                  ),
-                ),
-              );
-            },
-          );
-        }),
+                    itemCount: partners.length,
+                    itemBuilder: (context, index) {
+                      final partner = partners[index];
+                      return PartnerCard(
+                        partner: partner,
+                        onAddWallet: () {
+                          if (partner.id != null) {
+                            retailerController.fetchDisWalletDetails(
+                              partner.id!,
+                            );
+                          } else {
+                            CustomToast.error("Partner ID not found");
+                          }
+                        },
+                      );
+                    },
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

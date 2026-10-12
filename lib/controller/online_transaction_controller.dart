@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +18,7 @@ class OnlineTransactionController extends GetxController {
   RxString toDate = ''.obs;
   RxString searchQuery = ''.obs;
   RxString status = 'success'.obs;
+  RxString totalAmount = '0'.obs;
 
   Timer? _debounceTimer;
 
@@ -77,13 +78,20 @@ class OnlineTransactionController extends GetxController {
     result.fold(
       (failure) {
         items.clear();
-        CustomSnackbar.error(failure.message);
+        totalAmount.value = '0';
+        CustomToast.error(failure.message);
       },
       (success) {
         final data = success.data;
-        if (data != null && data.list != null) {
-          items.assignAll(data.list!);
+        if (data != null) {
+          totalAmount.value = data.totalAmount ?? '0';
+          if (data.list != null) {
+            items.assignAll(data.list!);
+          } else {
+            items.clear();
+          }
         } else {
+          totalAmount.value = '0';
           items.clear();
         }
       },

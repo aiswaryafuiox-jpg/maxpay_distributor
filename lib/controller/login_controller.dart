@@ -1,11 +1,11 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/controller/profile_controller.dart';
 import 'package:maxpay/core/services/local_storage_service.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
-import 'package:maxpay/core/utils/snackbar.dart';
+import 'package:maxpay/core/utils/snackbar.dart' hide CustomToast;
 import 'package:maxpay/view/nav_page/navbar_provider.dart';
 import 'package:maxpay/core/utils/sim_util.dart';
 
@@ -212,10 +212,10 @@ class LoginController extends GetxController {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove("token");
       Get.offAllNamed(AppRoutes.loginPhoneName);
-      CustomSnackbar.warning("Too many failed attempts. Please login again.");
+      CustomToast.warning("Too many failed attempts. Please login again.");
       return false;
     } else {
-      CustomSnackbar.error("$message. ${3 - mpinAttempts} attempts left.");
+      CustomToast.error("$message. ${3 - mpinAttempts} attempts left.");
       return false;
     }
   }
@@ -226,7 +226,7 @@ class LoginController extends GetxController {
       final bool canAuthenticate =
           canAuthenticateWithBiometrics || await auth.isDeviceSupported();
       if (!canAuthenticate) {
-        CustomSnackbar.warning('Biometrics not supported on this device.');
+        CustomToast.warning('Biometrics not supported on this device.');
         return;
       }
 
@@ -245,7 +245,7 @@ class LoginController extends GetxController {
         Get.offAllNamed(AppRoutes.main);
       }
     } catch (e) {
-      CustomSnackbar.error('Authentication failed: $e');
+      CustomToast.error('Authentication failed: $e');
     }
   }
 

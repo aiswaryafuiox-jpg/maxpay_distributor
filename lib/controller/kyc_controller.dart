@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/data/model/kyc_model.dart';
@@ -34,7 +34,7 @@ class KycController extends GetxController {
         isLoading.value = false;
         errorMessage.value = failure.message;
         AppLogger.logError("Failed to fetch KYC: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isLoading.value = false;
@@ -68,11 +68,11 @@ class KycController extends GetxController {
       (failure) {
         isSubmitting.value = false;
         AppLogger.logError("Failed to submit KYC: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isSubmitting.value = false;
-        CustomSnackbar.success(data.message ?? "KYC submitted successfully");
+        CustomToast.success(data.message ?? "KYC submitted successfully");
         if (data.data != null) {
           kycData.value = data.data;
         } else {

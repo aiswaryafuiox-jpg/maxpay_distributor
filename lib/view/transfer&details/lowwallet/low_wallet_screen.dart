@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:maxpay/global_widget/custom_app.dart';
 import 'package:maxpay/view/transfer&details/lowwallet/widget/low_wallet_card.dart';
 import 'package:maxpay/controller/low_wallet_controller.dart';
+import 'package:maxpay/controller/retailer_controller.dart';
 import 'package:maxpay/core/di/service_locator.dart';
 
 class LowWalletScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class LowWalletScreen extends StatefulWidget {
 
 class _LowWalletScreenState extends State<LowWalletScreen> {
   final controller = Get.put(sl<LowWalletController>());
+  final retailerController = Get.put(sl<RetailerController>());
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,11 @@ class _LowWalletScreenState extends State<LowWalletScreen> {
                 retailerName: item.retailerName ?? "-",
                 mobile: item.regMobileNumber ?? "-",
                 amount: "₹${item.walletAmount ?? '0.00'}",
+                onTap: () {
+                  if (item.id != null) {
+                    retailerController.fetchAddWalletDetails(item.id!);
+                  }
+                },
               );
             },
           );

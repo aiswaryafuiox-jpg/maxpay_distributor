@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -81,7 +81,7 @@ class MyEarningsController extends GetxController {
         earningsList.clear();
         totalEarnings.value = "0.00";
         AppLogger.logError("Failed to fetch my earnings: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         if (data.data != null) {

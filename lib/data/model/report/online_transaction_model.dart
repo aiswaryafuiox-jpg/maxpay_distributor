@@ -8,7 +8,9 @@ class OnlineTransactionModel {
 
   OnlineTransactionModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? OnlineTransactionData.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? OnlineTransactionData.fromJson(json['data'])
+        : null;
     message = json['message'];
     code = json['code'];
   }
@@ -26,11 +28,13 @@ class OnlineTransactionModel {
 }
 
 class OnlineTransactionData {
+  String? totalAmount;
   List<OnlineTransactionItem>? list;
 
-  OnlineTransactionData({this.list});
+  OnlineTransactionData({this.list, this.totalAmount});
 
   OnlineTransactionData.fromJson(Map<String, dynamic> json) {
+    totalAmount = json['total_amount']?.toString();
     if (json['list'] != null) {
       list = <OnlineTransactionItem>[];
       json['list'].forEach((v) {
@@ -41,6 +45,7 @@ class OnlineTransactionData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = <String, dynamic>{};
+    map['total_amount'] = totalAmount;
     if (list != null) {
       map['list'] = list!.map((v) => v.toJson()).toList();
     }
@@ -68,8 +73,12 @@ class OnlineTransactionItem {
   OnlineTransactionItem.fromJson(Map<String, dynamic> json) {
     id = json['id']?.toString();
     dateTime = json['date_time']?.toString() ?? json['created_at']?.toString();
-    retailerName = json['retailer_name']?.toString() ?? json['user_name']?.toString();
-    mobileNo = json['mobile_no']?.toString() ?? json['mobile']?.toString();
+    retailerName =
+        json['retailer_name']?.toString() ?? json['user_name']?.toString();
+    mobileNo =
+        json['retailer_mobile']?.toString() ??
+        json['mobile_no']?.toString() ??
+        json['mobile']?.toString();
     amount = json['amount']?.toString();
     status = json['status']?.toString();
   }

@@ -45,11 +45,15 @@ class TransactionCard extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Transaction ID: ${item.transactionId ?? 'N/A'}",
-                style: TextHelper.max1,
+              Expanded(
+                child: Text(
+                  "Transaction ID: ${item.transactionId ?? 'N/A'}",
+                  style: TextHelper.max1,
+                ),
               ),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -57,7 +61,7 @@ class TransactionCard extends StatelessWidget {
                     "Date & Time:",
                     style: TextHelper.max1.copyWith(fontSize: 11),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     item.dateTime ?? 'N/A',
                     style: TextHelper.max1.copyWith(fontSize: 11),

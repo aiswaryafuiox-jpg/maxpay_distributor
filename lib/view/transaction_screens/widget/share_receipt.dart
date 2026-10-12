@@ -11,6 +11,7 @@ import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/extensions/currency.dart';
 import 'package:maxpay/core/extensions/string_ext.dart';
 import 'package:maxpay/data/model/transaction/transaction_detail_response_model.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -86,9 +87,7 @@ class ShareReceipt {
       debugPrint('SHARE ERROR: $e');
       if (context.mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Unable to share receipt: $e')));
+        CustomToast.error('Unable to share receipt: $e');
       }
     }
   }
@@ -150,17 +149,13 @@ class ShareReceipt {
       // Close loader
       if (context.mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Receipt saved to Downloads')),
-        );
+        CustomToast.success('Receipt saved to Downloads');
       }
     } catch (e) {
       debugPrint('DOWNLOAD ERROR: $e');
       if (context.mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Unable to save receipt: $e')));
+        CustomToast.error('Unable to save receipt: $e');
       }
     }
   }

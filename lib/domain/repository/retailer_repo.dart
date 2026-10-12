@@ -31,7 +31,12 @@ abstract class RetailerRepository {
   Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
     int id,
   );
+  Future<Either<Failure, AddWalletDetailsResponseModel>> getDisWalletDetails(
+    int id,
+  );
   Future<Either<Failure, AddWalletResponseModel>> addWallet(
     AddWalletParams params,
   );
+  Future<Either<Failure, AddWalletResponseModel>>
+  distributorTransferToDistributor(AddWalletParams params);
 }

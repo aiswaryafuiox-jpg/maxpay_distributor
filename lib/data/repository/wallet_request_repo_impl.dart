@@ -42,7 +42,7 @@ class WalletRequestRepoImpl implements WalletRequestRepository {
         ApiRoutes.requestWallet,
         data: formData,
       );
-
+      
       final model = WalletRequest.fromJson(response);
       return Right(model);
     } catch (e) {

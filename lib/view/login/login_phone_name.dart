@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:maxpay/core/constants/asset_images.dart';
 import 'package:maxpay/core/constants/colors.dart';
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:maxpay/core/utils/responsive.dart';
 import 'package:maxpay/core/utils/texthelper.dart';
 import 'package:maxpay/global_widget/commom_button.dart';
@@ -144,14 +144,14 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
                       title: "Submit",
                       onTap: () {
                         if (!_isAccepted) {
-                          CustomSnackbar.warning(
+                          CustomToast.warning(
                             "Please accept Terms & Conditions",
                           );
                           return;
                         }
 
                         if (controller.phoneController.text.trim().isEmpty) {
-                          CustomSnackbar.warning(
+                          CustomToast.warning(
                             title: "Invalid mobile number",
                             "Please enter mobile number",
                           );
@@ -160,7 +160,7 @@ class _LoginPhoneNamePageState extends State<LoginPhoneNamePage> {
 
                         if (controller.phoneController.text.trim().length !=
                             10) {
-                          CustomSnackbar.error(
+                          CustomToast.error(
                             title: "Error",
                             "Enter valid mobile number",
                           );

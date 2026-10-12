@@ -35,6 +35,7 @@ import 'package:maxpay/data/repository/transaction_repository_impl.dart';
 import 'package:maxpay/data/repository/transfer_detail_repo_impl.dart';
 import 'package:maxpay/domain/repository/transfer_detail_repository.dart';
 import 'package:maxpay/data/repository/auto_transfer_details_repo_impl.dart';
+import 'package:maxpay/data/repository/partner_repository_impl.dart';
 import 'package:maxpay/data/repository/update_auto_transfer_repo_impl.dart';
 import 'package:maxpay/data/repository/day_book_repo_impl.dart';
 import 'package:maxpay/data/repository/my_earnings_repo_impl.dart';
@@ -52,6 +53,7 @@ import 'package:maxpay/domain/usecase/grade/get_grade_usecase.dart';
 import 'package:maxpay/controller/grade_controller.dart';
 import 'package:maxpay/domain/usecase/retailer/approve_pending_wallet_request_usecase.dart';
 import 'package:maxpay/domain/usecase/retailer/get_auto_transfer_details_usecase.dart';
+import 'package:maxpay/domain/usecase/partner/get_mapped_dist_usecase.dart';
 import 'package:maxpay/domain/usecase/retailer/get_low_wallet_retailers_usecase.dart';
 import 'package:maxpay/domain/usecase/retailer/get_outstanding_list_usecase.dart';
 import 'package:maxpay/domain/usecase/retailer/get_pending_wallet_request_detail_usecase.dart';
@@ -109,6 +111,7 @@ import 'package:maxpay/domain/repository/cash_back_repo.dart';
 import 'package:maxpay/domain/repository/commission_settings_repo.dart';
 
 import 'package:maxpay/domain/repository/auto_transfer_details_repo.dart';
+import 'package:maxpay/domain/repository/partner_repository.dart';
 import 'package:maxpay/domain/repository/update_auto_transfer_repo.dart';
 
 import '../../data/repository/low_wallet_repo_impl.dart';
@@ -150,6 +153,8 @@ import '../../domain/usecase/retailer/get_commission_packages_usecase.dart';
 import '../../domain/usecase/retailer/create_retailer_usecase.dart';
 import '../../domain/usecase/retailer/update_retailer_usecase.dart';
 import '../../domain/usecase/retailer/get_add_wallet_details_usecase.dart';
+import '../../domain/usecase/retailer/get_dis_wallet_details_usecase.dart';
+import '../../domain/usecase/partner/distributor_transfer_to_distributor_usecase.dart';
 import '../../domain/usecase/retailer/add_wallet_usecase.dart';
 import '../../domain/usecase/executive/get_executives_usecase.dart';
 import '../../domain/usecase/executive/get_executive_detail_usecase.dart';
@@ -199,8 +204,6 @@ import 'package:maxpay/controller/app_lifecycle_controller.dart';
 import 'package:maxpay/controller/add_wallet_controller.dart';
 import 'package:maxpay/data/repository/add_wallet_balance_repo_impl.dart';
 import 'package:maxpay/data/repository/wallet_request_repo_impl.dart';
-import 'package:maxpay/domain/repository/wallet_request_repository.dart';
-import 'package:maxpay/domain/usecase/wallet_request_usecase.dart';
 
 import 'package:maxpay/domain/repository/add_wallet_balance_repo.dart';
 import 'package:maxpay/domain/usecase/get_add_wallet_balance_usecase.dart';
@@ -360,9 +363,19 @@ Future<void> init() async {
     () => GetAddWalletDetailsUseCase(sl<RetailerRepository>()),
   );
 
+  /// Get Dis Wallet Details UseCase
+  sl.registerLazySingleton<GetDisWalletDetailsUseCase>(
+    () => GetDisWalletDetailsUseCase(sl<RetailerRepository>()),
+  );
+
   /// Add Wallet UseCase
   sl.registerLazySingleton<AddWalletUseCase>(
     () => AddWalletUseCase(sl<RetailerRepository>()),
+  );
+
+  /// Distributor Transfer To Distributor UseCase
+  sl.registerLazySingleton<DistributorTransferToDistributorUseCase>(
+    () => DistributorTransferToDistributorUseCase(sl<RetailerRepository>()),
   );
 
   /// Get Executives UseCase
@@ -420,6 +433,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AutoTransferDetailsRepository>(
     () => AutoTransferDetailsRepoImpl(sl<ApiService>()),
+  );
+
+  sl.registerLazySingleton<PartnerRepository>(
+    () => PartnerRepositoryImpl(sl<ApiService>()),
   );
 
   sl.registerLazySingleton<UpdateAutoTransferRepository>(
@@ -555,6 +572,9 @@ Future<void> init() async {
   sl.registerFactory(() => LoginHistoryController(sl()));
 
   // Auto Transfer
+  sl.registerLazySingleton<GetMappedDistUseCase>(
+    () => GetMappedDistUseCase(sl()),
+  );
   sl.registerLazySingleton<GetAutoTransferDetailsUseCase>(
     () => GetAutoTransferDetailsUseCase(sl()),
   );
@@ -563,6 +583,7 @@ Future<void> init() async {
   );
   sl.registerFactory(
     () => AutoTransferController(
+      getMappedDistUseCase: sl(),
       getAutoTransferDetailsUseCase: sl(),
       updateAutoTransferUseCase: sl(),
     ),
@@ -654,7 +675,17 @@ Future<void> init() async {
 
   // Retailer
   sl.registerFactory(
-    () => RetailerController(sl(), sl(), sl(), sl(), sl(), sl(), sl()),
+    () => RetailerController(
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+      sl(),
+    ),
   );
 
   // Transfer Detail

@@ -1,6 +1,4 @@
 class ApiRoutes {
-  
-  
   static const baseURL = "https://paylinkonline.in";
   static const getWalletCreditType = "/api/distributor_wallet_credit_types";
   static const distributorTransferTypes = "/api/distributor_transfer_types";
@@ -36,7 +34,10 @@ class ApiRoutes {
   static const String updateRetailer = "/api/distributor_update_retailer";
   static const String getAddWalletDetails =
       "/api/distributor_add_wallet_details";
+  static const String disWalletDetails = "/api/dis_wallet_details";
   static const String addWallet = "/api/distributor_add_wallet";
+  static const String distributorTransferToDistributor =
+      "/api/distributor_transfer_to_distributor";
   static const String requestWallet = "/api/distributor_wallet_request";
 
   static const String getExecutives = "/api/distributor_executives";
@@ -142,4 +143,6 @@ class ApiRoutes {
   static const bankdetail = "/api/get_bank_details";
 
   static const verifyWorldlinePayment = "/distributor_verify_worldline_payment";
+
+  static const String getMappedDist = "/api/get_mapped_dist";
 }

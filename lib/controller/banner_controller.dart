@@ -1,8 +1,8 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:flutter/material.dart' hide Banner;
 import 'package:get/get.dart';
-import 'package:maxpay/core/utils/snackbar.dart';
+import 'package:maxpay/core/utils/snackbar.dart' hide CustomToast;
 import 'package:maxpay/data/model/ad_model.dart';
 import 'package:maxpay/data/model/banner_model.dart';
 import 'package:maxpay/domain/usecase/home/get_advertisement_usecase.dart';
@@ -59,7 +59,7 @@ class BannerController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         advdata.value = data;

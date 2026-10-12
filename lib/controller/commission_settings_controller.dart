@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/settings/commission_settings_model.dart';
@@ -73,11 +73,11 @@ class CommissionSettingsController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        CustomSnackbar.success(message);
+        CustomToast.success(message);
         isUpdating.value = false;
         fetchCommissionSettings();
       },
@@ -90,11 +90,11 @@ class CommissionSettingsController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        CustomSnackbar.success(message);
+        CustomToast.success(message);
         isUpdating.value = false;
         fetchCommissionSettings();
       },
@@ -108,7 +108,7 @@ class CommissionSettingsController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         isUpdating.value = false;
       },
       (data) {
@@ -134,11 +134,11 @@ class CommissionSettingsController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
-        CustomSnackbar.success(message);
+        CustomToast.success(message);
         isUpdating.value = false;
         onSuccess();
       },
@@ -159,13 +159,13 @@ class CommissionSettingsController extends GetxController {
 
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         isUpdating.value = false;
       },
       (message) {
         isUpdating.value = false;
         onSuccess();
-        CustomSnackbar.success(message);
+        CustomToast.success(message);
       },
     );
   }

@@ -81,29 +81,41 @@ class RetailerDetailData {
     this.isActive,
   });
 
+  static num? _parseNum(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value;
+    if (value is String) return num.tryParse(value);
+    return null;
+  }
+
+  static String? _parseString(dynamic value) {
+    if (value == null) return null;
+    return value.toString();
+  }
+
   RetailerDetailData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    userId = json['user_id'];
-    retailerName = json['retailer_name'];
-    regMobileNumber = json['reg_mobile_number'];
-    whatsappNumber = json['whatsapp_number'];
-    email = json['email'];
-    address = json['address'];
-    gstNo = json['gst_no'];
-    pincode = json['pincode'];
-    executiveName = json['executive_name'];
-    walletBalance = json['wallet_balance'];
-    dueAmount = json['due_amount'];
-    registrationCharge = json['registration_charge'];
-    lowWalletAmount = json['low_wallet_amount'];
-    packageName = json['package_name'];
-    autoTransfer = json['auto_transfer'];
-    autoTransferAmount = json['auto_transfer_amount'];
-    transaction = json['transaction'];
-    createdAt = json['created_at'];
-    status = json['status'];
-    isActive = json['is_active'];
-    executiveId = json['executive_id'];
+    id = _parseNum(json['id'])?.toInt();
+    userId = _parseString(json['user_id']);
+    retailerName = _parseString(json['retailer_name']);
+    regMobileNumber = _parseString(json['reg_mobile_number']);
+    whatsappNumber = _parseString(json['whatsapp_number']);
+    email = _parseString(json['email']);
+    address = _parseString(json['address']);
+    gstNo = _parseString(json['gst_no']);
+    pincode = _parseString(json['pincode']);
+    executiveName = _parseString(json['executive_name']);
+    walletBalance = _parseNum(json['wallet_balance']);
+    dueAmount = _parseNum(json['due_amount']);
+    registrationCharge = _parseNum(json['registration_charge']);
+    lowWalletAmount = _parseNum(json['low_wallet_amount']);
+    packageName = _parseString(json['package_name']);
+    autoTransfer = _parseString(json['auto_transfer']);
+    autoTransferAmount = _parseNum(json['auto_transfer_amount']);
+    transaction = _parseString(json['transaction']);
+    createdAt = _parseString(json['created_at']);
+    status = _parseString(json['status']);
+    isActive = _parseNum(json['is_active'])?.toInt();
+    executiveId = _parseString(json['executive_id']);
   }
 
   Map<String, dynamic> toJson() {

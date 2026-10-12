@@ -21,6 +21,8 @@ import '../../domain/usecase/retailer/get_commission_packages_usecase.dart';
 import '../../domain/usecase/retailer/create_retailer_usecase.dart';
 import '../../domain/usecase/retailer/update_retailer_usecase.dart';
 import '../../domain/usecase/retailer/get_add_wallet_details_usecase.dart';
+import '../../domain/usecase/retailer/get_dis_wallet_details_usecase.dart';
+import '../../domain/usecase/partner/distributor_transfer_to_distributor_usecase.dart';
 import '../../domain/usecase/retailer/add_wallet_usecase.dart';
 import '../di/service_locator.dart';
 
@@ -60,6 +62,8 @@ class InitialBinding extends Bindings {
         sl<UpdateRetailerUseCase>(),
         sl<GetAddWalletDetailsUseCase>(),
         sl<AddWalletUseCase>(),
+        sl<GetDisWalletDetailsUseCase>(),
+        sl<DistributorTransferToDistributorUseCase>(),
       ),
       fenix: true,
     );

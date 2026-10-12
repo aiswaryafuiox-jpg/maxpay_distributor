@@ -22,7 +22,11 @@ class RetailerRepositoryImpl implements RetailerRepository {
   RetailerRepositoryImpl(this._apiService);
 
   @override
-  Future<Either<Failure, RetailerListResponseModel>> getRetailers({int page = 1, String? isActive, String? search}) async {
+  Future<Either<Failure, RetailerListResponseModel>> getRetailers({
+    int page = 1,
+    String? isActive,
+    String? search,
+  }) async {
     try {
       final queryParams = <String, dynamic>{'page': page};
       if (isActive != null) {
@@ -155,7 +159,7 @@ class RetailerRepositoryImpl implements RetailerRepository {
       return Left(DioErrorHandler.handle(e));
     }
   }
-  
+
   @override
   Future<Either<Failure, AddWalletDetailsResponseModel>> getAddWalletDetails(
     int id,
@@ -184,6 +188,33 @@ class RetailerRepositoryImpl implements RetailerRepository {
   }
 
   @override
+  Future<Either<Failure, AddWalletDetailsResponseModel>> getDisWalletDetails(
+    int id,
+  ) async {
+    try {
+      final formData = FormData.fromMap({'id': id});
+      final response = await _apiService.post(
+        ApiRoutes.disWalletDetails,
+        data: formData,
+      );
+      final model = AddWalletDetailsResponseModel.fromJson(response);
+      if (model.code == 200 || model.code == 201) {
+        if (model.success == true) {
+          return Right(model);
+        } else {
+          return Left(ServerFailure(model.message ?? 'Unknown server error'));
+        }
+      } else {
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
+      }
+    } catch (e) {
+      return Left(DioErrorHandler.handle(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, AddWalletResponseModel>> addWallet(
     AddWalletParams params,
   ) async {
@@ -191,6 +222,32 @@ class RetailerRepositoryImpl implements RetailerRepository {
       final formData = FormData.fromMap(params.toJson());
       final response = await _apiService.post(
         ApiRoutes.addWallet,
+        data: formData,
+      );
+      final model = AddWalletResponseModel.fromJson(response);
+      if (model.code == 200 || model.code == 201) {
+        if (model.success == true) {
+          return Right(model);
+        } else {
+          return Left(ServerFailure(model.message ?? 'Unknown server error'));
+        }
+      } else {
+        return Left(
+          ServerFailure(model.message ?? 'Server error: ${model.code}'),
+        );
+      }
+    } catch (e) {
+      return Left(DioErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AddWalletResponseModel>>
+  distributorTransferToDistributor(AddWalletParams params) async {
+    try {
+      final formData = FormData.fromMap(params.toJson());
+      final response = await _apiService.post(
+        ApiRoutes.distributorTransferToDistributor,
         data: formData,
       );
       final model = AddWalletResponseModel.fromJson(response);

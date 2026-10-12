@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -102,7 +102,7 @@ class SearchTransactionController extends GetxController {
       (failure) {
         isLoading.value = false;
         AppLogger.logError("Search transactions failed: ${failure.message}");
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
         isLoading.value = false;

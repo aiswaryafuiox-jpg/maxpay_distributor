@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -89,7 +89,7 @@ class ProfileController extends GetxController {
           }
         } else {
           isLoading.value = false;
-          CustomSnackbar.error(failure.message);
+          CustomToast.error(failure.message);
           AppLogger.logError("Failed to fetch profile: ${failure.message}");
         }
       },
@@ -156,7 +156,7 @@ class ProfileController extends GetxController {
     result.fold(
       (failure) {
         isUpdating.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError("Failed to update profile: ${failure.message}");
       },
       (data) {
@@ -167,7 +167,7 @@ class ProfileController extends GetxController {
           );
 
           // Temporarily showing the OTP in snackbar if returning for dev testing.
-          // CustomSnackbar.success(//   "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}");
+          // CustomToast.success(//   "${data.message ?? ''} ${data.data?.otp != null ? 'OTP: ${data.data?.otp}' : ''}");
           String toastMsg = "OTP Sent Successfully";
           if (data.data?.phoneNumber != null &&
               SimUtil.testNumbers.contains(data.data?.phoneNumber)) {
@@ -186,7 +186,7 @@ class ProfileController extends GetxController {
 
           Get.to(() => const ProfileUpdateOtpScreen(), arguments: data);
         } else {
-          CustomSnackbar.success(data.message ?? "Profile updated successfully");
+          CustomToast.success(data.message ?? "Profile updated successfully");
           fetchProfile(); // Reload the profile if no OTP is required
         }
       },
@@ -200,13 +200,13 @@ class ProfileController extends GetxController {
     result.fold(
       (failure) {
         isUpdating.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isUpdating.value = false;
         profileData.value = data.data; // Update local data with verified data
         Get.back(); // Close OTP screen
-        CustomSnackbar.success(data.message ?? "Profile updated successfully");
+        CustomToast.success(data.message ?? "Profile updated successfully");
       },
     );
   }
@@ -218,7 +218,7 @@ class ProfileController extends GetxController {
     result.fold(
       (failure) {
         isUpdating.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isUpdating.value = false;
@@ -249,7 +249,7 @@ class ProfileController extends GetxController {
     result.fold(
       (failure) {
         isUpdating.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isUpdating.value = false;
@@ -271,7 +271,7 @@ class ProfileController extends GetxController {
           );
           Get.to(() => const StatusUpdateOtpScreen(), arguments: data);
         } else {
-          CustomSnackbar.success(data.message ?? "Status updated successfully");
+          CustomToast.success(data.message ?? "Status updated successfully");
           fetchProfile(); // Reload the profile if no OTP is required
         }
       },
@@ -285,13 +285,13 @@ class ProfileController extends GetxController {
     result.fold(
       (failure) {
         isUpdating.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (data) {
         isUpdating.value = false;
         profileData.value = data.data; // Update local data with verified data
         Get.back(); // Close OTP screen
-        CustomSnackbar.success(data.message ?? "Status updated successfully");
+        CustomToast.success(data.message ?? "Status updated successfully");
       },
     );
   }

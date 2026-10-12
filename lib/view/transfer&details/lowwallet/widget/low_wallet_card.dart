@@ -7,12 +7,14 @@ class LowWalletCard extends StatelessWidget {
   final String retailerName;
   final String mobile;
   final String amount;
+  final VoidCallback onTap;
 
   const LowWalletCard({
     super.key,
     required this.retailerName,
     required this.mobile,
     required this.amount,
+    required this.onTap,
   });
 
   @override
@@ -101,7 +103,7 @@ class LowWalletCard extends StatelessWidget {
             child: SizedBox(
               width: 100,
               height: 30,
-              child: CommonButton(title: "Add Wallet", onTap: () {}),
+              child: CommonButton(title: "Add Wallet", onTap: onTap),
             ),
           ),
         ],

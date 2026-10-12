@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +15,9 @@ import '../domain/usecase/retailer/add_wallet_usecase.dart';
 import '../domain/usecase/retailer/get_retailers_usecase.dart';
 import '../domain/usecase/retailer/get_retailer_detail_usecase.dart';
 import '../domain/usecase/retailer/get_commission_packages_usecase.dart';
+import '../domain/usecase/retailer/get_dis_wallet_details_usecase.dart';
+import '../domain/usecase/partner/distributor_transfer_to_distributor_usecase.dart';
+import '../core/di/service_locator.dart';
 import '../view/transfer&details/retailers/addwalletscreen.dart';
 
 class RetailerController extends GetxController {
@@ -25,6 +28,9 @@ class RetailerController extends GetxController {
   final UpdateRetailerUseCase updateRetailerUseCase;
   final GetAddWalletDetailsUseCase getAddWalletDetailsUseCase;
   final AddWalletUseCase addWalletUseCase;
+  final GetDisWalletDetailsUseCase? getDisWalletDetailsUseCase;
+  final DistributorTransferToDistributorUseCase?
+  distributorTransferToDistributorUseCase;
 
   RetailerController(
     this.getRetailersUseCase,
@@ -33,8 +39,10 @@ class RetailerController extends GetxController {
     this.createRetailerUseCase,
     this.updateRetailerUseCase,
     this.getAddWalletDetailsUseCase,
-    this.addWalletUseCase,
-  );
+    this.addWalletUseCase, [
+    this.getDisWalletDetailsUseCase,
+    this.distributorTransferToDistributorUseCase,
+  ]);
 
   RxBool isLoading = false.obs;
   RxBool isLoadMore = false.obs;
@@ -106,7 +114,7 @@ class RetailerController extends GetxController {
       (failure) {
         isLoading.value = false;
         isLoadMore.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError("Failed to fetch retailers: ${failure.message}");
       },
       (data) {
@@ -160,7 +168,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isDetailLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError(
           "Failed to fetch retailer detail: ${failure.message}",
         );
@@ -180,7 +188,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isPackagesLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError(
           "Failed to fetch commission packages: ${failure.message}",
         );
@@ -202,13 +210,13 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isCreatingRetailer.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError("Failed to create retailer: ${failure.message}");
       },
       (data) async {
         isCreatingRetailer.value = false;
         Get.back(); // Navigate back
-        CustomSnackbar.success(data.message ?? "Retailer created successfully");
+        CustomToast.success(data.message ?? "Retailer created successfully");
         AppLogger.debugPrint("Retailer created successfully");
         await fetchRetailers(isRefresh: true); // Refresh the list
       },
@@ -222,13 +230,13 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isUpdatingRetailer.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError("Failed to update retailer: ${failure.message}");
       },
       (data) async {
         isUpdatingRetailer.value = false;
         Get.back(); // Navigate back
-        CustomSnackbar.success(data.message ?? "Retailer updated successfully");
+        CustomToast.success(data.message ?? "Retailer updated successfully");
         AppLogger.debugPrint("Retailer updated successfully");
         await fetchRetailers(isRefresh: true); // Refresh the list
       },
@@ -242,7 +250,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isAddWalletLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError(
           "Failed to fetch add wallet details: ${failure.message}",
         );
@@ -257,6 +265,56 @@ class RetailerController extends GetxController {
     );
   }
 
+  Future<void> fetchDisWalletDetails(int id) async {
+    isAddWalletLoading.value = true;
+    final useCase =
+        getDisWalletDetailsUseCase ?? sl<GetDisWalletDetailsUseCase>();
+    final result = await useCase.call(id);
+
+    result.fold(
+      (failure) {
+        isAddWalletLoading.value = false;
+        CustomToast.error(failure.message);
+        AppLogger.logError(
+          "Failed to fetch dis wallet details: ${failure.message}",
+        );
+      },
+      (data) {
+        isAddWalletLoading.value = false;
+        addWalletDetails.value = data.data;
+        AppLogger.debugPrint("Dis wallet details fetched successfully");
+        Get.to(() => const RetAddWalletScreen(isPartner: true));
+        Get.find<AddWalletController>().fetchWalletBalance();
+      },
+    );
+  }
+
+  Future<void> submitDisAddWallet(String id, String amount) async {
+    isAddWalletLoading.value = true;
+    final params = AddWalletParams(id: id, amount: amount);
+    final useCase =
+        distributorTransferToDistributorUseCase ??
+        sl<DistributorTransferToDistributorUseCase>();
+    final result = await useCase.call(params);
+
+    result.fold(
+      (failure) {
+        isAddWalletLoading.value = false;
+        CustomToast.error(failure.message);
+        AppLogger.logError(
+          "Failed to transfer to distributor: ${failure.message}",
+        );
+      },
+      (data) {
+        isAddWalletLoading.value = false;
+        Get.back(); // Navigate back
+        CustomToast.success(data.message ?? "Transfer completed successfully");
+        AppLogger.debugPrint("Transfer to distributor completed successfully");
+        Get.find<AddWalletController>().fetchWalletBalance();
+      },
+    );
+  }
+
   Future<void> submitAddWallet(String id, String amount) async {
     isAddWalletLoading.value = true;
     final params = AddWalletParams(id: id, amount: amount);
@@ -265,7 +323,7 @@ class RetailerController extends GetxController {
     result.fold(
       (failure) {
         isAddWalletLoading.value = false;
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
         AppLogger.logError("Failed to add wallet: ${failure.message}");
       },
       (data) {
@@ -276,9 +334,7 @@ class RetailerController extends GetxController {
           isRefresh: true,
         ); // Refresh the list to reflect new balances
         Get.back(); // Go back from Add Wallet screen
-        CustomSnackbar.success(
-          data.message ?? "Wallet transferred successfully",
-        );
+        CustomToast.success(data.message ?? "Wallet transferred successfully");
       },
     );
   }

@@ -1,4 +1,4 @@
-import 'package:maxpay/core/utils/custom_snackbar.dart';
+import 'package:maxpay/core/utils/custom_toast.dart';
 import 'package:get/get.dart';
 import 'package:maxpay/data/model/outstanding_list_model.dart';
 import 'package:maxpay/domain/usecase/retailer/get_outstanding_list_usecase.dart';
@@ -26,7 +26,7 @@ class OutstandingController extends GetxController {
     
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
         if (response.data?.list != null) {
@@ -43,10 +43,10 @@ class OutstandingController extends GetxController {
     
     result.fold(
       (failure) {
-        CustomSnackbar.error(failure.message);
+        CustomToast.error(failure.message);
       },
       (response) {
-        CustomSnackbar.success(response.message ?? "Outstanding updated successfully");
+        CustomToast.success(response.message ?? "Outstanding updated successfully");
         fetchOutstandingList(); // Refresh list
       }
     );
