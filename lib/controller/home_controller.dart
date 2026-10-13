@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:maxpay/core/constants/colors.dart';
 import 'package:maxpay/core/utils/logg_helper.dart';
 import 'package:maxpay/core/utils/snackbar.dart';
+import 'package:maxpay/data/model/faq_reply_model.dart';
 import 'package:maxpay/data/model/home_card_model.dart';
 import 'package:maxpay/data/model/news_model.dart';
 import 'package:maxpay/data/model/today_transaction_model.dart';
@@ -24,7 +25,6 @@ class HomePageController extends GetxController {
   final GetFaqUseCase getFaqUseCase;
   final GetPopupMessageUseCase getPopupMessageUseCase;
   final FaqReplyUseCase faqReplyUseCase;
-
   HomePageController(
     this.getHomeCardUseCase,
     this.getTodayTransactionAmountUseCase,
@@ -32,6 +32,7 @@ class HomePageController extends GetxController {
     this.getFaqUseCase,
     this.getPopupMessageUseCase,
     this.faqReplyUseCase,
+    
   );
 
   RxBool isLoading = false.obs;
@@ -39,7 +40,6 @@ class HomePageController extends GetxController {
   final Rx<NewsModel?> news = Rx<NewsModel?>(null);
   Rx<HomeCardData?> homeCardData = Rx<HomeCardData?>(null);
   Rx<TodayTransactionData?> todayTransactionData = Rx<TodayTransactionData?>(null);
-  
   Rx<faq_model.Faq?> faqData = Rx<faq_model.Faq?>(null);
   Rx<PopupMessage?> popupMessageData = Rx<PopupMessage?>(null);
 

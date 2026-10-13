@@ -10,6 +10,7 @@ class WalletRequestUsecase {
 
   Future<Either<Failure, WalletRequest>> call({
     required String amount,
+    
     required String paymenttype,
     required String utrno,
     required String bankid,
