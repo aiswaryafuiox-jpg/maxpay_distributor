@@ -16,16 +16,15 @@ class AddWalletUseCase {
 class AddWalletParams {
   final String id;
   final String amount;
+  final String? paymentStatus;
 
-  AddWalletParams({
-    required this.id,
-    required this.amount,
-  });
+  AddWalletParams({required this.id, required this.amount, this.paymentStatus});
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'amount': amount,
-    };
+    final map = <String, dynamic>{'id': id, 'amount': amount};
+    if (paymentStatus != null) {
+      map['payment_status'] = paymentStatus;
+    }
+    return map;
   }
 }

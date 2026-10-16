@@ -289,9 +289,17 @@ class RetailerController extends GetxController {
     );
   }
 
-  Future<void> submitDisAddWallet(String id, String amount) async {
+  Future<void> submitDisAddWallet(
+    String id,
+    String amount, {
+    String? paymentStatus,
+  }) async {
     isAddWalletLoading.value = true;
-    final params = AddWalletParams(id: id, amount: amount);
+    final params = AddWalletParams(
+      id: id,
+      amount: amount,
+      paymentStatus: paymentStatus,
+    );
     final useCase =
         distributorTransferToDistributorUseCase ??
         sl<DistributorTransferToDistributorUseCase>();
@@ -315,9 +323,17 @@ class RetailerController extends GetxController {
     );
   }
 
-  Future<void> submitAddWallet(String id, String amount) async {
+  Future<void> submitAddWallet(
+    String id,
+    String amount, {
+    String? paymentStatus,
+  }) async {
     isAddWalletLoading.value = true;
-    final params = AddWalletParams(id: id, amount: amount);
+    final params = AddWalletParams(
+      id: id,
+      amount: amount,
+      paymentStatus: paymentStatus,
+    );
     final result = await addWalletUseCase.call(params);
 
     result.fold(

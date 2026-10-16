@@ -20,6 +20,15 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
   final RetailerController _controller = Get.find<RetailerController>();
   final TextEditingController amountController = TextEditingController();
 
+  /// Payment status dropdown options
+  /// key = display label, value = backend value
+  static const List<Map<String, String>> _paymentStatusOptions = [
+    {'label': 'Received', 'value': 'received'},
+    {'label': 'Not Received', 'value': 'not_received'},
+  ];
+
+  String? _selectedPaymentStatus; // backend value e.g. 'received'
+
   @override
   void dispose() {
     amountController.dispose();
@@ -108,6 +117,16 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                   color: AppColors.clrPrimary,
                 ),
               ),
+              if (_selectedPaymentStatus != null) ...[
+                SizedBox(height: 6.h),
+                Text(
+                  "Payment Status: ${_paymentStatusOptions.firstWhere((o) => o['value'] == _selectedPaymentStatus)['label']}",
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                  ),
+                ),
+              ],
             ],
           ),
           actionsPadding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 16.h),
@@ -142,9 +161,17 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                       if (widget.isPartner) {
-                        _controller.submitDisAddWallet(id, amount);
+                        _controller.submitDisAddWallet(
+                          id,
+                          amount,
+                          paymentStatus: _selectedPaymentStatus,
+                        );
                       } else {
-                        _controller.submitAddWallet(id, amount);
+                        _controller.submitAddWallet(
+                          id,
+                          amount,
+                          paymentStatus: _selectedPaymentStatus,
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -269,6 +296,41 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                 );
               }),
 
+              /// Payment Status Dropdown
+              buildLabel("Payment Type", isDark),
+              SizedBox(height: 8.h),
+              DropdownButtonFormField<String>(
+                value: _selectedPaymentStatus,
+                hint: Text(
+                  "Select Payment Status",
+                  style: TextHelper.max1.copyWith(
+                    color: isDark ? AppColors.textclr : AppColors.clrTextgrey,
+                  ),
+                ),
+                dropdownColor: isDark ? AppColors.darkplceholder : Colors.white,
+                decoration: fieldDecoration(context, "", isDark),
+                items: _paymentStatusOptions.map((option) {
+                  return DropdownMenuItem<String>(
+                    value: option['value'],
+                    child: Text(
+                      option['label']!,
+                      style: TextHelper.max1.copyWith(
+                        color: isDark
+                            ? AppColors.textclr
+                            : AppColors.clrTextblack,
+                      ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedPaymentStatus = value;
+                  });
+                },
+              ),
+
+              SizedBox(height: 16.h),
+
               buildLabel("Amount", isDark),
               SizedBox(height: 8.h),
               TextField(
@@ -301,14 +363,21 @@ class _AddWalletScreenState extends State<RetAddWalletScreen> {
                                         ?.retailerId)
                               ?.toString();
                       final amount = amountController.text.trim();
-                      if (id != null && amount.isNotEmpty) {
-                        _showConfirmationDialog(id, amount);
+
+                      if (_selectedPaymentStatus == null) {
+                        Get.snackbar(
+                          "Required",
+                          "Please select a payment status",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
                       } else if (amount.isEmpty) {
                         Get.snackbar(
                           "Required",
                           "Please enter an amount",
                           snackPosition: SnackPosition.BOTTOM,
                         );
+                      } else if (id != null) {
+                        _showConfirmationDialog(id, amount);
                       }
                     },
                   ),

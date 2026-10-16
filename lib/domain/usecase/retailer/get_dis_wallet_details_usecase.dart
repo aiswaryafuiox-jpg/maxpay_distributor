@@ -11,4 +11,5 @@ class GetDisWalletDetailsUseCase {
   Future<Either<Failure, AddWalletDetailsResponseModel>> call(int id) {
     return repository.getDisWalletDetails(id);
   }
+  
 }

@@ -145,4 +145,5 @@ class ApiRoutes {
   static const verifyWorldlinePayment = "/distributor_verify_worldline_payment";
 
   static const String getMappedDist = "/api/get_mapped_dist";
+  static const String payOut = "/api/pay_out";
 }

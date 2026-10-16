@@ -39,6 +39,7 @@ import 'package:maxpay/data/repository/partner_repository_impl.dart';
 import 'package:maxpay/data/repository/update_auto_transfer_repo_impl.dart';
 import 'package:maxpay/data/repository/day_book_repo_impl.dart';
 import 'package:maxpay/data/repository/my_earnings_repo_impl.dart';
+import 'package:maxpay/data/repository/payout_repo_impl.dart';
 import 'package:maxpay/data/repository/transaction_repo_impl.dart';
 import 'package:maxpay/data/repository/cash_back_repo_impl.dart';
 import 'package:maxpay/data/repository/commission_settings_repo_impl.dart';
@@ -72,6 +73,7 @@ import 'package:maxpay/controller/kyc_controller.dart';
 import 'package:maxpay/data/repository/support_repo_impl.dart';
 import 'package:maxpay/domain/repository/support_repo.dart';
 import 'package:maxpay/domain/usecase/my_earnings/get_my_earnings_usecase.dart';
+import 'package:maxpay/domain/usecase/payout/get_payout_usecase.dart';
 import 'package:maxpay/domain/usecase/support/get_support_usecase.dart';
 import 'package:maxpay/controller/support_controller.dart';
 
@@ -106,6 +108,7 @@ import '../../domain/repository/retailer_repo.dart';
 import '../../domain/repository/low_wallet_repo.dart';
 import 'package:maxpay/domain/repository/day_book_repo.dart';
 import 'package:maxpay/domain/repository/my_earnings_repo.dart';
+import 'package:maxpay/domain/repository/payout_repo.dart';
 import 'package:maxpay/domain/repository/transaction_repo.dart';
 import 'package:maxpay/domain/repository/cash_back_repo.dart';
 import 'package:maxpay/domain/repository/commission_settings_repo.dart';
@@ -123,6 +126,7 @@ import '../../domain/usecase/reverse_wallet_transfer_usecase.dart';
 import '../../controller/wallet_controller.dart';
 import '../../controller/day_book_controller.dart';
 import '../../controller/my_earnings_controller.dart';
+import '../../controller/payout_controller.dart';
 import '../../controller/transaction_controller.dart';
 import '../../controller/commission_settings_controller.dart';
 
@@ -464,6 +468,11 @@ Future<void> init() async {
     () => GetMyEarningsUseCase(sl()),
   );
   sl.registerFactory(() => MyEarningsController(sl()));
+
+  // Payout
+  sl.registerLazySingleton<PayoutRepository>(() => PayoutRepoImpl(sl()));
+  sl.registerLazySingleton<GetPayoutUseCase>(() => GetPayoutUseCase(sl()));
+  sl.registerFactory(() => PayoutController(sl()));
 
   // Transaction Report
   sl.registerLazySingleton<TransactionsListRepository>(
